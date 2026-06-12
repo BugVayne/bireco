@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Админка новостей — ClearMetrics</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+  <style>
+    body { background: var(--ice); }
+    .admin-wrap { max-width: 880px; margin: 0 auto; padding: 40px 20px 80px; }
+    .admin-card {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 28px 32px;
+      box-shadow: var(--shadow);
+      margin-bottom: 22px;
+    }
+    .admin-title { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 26px; }
+    .admin-title h1 { margin: 0; color: var(--navy); font-size: 26px; }
+    .admin-news-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+      padding: 16px 0;
+      border-bottom: 1px solid var(--line);
+    }
+    .admin-news-item:last-child { border-bottom: none; }
+    .admin-news-item h3 { margin: 0 0 4px; font-size: 16px; color: var(--navy); }
+    .admin-news-item .meta { font-size: 13px; color: var(--muted); }
+    .admin-news-actions { display: flex; gap: 8px; flex: none; }
+    .btn-sm { padding: 8px 14px; font-size: 13.5px; border-radius: 8px; }
+    .btn-danger { background: #fff; color: #dc2626; border-color: #fca5a5; }
+    .btn-danger:hover { background: #dc2626; color: #fff; border-color: #dc2626; }
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 0 18px; }
+    @media (max-width: 640px) { .two-col { grid-template-columns: 1fr; } }
+    .admin-status { font-size: 14px; margin-top: 10px; }
+    .admin-status.error { color: #dc2626; }
+    .admin-status.success { color: #047857; }
+    .muted-note { font-size: 13.5px; color: var(--muted); margin-top: 10px; }
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+  <div class="admin-wrap">
+    <div class="admin-title">
+      <h1>Управление новостями</h1>
+      <div style="display:flex; gap:10px;">
+        <a class="btn btn-outline btn-sm" href="index.html" target="_blank">Открыть сайт</a>
+        <button class="btn btn-outline btn-sm hidden" id="logoutBtn">Выйти</button>
+      </div>
+    </div>
+
+    <!-- Экран входа -->
+    <div class="admin-card" id="loginCard">
+      <h3 style="margin-top:0; color:var(--navy)">Вход</h3>
+      <div class="form-field">
+        <label for="adminToken">Пароль администратора</label>
+        <input type="password" id="adminToken" autocomplete="current-password" />
+      </div>
+      <button class="btn btn-primary" id="loginBtn">Войти</button>
+      <div class="admin-status" id="loginStatus"></div>
+      <p class="muted-note">Пароль задаётся в настройках Google Apps Script (свойство <code>ADMIN_TOKEN</code>) — см. README.md.</p>
+    </div>
+
+    <!-- Панель управления -->
+    <div id="panel" class="hidden">
+      <div class="admin-card">
+        <h3 style="margin-top:0; color:var(--navy)" id="editorTitle">Добавить новость</h3>
+        <form id="newsForm">
+          <input type="hidden" id="nfId" />
+          <div class="form-field">
+            <label for="nfDate">Дата (ГГГГ-ММ-ДД)</label>
+            <input type="date" id="nfDate" required />
+          </div>
+          <div class="two-col">
+            <div class="form-field">
+              <label for="nfTitleEn">Заголовок (EN)</label>
+              <input type="text" id="nfTitleEn" required />
+            </div>
+            <div class="form-field">
+              <label for="nfTitleRu">Заголовок (RU)</label>
+              <input type="text" id="nfTitleRu" />
+            </div>
+            <div class="form-field">
+              <label for="nfSummaryEn">Краткое описание (EN) — для карточки на главной</label>
+              <textarea id="nfSummaryEn" rows="2"></textarea>
+            </div>
+            <div class="form-field">
+              <label for="nfSummaryRu">Краткое описание (RU)</label>
+              <textarea id="nfSummaryRu" rows="2"></textarea>
+            </div>
+            <div class="form-field">
+              <label for="nfBodyEn">Полный текст (EN)</label>
+              <textarea id="nfBodyEn" rows="5"></textarea>
+            </div>
+            <div class="form-field">
+              <label for="nfBodyRu">Полный текст (RU)</label>
+              <textarea id="nfBodyRu" rows="5"></textarea>
+            </div>
+          </div>
+          <div class="form-field">
+            <label for="nfImage">Ссылка на картинку (необязательно)</label>
+            <input type="url" id="nfImage" placeholder="https://…" />
+          </div>
+          <div style="display:flex; gap:10px; flex-wrap:wrap;">
+            <button type="submit" class="btn btn-primary" id="saveBtn">Сохранить</button>
+            <button type="button" class="btn btn-outline hidden" id="cancelEditBtn">Отменить редактирование</button>
+          </div>
+          <div class="admin-status" id="saveStatus"></div>
+        </form>
+      </div>
+
+      <div class="admin-card">
+        <h3 style="margin-top:0; color:var(--navy)">Опубликованные новости</h3>
+        <div id="newsAdminList"><div class="admin-status">Загрузка…</div></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/config.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>

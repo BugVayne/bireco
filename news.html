@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Insights &amp; News — ClearMetrics</title>
+  <meta name="description" content="All news, releases and analytics from the ClearMetrics team." />
+
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <link rel="canonical" href="https://bugvayne.github.io/bireco/news.html" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="ClearMetrics" />
+  <meta property="og:title" content="Insights &amp; News — ClearMetrics" />
+  <meta property="og:description" content="All news, releases and analytics from the ClearMetrics team." />
+  <meta property="og:url" content="https://bugvayne.github.io/bireco/news.html" />
+  <meta property="og:image" content="https://bugvayne.github.io/bireco/og-image.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:image" content="https://bugvayne.github.io/bireco/og-image.png" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="logo" href="index.html">
+        <span class="logo-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 19V11M12 19V5M19 19v-5"/></svg>
+        </span>
+        ClearMetrics
+      </a>
+
+      <nav class="main-nav" id="mainNav">
+        <a href="index.html#insights" data-i18n="nav.insights">Insights</a>
+        <a href="index.html#services" data-i18n="nav.services">Services</a>
+        <a href="index.html#industries" data-i18n="nav.industries">Industries</a>
+        <a href="index.html#careers" data-i18n="nav.careers">Careers</a>
+        <a href="index.html#about" data-i18n="nav.about">About Us</a>
+      </nav>
+
+      <div class="lang-switch" role="group" aria-label="Language">
+        <button type="button" data-lang="en">EN</button>
+        <button type="button" data-lang="ru">RU</button>
+      </div>
+
+      <button class="burger" id="burgerBtn" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <section class="page-hero">
+    <div class="container">
+      <a class="back-link" href="index.html" data-i18n="news.back">← Back to main page</a>
+      <h1 data-i18n="news.title">Insights &amp; News</h1>
+      <p data-i18n="news.sub">All news, releases and analytics from our team</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="news-list" id="newsList">
+        <div class="news-status" data-i18n="common.loading">Loading…</div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-bottom">
+        <span>© <span id="footerYear"></span> ClearMetrics. <span data-i18n="footer.rights">All rights reserved.</span></span>
+        <a href="index.html" data-i18n="news.back">← Back to main page</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/config.js"></script>
+  <script src="js/i18n.js"></script>
+  <script src="js/services-data.js"></script>
+  <script src="js/news-api.js"></script>
+  <script src="js/news-page.js"></script>
+  <script src="js/ui.js"></script>
+</body>
+</html>

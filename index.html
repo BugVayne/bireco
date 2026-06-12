@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ClearMetrics — Business Intelligence &amp; Reporting</title>
+  <meta name="description" content="We transform your data into meaningful insights for business decisions. Management, sales, marketing, production, supply chain, IT and risk reporting." />
+
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <link rel="canonical" href="https://bugvayne.github.io/bireco/" />
+
+  <!-- Open Graph: карточка при шеринге в Telegram/LinkedIn/соцсетях -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="ClearMetrics" />
+  <meta property="og:title" content="ClearMetrics — Business Intelligence &amp; Reporting" />
+  <meta property="og:description" content="We transform your data into meaningful insights for business decisions." />
+  <meta property="og:url" content="https://bugvayne.github.io/bireco/" />
+  <meta property="og:image" content="https://bugvayne.github.io/bireco/og-image.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="ClearMetrics — Business Intelligence &amp; Reporting" />
+  <meta name="twitter:description" content="We transform your data into meaningful insights for business decisions." />
+  <meta name="twitter:image" content="https://bugvayne.github.io/bireco/og-image.png" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+
+  <!-- ======== Шапка ======== -->
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="logo" href="index.html">
+        <span class="logo-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 19V11M12 19V5M19 19v-5"/></svg>
+        </span>
+        ClearMetrics
+      </a>
+
+      <nav class="main-nav" id="mainNav">
+        <a href="#insights" data-i18n="nav.insights">Insights</a>
+        <a href="#services" data-i18n="nav.services">Services</a>
+        <a href="#industries" data-i18n="nav.industries">Industries</a>
+        <a href="#careers" data-i18n="nav.careers">Careers</a>
+        <a href="#about" data-i18n="nav.about">About Us</a>
+      </nav>
+
+      <div class="lang-switch" role="group" aria-label="Language">
+        <button type="button" data-lang="en">EN</button>
+        <button type="button" data-lang="ru">RU</button>
+      </div>
+
+      <button class="burger" id="burgerBtn" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ======== Hero ======== -->
+  <section class="hero">
+    <div class="hero-grid-decor" aria-hidden="true"></div>
+    <div class="hero-orb o1" aria-hidden="true"></div>
+    <div class="hero-orb o2" aria-hidden="true"></div>
+    <div class="hero-orb o3" aria-hidden="true"></div>
+
+    <!-- Анимированный график — рисуется при загрузке -->
+    <svg class="hero-chart" viewBox="0 0 560 300" aria-hidden="true">
+      <defs>
+        <linearGradient id="chartGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#8db4ff" stop-opacity="0.35" />
+          <stop offset="100%" stop-color="#8db4ff" stop-opacity="0" />
+        </linearGradient>
+      </defs>
+      <rect class="chart-bar" x="40"  y="200" width="34" height="100" rx="4" style="animation-delay:.6s" />
+      <rect class="chart-bar" x="120" y="160" width="34" height="140" rx="4" style="animation-delay:.8s" />
+      <rect class="chart-bar" x="200" y="180" width="34" height="120" rx="4" style="animation-delay:1s" />
+      <rect class="chart-bar" x="280" y="120" width="34" height="180" rx="4" style="animation-delay:1.2s" />
+      <rect class="chart-bar" x="360" y="140" width="34" height="160" rx="4" style="animation-delay:1.4s" />
+      <rect class="chart-bar" x="440" y="70"  width="34" height="230" rx="4" style="animation-delay:1.6s" />
+      <path class="chart-area" d="M20 230 L130 180 L250 200 L370 110 L540 40 L540 300 L20 300 Z" />
+      <polyline class="chart-line" points="20,230 130,180 250,200 370,110 540,40" />
+      <circle class="chart-dot" cx="130" cy="180" r="6" style="animation-delay:1s" />
+      <circle class="chart-dot" cx="250" cy="200" r="6" style="animation-delay:1.4s" />
+      <circle class="chart-dot" cx="370" cy="110" r="6" style="animation-delay:1.8s" />
+      <circle class="chart-dot" cx="540" cy="40" r="6" style="animation-delay:2.2s" />
+    </svg>
+
+    <div class="container hero-inner">
+      <span class="eyebrow" data-i18n="hero.eyebrow">Business Intelligence Consulting</span>
+      <h1>
+        <span class="line" data-i18n="hero.line1">Transform your data</span>
+        <span class="line accent" data-i18n="hero.line2">into meaningful insights</span>
+        <span class="line" data-i18n="hero.line3">for business decisions</span>
+      </h1>
+      <p data-i18n="hero.sub">We design and build business intelligence solutions that turn raw numbers into clear answers for executives and teams.</p>
+      <div class="hero-actions">
+        <button class="btn btn-primary" id="watchOverviewBtn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+          <span data-i18n="hero.watch">Watch overview</span>
+        </button>
+        <button class="btn btn-light-outline" data-open-form data-service="" >
+          <span data-i18n="hero.contact">Get in touch</span>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======== Insights ======== -->
+  <section class="section" id="insights">
+    <div class="container">
+      <div class="insights-head">
+        <div class="section-head reveal">
+          <span class="eyebrow" data-i18n="insights.eyebrow">Latest updates</span>
+          <h2 data-i18n="insights.title">Insights</h2>
+          <p data-i18n="insights.sub">News, releases and analytics from our team</p>
+        </div>
+        <div class="carousel-controls">
+          <button class="carousel-btn" id="newsPrev" aria-label="Previous">&#8592;</button>
+          <button class="carousel-btn" id="newsNext" aria-label="Next">&#8594;</button>
+        </div>
+      </div>
+
+      <div class="news-track" id="newsTrack">
+        <div class="news-status" data-i18n="common.loading">Loading…</div>
+      </div>
+
+      <div class="insights-footer">
+        <a class="btn btn-outline" href="news.html" data-i18n="insights.viewAll">View all news</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======== Services ======== -->
+  <section class="section alt" id="services">
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="eyebrow" data-i18n="services.eyebrow">What we do</span>
+        <h2 data-i18n="services.title">Services</h2>
+        <p data-i18n="services.sub">End-to-end reporting solutions — from data sources to executive dashboards</p>
+      </div>
+      <div class="services-list" id="servicesGrid"><!-- рендерится из js/services-data.js --></div>
+    </div>
+  </section>
+
+  <!-- ======== Industries ======== -->
+  <section class="section" id="industries">
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="eyebrow" data-i18n="industries.eyebrow">Who we serve</span>
+        <h2 data-i18n="industries.title">Industries</h2>
+        <p data-i18n="industries.sub">We work with companies across sectors and adapt reporting to the specifics of each industry.</p>
+      </div>
+      <div class="industries-grid">
+        <div class="industry-card reveal">
+          <div class="ind-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 21V9l6 4V9l6 4V7l6-3v17"/><path d="M3 21h18"/></svg></div>
+          <h3 data-i18n="industries.i1.title">Manufacturing</h3>
+          <p data-i18n="industries.i1.text">Production efficiency, OEE, quality and cost reporting for plants and holdings.</p>
+        </div>
+        <div class="industry-card reveal">
+          <div class="ind-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M6 7h12l1.5 13h-15z"/><path d="M9 10V6a3 3 0 0 1 6 0v4"/></svg></div>
+          <h3 data-i18n="industries.i2.title">Retail &amp; E-commerce</h3>
+          <p data-i18n="industries.i2.text">Sales funnels, assortment analytics, stock turnover and promotion effectiveness.</p>
+        </div>
+        <div class="industry-card reveal">
+          <div class="ind-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3l9 5H3z"/><path d="M5 8v9M10 8v9M14 8v9M19 8v9"/><path d="M3 20h18"/></svg></div>
+          <h3 data-i18n="industries.i3.title">Financial Services</h3>
+          <p data-i18n="industries.i3.text">Regulatory and management reporting, risk dashboards, portfolio analytics.</p>
+        </div>
+        <div class="industry-card reveal">
+          <div class="ind-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="2.5" y="8.5" width="11" height="8" rx="1"/><path d="M13.5 11h4l3 3v2.5h-7z"/><circle cx="7" cy="18.5" r="1.7"/><circle cx="17" cy="18.5" r="1.7"/></svg></div>
+          <h3 data-i18n="industries.i4.title">Logistics &amp; Distribution</h3>
+          <p data-i18n="industries.i4.text">Supply chain visibility, delivery SLA monitoring and warehouse performance.</p>
+        </div>
+        <div class="industry-card reveal">
+          <div class="ind-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M13 2L5 13h6l-1 9 8-11h-6z"/></svg></div>
+          <h3 data-i18n="industries.i5.title">Energy &amp; Utilities</h3>
+          <p data-i18n="industries.i5.text">Asset performance, consumption analytics and maintenance reporting.</p>
+        </div>
+        <div class="industry-card reveal">
+          <div class="ind-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="4" width="18" height="13" rx="1.5"/><path d="M8 21h8M12 17v4"/></svg></div>
+          <h3 data-i18n="industries.i6.title">Technology &amp; Services</h3>
+          <p data-i18n="industries.i6.text">SaaS metrics, project profitability and resource utilization reporting.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======== Careers ======== -->
+  <section class="section alt" id="careers">
+    <div class="container">
+      <div class="careers-box reveal">
+        <div class="careers-content">
+          <h2 data-i18n="careers.title">Careers</h2>
+          <p class="careers-sub" data-i18n="careers.sub">We are always glad to meet people who love data.</p>
+          <p data-i18n="careers.text">We are a growing team of BI engineers, analysts and consultants. If you want to build reporting solutions that real businesses rely on every day — send us your CV.</p>
+        </div>
+        <button class="btn btn-primary" data-open-form data-service="Careers / CV">
+          <span data-i18n="careers.cta">Send your CV</span>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======== About Us ======== -->
+  <section class="section" id="about">
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="eyebrow" data-i18n="about.eyebrow">Who we are</span>
+        <h2 data-i18n="about.title">About Us</h2>
+        <p data-i18n="about.sub">A team focused on one thing: making data useful.</p>
+      </div>
+      <div class="about-grid">
+        <div class="about-text reveal">
+          <p data-i18n="about.text1">We are a business intelligence consultancy. We help companies collect, organize and visualize their data so that every decision is backed by facts, not guesses.</p>
+          <p data-i18n="about.text2">Our approach is practical: we start with the questions your business needs answered, then build the data pipelines, models and dashboards that answer them — clearly and reliably.</p>
+        </div>
+        <div class="about-stats">
+          <div class="stat-card reveal">
+            <span class="stat-num" data-count="10" data-suffix="+">10+</span>
+            <span class="stat-label" data-i18n="about.stat1.label">years of combined BI expertise</span>
+          </div>
+          <div class="stat-card reveal">
+            <span class="stat-num" data-count="50" data-suffix="+">50+</span>
+            <span class="stat-label" data-i18n="about.stat2.label">delivered dashboards and reports</span>
+          </div>
+          <div class="stat-card reveal">
+            <span class="stat-num" data-count="7" data-suffix="">7</span>
+            <span class="stat-label" data-i18n="about.stat3.label">reporting domains covered</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======== Футер ======== -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-main">
+        <div class="footer-brand">
+          <a class="logo" href="index.html">
+            <span class="logo-mark" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 19V11M12 19V5M19 19v-5"/></svg>
+            </span>
+            ClearMetrics
+          </a>
+          <p data-i18n="footer.tagline">Turning data into decisions.</p>
+        </div>
+        <div class="footer-col">
+          <h4 data-i18n="footer.quickLinks">Quick links</h4>
+          <ul>
+            <li><a href="#insights" data-i18n="nav.insights">Insights</a></li>
+            <li><a href="#services" data-i18n="nav.services">Services</a></li>
+            <li><a href="#industries" data-i18n="nav.industries">Industries</a></li>
+            <li><a href="#careers" data-i18n="nav.careers">Careers</a></li>
+            <li><a href="#about" data-i18n="nav.about">About Us</a></li>
+            <li><a href="news.html" data-i18n="nav.allNews">All news</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4 data-i18n="footer.contacts">Contacts</h4>
+          <ul>
+            <li><a href="#" id="footerEmail">info@example.com</a></li>
+            <li><a href="#" id="footerLinkedin" target="_blank" rel="noopener">LinkedIn</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© <span id="footerYear"></span> ClearMetrics. <span data-i18n="footer.rights">All rights reserved.</span></span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ======== Модальная форма заявки ======== -->
+  <div class="modal-overlay" id="contactModal" role="dialog" aria-modal="true" aria-labelledby="contactModalTitle">
+    <div class="modal">
+      <button class="modal-close" id="contactModalClose" aria-label="Close">&#10005;</button>
+      <h3 id="contactModalTitle" data-i18n="form.title">Tell us about your project</h3>
+      <p class="modal-sub" data-i18n="form.subtitle">Leave your contacts — we will get back to you within one business day.</p>
+      <span class="service-tag" id="formServiceTag" hidden></span>
+
+      <form id="contactForm" novalidate>
+        <div class="form-field">
+          <label for="cfName" data-i18n="form.name">Your name</label>
+          <input type="text" id="cfName" name="name" autocomplete="name" required />
+          <div class="field-error" data-i18n="form.required">Please fill in this field.</div>
+        </div>
+        <div class="form-field">
+          <label for="cfEmail" data-i18n="form.email">Email</label>
+          <input type="email" id="cfEmail" name="email" autocomplete="email" required />
+          <div class="field-error" data-i18n="form.invalidEmail">Please enter a valid email address.</div>
+        </div>
+        <div class="form-field">
+          <label for="cfPhone" data-i18n="form.phone">Phone number</label>
+          <input type="tel" id="cfPhone" name="phone" autocomplete="tel" required />
+          <div class="field-error" data-i18n="form.required">Please fill in this field.</div>
+        </div>
+        <div class="form-field">
+          <label for="cfMessage" data-i18n="form.message">Message</label>
+          <textarea id="cfMessage" name="message" data-i18n-placeholder="form.messagePh"></textarea>
+        </div>
+
+        <!-- Honeypot: люди это поле не видят и не заполняют, боты — заполняют -->
+        <div class="hp-field" aria-hidden="true">
+          <label>Company website</label>
+          <input type="text" name="website" tabindex="-1" autocomplete="off" />
+        </div>
+
+        <div class="captcha-wrap">
+          <div id="recaptchaContainer"></div>
+          <span class="captcha-note" id="captchaNote" hidden data-i18n="form.demoNote"></span>
+        </div>
+
+        <button type="submit" class="btn btn-primary" id="contactSubmitBtn" style="width:100%">
+          <span data-i18n="form.submit">Send request</span>
+        </button>
+        <div class="form-status" id="formStatus"></div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ======== Видео-модал (Watch overview) ======== -->
+  <div class="modal-overlay" id="videoModal" role="dialog" aria-modal="true">
+    <div class="modal video-modal-box">
+      <button class="modal-close" id="videoModalClose" aria-label="Close">&#10005;</button>
+      <iframe class="video-frame" id="videoFrame" src="about:blank" allow="autoplay; encrypted-media" allowfullscreen title="Overview video"></iframe>
+    </div>
+  </div>
+
+  <script src="js/config.js"></script>
+  <script src="js/i18n.js"></script>
+  <script src="js/services-data.js"></script>
+  <script src="js/news-api.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/ui.js"></script>
+</body>
+</html>
