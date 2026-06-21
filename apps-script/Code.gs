@@ -108,9 +108,17 @@ function handleLead(data) {
     return jsonResponse({ ok: true });
   }
 
-  // 2. Проверка обязательных полей
+  // 2. Проверка обязательных полей и формата (дублирует клиентскую,
+  //    т.к. клиентскую валидацию легко обойти)
   if (!data.name || !data.email || !data.phone) {
     return jsonResponse({ ok: false, error: 'missing fields' });
+  }
+  var phoneDigits = String(data.phone).replace(/\D/g, '');
+  if (phoneDigits.length < 7 || phoneDigits.length > 15) {
+    return jsonResponse({ ok: false, error: 'invalid phone' });
+  }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(String(data.email).trim())) {
+    return jsonResponse({ ok: false, error: 'invalid email' });
   }
 
   // 3. Лимит частоты: не больше N заявок в час с одного email и суммарно

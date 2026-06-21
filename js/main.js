@@ -290,29 +290,23 @@
     startAutoplay();
   }
 
-  /* ---------- Модальная форма ---------- */
-  var modal = document.getElementById("contactModal");
-  var form = document.getElementById("contactForm");
-  var serviceTag = document.getElementById("formServiceTag");
-  var statusEl = document.getElementById("formStatus");
-  var submitBtn = document.getElementById("contactSubmitBtn");
-  var captchaNote = document.getElementById("captchaNote");
-  var currentService = "";
-  var recaptchaWidgetId = null;
-  var recaptchaLoaded = false;
+  /* ---------- Контактные формы (модальная для сервисов + встроенная в hero) ---------- */
 
-  // reCAPTCHA подключается лениво — при первом открытии формы
-  function ensureRecaptcha() {
-    if (!cfg.RECAPTCHA_SITE_KEY) {
-      if (captchaNote && !cfg.APPS_SCRIPT_URL) captchaNote.hidden = false;
-      return;
-    }
-    if (recaptchaLoaded) return;
-    recaptchaLoaded = true;
+  // Один загрузчик reCAPTCHA на несколько виджетов (модал + hero)
+  var recaptchaReady = false;
+  var recaptchaQueue = [];
+  var recaptchaScriptAdded = false;
+
+  function whenRecaptchaReady(cb) {
+    if (!cfg.RECAPTCHA_SITE_KEY) return;
+    if (recaptchaReady) { cb(); return; }
+    recaptchaQueue.push(cb);
+    if (recaptchaScriptAdded) return;
+    recaptchaScriptAdded = true;
     window.__onRecaptchaLoad = function () {
-      recaptchaWidgetId = grecaptcha.render("recaptchaContainer", {
-        sitekey: cfg.RECAPTCHA_SITE_KEY,
-      });
+      recaptchaReady = true;
+      recaptchaQueue.forEach(function (fn) { fn(); });
+      recaptchaQueue = [];
     };
     var s = document.createElement("script");
     s.src = "https://www.google.com/recaptcha/api.js?onload=__onRecaptchaLoad&render=explicit&hl=" + (window.currentLang || "en");
@@ -320,23 +314,223 @@
     document.head.appendChild(s);
   }
 
+  var EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+
+  function setFieldInvalid(input, invalid) {
+    var field = input.closest(".form-field");
+    field.classList.toggle("invalid", invalid);
+    input.setAttribute("aria-invalid", invalid ? "true" : "false");
+    var err = field.querySelector(".field-error");
+    if (err) {
+      if (!err.id) err.id = (input.id || input.name) + "-err";
+      if (invalid) input.setAttribute("aria-describedby", err.id);
+      else input.removeAttribute("aria-describedby");
+    }
+  }
+
+  // Проверка одного поля. Телефон — мягко: 7–15 цифр в любом формате
+  // (+, пробелы, скобки, дефисы допустимы), чтобы не отсекать валидные
+  // международные номера.
+  function fieldIsBad(input) {
+    var v = input.value.trim();
+    var nm = input.getAttribute("name");
+    if (nm === "email") return !EMAIL_RE.test(v);
+    if (nm === "phone") {
+      var digits = v.replace(/\D/g, "");
+      return digits.length < 7 || digits.length > 15;
+    }
+    return !v; // name и прочие обязательные — просто непустые
+  }
+
+  function validateField(input) {
+    var bad = fieldIsBad(input);
+    setFieldInvalid(input, bad);
+    return !bad;
+  }
+
+  var REQUIRED_FIELDS = ["name", "email", "phone"];
+
+  function validateForm(formEl) {
+    var ok = true;
+    REQUIRED_FIELDS.forEach(function (nm) {
+      var inp = formEl.querySelector('[name="' + nm + '"]');
+      if (inp && !validateField(inp)) ok = false;
+    });
+    return ok;
+  }
+
+  // Универсальная обвязка формы заявки.
+  // opts: { form, statusEl, submitBtn, captchaContainerId, captchaNoteEl, getService, onSuccess }
+  function setupContactForm(opts) {
+    var widgetId = null;
+    var captchaRequested = false;
+
+    function ensureCaptcha() {
+      if (!cfg.RECAPTCHA_SITE_KEY) {
+        if (opts.captchaNoteEl && !cfg.APPS_SCRIPT_URL) opts.captchaNoteEl.hidden = false;
+        return;
+      }
+      if (captchaRequested) return;
+      captchaRequested = true;
+      whenRecaptchaReady(function () {
+        widgetId = grecaptcha.render(opts.captchaContainerId, { sitekey: cfg.RECAPTCHA_SITE_KEY });
+      });
+    }
+
+    // Валидация на лету: проверяем поле при потере фокуса, ошибку убираем по мере ввода
+    REQUIRED_FIELDS.forEach(function (nm) {
+      var inp = opts.form.querySelector('[name="' + nm + '"]');
+      if (!inp) return;
+      inp.addEventListener("blur", function () { validateField(inp); });
+      inp.addEventListener("input", function () {
+        if (inp.closest(".form-field").classList.contains("invalid")) validateField(inp);
+      });
+    });
+
+    // Счётчик символов в сообщении
+    var msg = opts.form.querySelector('[name="message"]');
+    var counter = opts.form.querySelector(".char-counter");
+    if (msg && counter) {
+      var max = parseInt(msg.getAttribute("maxlength"), 10) || 5000;
+      var ccNow = counter.querySelector(".cc-now");
+      var updateCounter = function () {
+        if (ccNow) ccNow.textContent = msg.value.length;
+        counter.classList.toggle("limit", msg.value.length >= max);
+      };
+      msg.addEventListener("input", updateCounter);
+      updateCounter();
+    }
+
+    function showSuccess() {
+      if (opts.stageEl && opts.successEl) {
+        opts.stageEl.hidden = true;
+        opts.successEl.hidden = false;
+      }
+    }
+
+    // Сброс формы к исходному виду (для повторного открытия модалки)
+    function resetForm() {
+      opts.form.reset();
+      opts.form.querySelectorAll(".form-field.invalid").forEach(function (f) {
+        f.classList.remove("invalid");
+      });
+      if (msg && counter) msg.dispatchEvent(new Event("input"));
+      opts.statusEl.className = "form-status";
+      opts.statusEl.textContent = "";
+      if (opts.stageEl && opts.successEl) {
+        opts.stageEl.hidden = false;
+        opts.successEl.hidden = true;
+      }
+    }
+
+    opts.form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      var statusEl = opts.statusEl;
+      var submitBtn = opts.submitBtn;
+      if (!validateForm(opts.form)) return;
+
+      statusEl.className = "form-status";
+      statusEl.textContent = "";
+
+      var captchaToken = "";
+      if (widgetId !== null && window.grecaptcha) {
+        captchaToken = grecaptcha.getResponse(widgetId);
+        if (!captchaToken) {
+          statusEl.className = "form-status error";
+          statusEl.textContent = window.t("form.captchaRequired");
+          return;
+        }
+      }
+
+      var payload = {
+        action: "lead",
+        name: opts.form.querySelector('[name="name"]').value.trim(),
+        email: opts.form.querySelector('[name="email"]').value.trim(),
+        phone: opts.form.querySelector('[name="phone"]').value.trim(),
+        message: (opts.form.querySelector('[name="message"]').value || "").trim(),
+        service: opts.getService ? opts.getService() : "",
+        lang: window.currentLang || "en",
+        website: opts.form.querySelector('[name="website"]').value, // honeypot
+        captcha: captchaToken,
+      };
+
+      if (!cfg.APPS_SCRIPT_URL) {
+        statusEl.className = "form-status error";
+        statusEl.textContent = window.t("form.demoNote");
+        return;
+      }
+
+      submitBtn.disabled = true;
+      submitBtn.firstElementChild.textContent = window.t("form.sending");
+
+      // text/plain — чтобы запрос к Apps Script прошёл без CORS preflight
+      fetch(cfg.APPS_SCRIPT_URL, {
+        method: "POST",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify(payload),
+      })
+        .then(function (r) { return r.json(); })
+        .then(function (data) {
+          if (!data.ok) throw new Error(data.error || "server error");
+          opts.form.reset();
+          if (msg && counter) msg.dispatchEvent(new Event("input"));
+          if (widgetId !== null && window.grecaptcha) grecaptcha.reset(widgetId);
+          showSuccess();
+          if (opts.onSuccess) opts.onSuccess();
+        })
+        .catch(function (err) {
+          statusEl.className = "form-status error";
+          statusEl.textContent = window.t(
+            err && err.message === "rate limited" ? "form.tooMany" : "form.error"
+          );
+        })
+        .finally(function () {
+          submitBtn.disabled = false;
+          submitBtn.firstElementChild.textContent = window.t("form.submit");
+        });
+    });
+
+    return { ensureCaptcha: ensureCaptcha, reset: resetForm };
+  }
+
+  /* Модальная форма — для кнопок "I am interested" и "Send your CV" */
+  var modal = document.getElementById("contactModal");
+  var serviceTag = document.getElementById("formServiceTag");
+  var currentService = "";
+  var lastTrigger = null;
+
+  var modalForm = setupContactForm({
+    form: document.getElementById("contactForm"),
+    statusEl: document.getElementById("formStatus"),
+    submitBtn: document.getElementById("contactSubmitBtn"),
+    captchaContainerId: "recaptchaContainer",
+    captchaNoteEl: document.getElementById("captchaNote"),
+    stageEl: document.getElementById("modalStage"),
+    successEl: document.getElementById("modalSuccess"),
+    getService: function () { return currentService; },
+    onSuccess: function () { setTimeout(closeForm, 3500); },
+  });
+
   function openForm(service) {
     currentService = service || "";
+    lastTrigger = document.activeElement; // куда вернуть фокус после закрытия
+    modalForm.reset();
     if (serviceTag) {
       serviceTag.hidden = !currentService;
       serviceTag.textContent = currentService ? window.t("form.service") + ": " + currentService : "";
     }
-    if (statusEl) { statusEl.className = "form-status"; statusEl.textContent = ""; }
-    ensureRecaptcha();
+    modalForm.ensureCaptcha();
     modal.classList.add("open");
     document.body.style.overflow = "hidden";
-    var first = document.getElementById("cfName");
-    if (first) setTimeout(function () { first.focus(); }, 60);
+    setTimeout(function () { var f = document.getElementById("cfName"); if (f) f.focus(); }, 60);
   }
 
   function closeForm() {
+    if (!modal.classList.contains("open")) return;
     modal.classList.remove("open");
     document.body.style.overflow = "";
+    if (lastTrigger && typeof lastTrigger.focus === "function") lastTrigger.focus();
+    lastTrigger = null;
   }
 
   document.addEventListener("click", function (e) {
@@ -347,97 +541,36 @@
     }
   });
   document.getElementById("contactModalClose").addEventListener("click", closeForm);
-  modal.addEventListener("click", function (e) { if (e.target === modal) closeForm(); });
+
+  // Закрытие по клику на фон — только если нажатие НАЧАЛОСЬ на фоне.
+  // Иначе при выделении текста в поле и отпускании мыши вне формы она закрывалась.
+  var modalDownOnBackdrop = false;
+  modal.addEventListener("mousedown", function (e) { modalDownOnBackdrop = (e.target === modal); });
+  modal.addEventListener("mouseup", function (e) {
+    if (modalDownOnBackdrop && e.target === modal) closeForm();
+    modalDownOnBackdrop = false;
+  });
+
   document.addEventListener("keydown", function (e) {
     if (e.key === "Escape") { closeForm(); closeVideo(); }
   });
 
-  function setFieldInvalid(input, invalid) {
-    input.closest(".form-field").classList.toggle("invalid", invalid);
-  }
-
-  function validateForm() {
-    var ok = true;
-    var name = document.getElementById("cfName");
-    var email = document.getElementById("cfEmail");
-    var phone = document.getElementById("cfPhone");
-
-    [name, phone].forEach(function (inp) {
-      var bad = !inp.value.trim();
-      setFieldInvalid(inp, bad);
-      if (bad) ok = false;
+  /* Встроенная форма в hero — видна сразу, поэтому капчу грузим на загрузке */
+  var heroFormEl = document.getElementById("heroForm");
+  if (heroFormEl) {
+    var heroForm = setupContactForm({
+      form: heroFormEl,
+      statusEl: document.getElementById("heroStatus"),
+      submitBtn: document.getElementById("heroSubmitBtn"),
+      captchaContainerId: "heroRecaptcha",
+      captchaNoteEl: document.getElementById("heroCaptchaNote"),
+      stageEl: document.getElementById("heroStage"),
+      successEl: document.getElementById("heroSuccess"),
+      getService: function () { return ""; },
+      onSuccess: function () {},
     });
-    var emailBad = !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email.value.trim());
-    setFieldInvalid(email, emailBad);
-    if (emailBad) ok = false;
-    return ok;
+    heroForm.ensureCaptcha();
   }
-
-  form.addEventListener("submit", function (e) {
-    e.preventDefault();
-    if (!validateForm()) return;
-
-    statusEl.className = "form-status";
-    statusEl.textContent = "";
-
-    var captchaToken = "";
-    if (recaptchaWidgetId !== null && window.grecaptcha) {
-      captchaToken = grecaptcha.getResponse(recaptchaWidgetId);
-      if (!captchaToken) {
-        statusEl.className = "form-status error";
-        statusEl.textContent = window.t("form.captchaRequired");
-        return;
-      }
-    }
-
-    var payload = {
-      action: "lead",
-      name: document.getElementById("cfName").value.trim(),
-      email: document.getElementById("cfEmail").value.trim(),
-      phone: document.getElementById("cfPhone").value.trim(),
-      message: document.getElementById("cfMessage").value.trim(),
-      service: currentService,
-      lang: window.currentLang || "en",
-      website: form.querySelector('[name="website"]').value, // honeypot
-      captcha: captchaToken,
-    };
-
-    if (!cfg.APPS_SCRIPT_URL) {
-      // Бэкенд не настроен — показываем подсказку (режим разработки)
-      statusEl.className = "form-status error";
-      statusEl.textContent = window.t("form.demoNote");
-      return;
-    }
-
-    submitBtn.disabled = true;
-    submitBtn.firstElementChild.textContent = window.t("form.sending");
-
-    // text/plain — чтобы запрос к Apps Script прошёл без CORS preflight
-    fetch(cfg.APPS_SCRIPT_URL, {
-      method: "POST",
-      headers: { "Content-Type": "text/plain;charset=utf-8" },
-      body: JSON.stringify(payload),
-    })
-      .then(function (r) { return r.json(); })
-      .then(function (data) {
-        if (!data.ok) throw new Error(data.error || "server error");
-        statusEl.className = "form-status success";
-        statusEl.textContent = window.t("form.success");
-        form.reset();
-        if (recaptchaWidgetId !== null && window.grecaptcha) grecaptcha.reset(recaptchaWidgetId);
-        setTimeout(closeForm, 2500);
-      })
-      .catch(function (err) {
-        statusEl.className = "form-status error";
-        statusEl.textContent = window.t(
-          err && err.message === "rate limited" ? "form.tooMany" : "form.error"
-        );
-      })
-      .finally(function () {
-        submitBtn.disabled = false;
-        submitBtn.firstElementChild.textContent = window.t("form.submit");
-      });
-  });
 
   /* ---------- Видео "Watch overview" ---------- */
   var videoModal = document.getElementById("videoModal");
@@ -465,7 +598,12 @@
   }
   if (videoModal) {
     document.getElementById("videoModalClose").addEventListener("click", closeVideo);
-    videoModal.addEventListener("click", function (e) { if (e.target === videoModal) closeVideo(); });
+    var videoDownOnBackdrop = false;
+    videoModal.addEventListener("mousedown", function (e) { videoDownOnBackdrop = (e.target === videoModal); });
+    videoModal.addEventListener("mouseup", function (e) {
+      if (videoDownOnBackdrop && e.target === videoModal) closeVideo();
+      videoDownOnBackdrop = false;
+    });
   }
 
   /* ---------- Перерисовка при смене языка ---------- */
