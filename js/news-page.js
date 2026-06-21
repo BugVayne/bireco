@@ -54,6 +54,10 @@
       });
   }
 
+  // Статическая страница одной новости (сгенерирована build.py):
+  // список поверх статьи не перерисовываем
+  if (document.body.hasAttribute("data-static-article")) return;
+
   document.addEventListener("langchange", load);
   load();
 })();

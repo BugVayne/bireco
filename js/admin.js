@@ -5,7 +5,7 @@
   "use strict";
 
   var cfg = window.SITE_CONFIG || {};
-  var TOKEN_KEY = "admin_token";
+  var SESSION_KEY = "admin_session";
 
   var loginCard = document.getElementById("loginCard");
   var panel = document.getElementById("panel");
@@ -25,14 +25,13 @@
     return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
   }
 
-  function getToken() { return sessionStorage.getItem(TOKEN_KEY) || ""; }
+  function getSession() { return sessionStorage.getItem(SESSION_KEY) || ""; }
 
-  function api(payload) {
+  function apiRaw(payload) {
     if (!cfg.APPS_SCRIPT_URL) {
       return Promise.reject(new Error("В js/config.js не задан APPS_SCRIPT_URL — см. README.md"));
     }
     payload.action = "admin";
-    payload.token = getToken();
     return fetch(cfg.APPS_SCRIPT_URL, {
       method: "POST",
       headers: { "Content-Type": "text/plain;charset=utf-8" },
@@ -43,6 +42,22 @@
         if (!data.ok) throw new Error(data.error || "Ошибка сервера");
         return data;
       });
+  }
+
+  // Запрос с сессией; при истёкшей сессии возвращает на экран входа
+  function api(payload) {
+    payload.session = getSession();
+    return apiRaw(payload).catch(function (err) {
+      if (err.message === "session expired" || err.message === "unauthorized") {
+        sessionStorage.removeItem(SESSION_KEY);
+        panel.classList.add("hidden");
+        logoutBtn.classList.add("hidden");
+        loginCard.classList.remove("hidden");
+        loginStatus.className = "admin-status error";
+        loginStatus.textContent = "Сессия истекла — войдите снова.";
+      }
+      throw err;
+    });
   }
 
   /* ---------- Вход ---------- */
@@ -56,17 +71,17 @@
   loginBtn.addEventListener("click", function () {
     var token = document.getElementById("adminToken").value.trim();
     if (!token) return;
-    sessionStorage.setItem(TOKEN_KEY, token);
     loginStatus.className = "admin-status";
     loginStatus.textContent = "Проверка…";
     loginBtn.disabled = true;
-    api({ op: "list" })
-      .then(function () {
+    apiRaw({ op: "login", token: token })
+      .then(function (data) {
+        sessionStorage.setItem(SESSION_KEY, data.session);
+        document.getElementById("adminToken").value = "";
         loginStatus.textContent = "";
         showPanel();
       })
       .catch(function (err) {
-        sessionStorage.removeItem(TOKEN_KEY);
         loginStatus.className = "admin-status error";
         loginStatus.textContent = err.message === "unauthorized" ? "Неверный пароль." : err.message;
       })
@@ -78,7 +93,7 @@
   });
 
   logoutBtn.addEventListener("click", function () {
-    sessionStorage.removeItem(TOKEN_KEY);
+    sessionStorage.removeItem(SESSION_KEY);
     location.reload();
   });
 
@@ -193,14 +208,14 @@
       .finally(function () { saveBtn.disabled = false; });
   });
 
-  /* ---------- Автовход, если токен уже в сессии ---------- */
-  if (getToken()) {
+  /* ---------- Автовход, если сессия ещё жива ---------- */
+  if (getSession()) {
     api({ op: "list" })
       .then(function (data) {
         newsCache = data.items || [];
         showPanel();
         renderList();
       })
-      .catch(function () { sessionStorage.removeItem(TOKEN_KEY); });
+      .catch(function () {});
   }
 })();

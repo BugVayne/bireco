@@ -5,6 +5,11 @@
 
 window.I18N = {
   en: {
+    "meta.title": "ClearMetrics — Business Intelligence & Reporting",
+    "meta.description": "We transform your data into meaningful insights for business decisions. Management, sales, marketing, production, supply chain, IT and risk reporting.",
+    "meta.newsTitle": "Insights & News — ClearMetrics",
+    "meta.newsDescription": "All news, releases and analytics from the ClearMetrics team.",
+
     "nav.insights": "Insights",
     "nav.services": "Services",
     "nav.industries": "Industries",
@@ -85,6 +90,7 @@ window.I18N = {
     "form.sending": "Sending…",
     "form.success": "Thank you! Your request has been sent. We will contact you soon.",
     "form.error": "Something went wrong. Please try again or email us directly.",
+    "form.tooMany": "Too many requests from this email. Please try again in an hour.",
     "form.captchaRequired": "Please confirm you are not a robot.",
     "form.required": "Please fill in this field.",
     "form.invalidEmail": "Please enter a valid email address.",
@@ -99,6 +105,11 @@ window.I18N = {
   },
 
   ru: {
+    "meta.title": "ClearMetrics — Business Intelligence и отчётность",
+    "meta.description": "Превращаем ваши данные в осмысленные инсайты для бизнес-решений. Управленческая отчётность, продажи, маркетинг, производство, цепочки поставок, ИТ и риски.",
+    "meta.newsTitle": "Новости и аналитика — ClearMetrics",
+    "meta.newsDescription": "Все новости, релизы и аналитика от команды ClearMetrics.",
+
     "nav.insights": "Новости",
     "nav.services": "Сервисы",
     "nav.industries": "Отрасли",
@@ -179,6 +190,7 @@ window.I18N = {
     "form.sending": "Отправка…",
     "form.success": "Спасибо! Ваша заявка отправлена. Мы скоро свяжемся с вами.",
     "form.error": "Что-то пошло не так. Попробуйте ещё раз или напишите нам напрямую.",
+    "form.tooMany": "Слишком много заявок с этого email. Попробуйте через час.",
     "form.captchaRequired": "Пожалуйста, подтвердите, что вы не робот.",
     "form.required": "Пожалуйста, заполните это поле.",
     "form.invalidEmail": "Пожалуйста, введите корректный email.",
@@ -199,6 +211,10 @@ window.I18N = {
   function getLang() {
     var saved = localStorage.getItem(STORAGE_KEY);
     if (saved === "en" || saved === "ru") return saved;
+    // На сгенерированных страницах (/, /ru/) язык страницы важнее языка
+    // браузера — иначе поисковик увидит /ru/ на английском
+    var pre = document.documentElement.getAttribute("data-prerender-lang");
+    if (pre === "en" || pre === "ru") return pre;
     return (navigator.language || "en").toLowerCase().indexOf("ru") === 0 ? "ru" : "en";
   }
 
@@ -208,9 +224,9 @@ window.I18N = {
     return dict[key] != null ? dict[key] : (window.I18N.en[key] != null ? window.I18N.en[key] : key);
   }
 
-  function applyLang(lang) {
+  function applyLang(lang, persist) {
     window.currentLang = lang;
-    localStorage.setItem(STORAGE_KEY, lang);
+    if (persist) localStorage.setItem(STORAGE_KEY, lang);
     document.documentElement.setAttribute("lang", lang);
 
     document.querySelectorAll("[data-i18n]").forEach(function (el) {
@@ -235,7 +251,7 @@ window.I18N = {
   document.addEventListener("DOMContentLoaded", function () {
     document.querySelectorAll(".lang-switch button").forEach(function (btn) {
       btn.addEventListener("click", function () {
-        applyLang(btn.getAttribute("data-lang"));
+        applyLang(btn.getAttribute("data-lang"), true);
       });
     });
     applyLang(getLang());

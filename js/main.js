@@ -427,9 +427,11 @@
         if (recaptchaWidgetId !== null && window.grecaptcha) grecaptcha.reset(recaptchaWidgetId);
         setTimeout(closeForm, 2500);
       })
-      .catch(function () {
+      .catch(function (err) {
         statusEl.className = "form-status error";
-        statusEl.textContent = window.t("form.error");
+        statusEl.textContent = window.t(
+          err && err.message === "rate limited" ? "form.tooMany" : "form.error"
+        );
       })
       .finally(function () {
         submitBtn.disabled = false;

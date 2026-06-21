@@ -16,7 +16,17 @@
  *  RECAPTCHA_SECRET  — секретный ключ reCAPTCHA v2 (необязательно,
  *                      без него проверка капчи пропускается)
  *  NOTIFY_EMAIL      — email для уведомлений о новых заявках (необязательно)
+ *
+ * Защита:
+ *  - Админка: после входа выдаётся сессия на 2 часа (продлевается при
+ *    активности); пароль не гоняется с каждым запросом.
+ *  - Форма: не больше 5 заявок в час с одного email и не больше 50 в час
+ *    всего (на случай спама с разными адресами) — поверх reCAPTCHA и honeypot.
  */
+
+var SESSION_TTL_SEC = 7200;     // сессия админки: 2 часа
+var LEAD_LIMIT_PER_EMAIL = 5;   // заявок в час с одного email
+var LEAD_LIMIT_TOTAL = 50;      // заявок в час со всех адресов суммарно
 
 var NEWS_SHEET = 'News';
 var LEADS_SHEET = 'Leads';
@@ -103,7 +113,16 @@ function handleLead(data) {
     return jsonResponse({ ok: false, error: 'missing fields' });
   }
 
-  // 3. Проверка reCAPTCHA (если настроен секретный ключ)
+  // 3. Лимит частоты: не больше N заявок в час с одного email и суммарно
+  var cache = CacheService.getScriptCache();
+  var emailKey = 'lead:' + String(data.email).trim().toLowerCase();
+  var emailCount = Number(cache.get(emailKey) || 0);
+  var totalCount = Number(cache.get('lead:total') || 0);
+  if (emailCount >= LEAD_LIMIT_PER_EMAIL || totalCount >= LEAD_LIMIT_TOTAL) {
+    return jsonResponse({ ok: false, error: 'rate limited' });
+  }
+
+  // 4. Проверка reCAPTCHA (если настроен секретный ключ)
   var secret = PropertiesService.getScriptProperties().getProperty('RECAPTCHA_SECRET');
   if (secret) {
     if (!data.captcha) return jsonResponse({ ok: false, error: 'captcha required' });
@@ -116,19 +135,24 @@ function handleLead(data) {
     if (!verdict.success) return jsonResponse({ ok: false, error: 'captcha failed' });
   }
 
-  // 4. Сохранение в таблицу
-  var sheet = getSheet(LEADS_SHEET, LEADS_HEADERS);
-  sheet.appendRow([
-    new Date(),
-    String(data.name).slice(0, 200),
-    String(data.email).slice(0, 200),
-    String(data.phone).slice(0, 50),
-    String(data.message || '').slice(0, 5000),
-    String(data.service || '').slice(0, 200),
-    String(data.lang || ''),
-  ]);
+  cache.put(emailKey, String(emailCount + 1), 3600);
+  cache.put('lead:total', String(totalCount + 1), 3600);
 
-  // 5. Уведомление на почту (если настроено)
+  // 5. Сохранение в таблицу
+  var sheet = getSheet(LEADS_SHEET, LEADS_HEADERS);
+  withLock(function () {
+    sheet.appendRow([
+      new Date(),
+      String(data.name).slice(0, 200),
+      String(data.email).slice(0, 200),
+      String(data.phone).slice(0, 50),
+      String(data.message || '').slice(0, 5000),
+      String(data.service || '').slice(0, 200),
+      String(data.lang || ''),
+    ]);
+  });
+
+  // 6. Уведомление на почту (если настроено)
   var notify = PropertiesService.getScriptProperties().getProperty('NOTIFY_EMAIL');
   if (notify) {
     try {
@@ -146,13 +170,41 @@ function handleLead(data) {
   return jsonResponse({ ok: true });
 }
 
+/* ---------------- Блокировка одновременных записей ---------------- */
+
+function withLock(fn) {
+  var lock = LockService.getScriptLock();
+  lock.waitLock(10000);
+  try {
+    return fn();
+  } finally {
+    lock.releaseLock();
+  }
+}
+
 /* ---------------- Админка новостей ---------------- */
 
 function handleAdmin(data) {
-  var adminToken = PropertiesService.getScriptProperties().getProperty('ADMIN_TOKEN');
-  if (!adminToken || data.token !== adminToken) {
-    return jsonResponse({ ok: false, error: 'unauthorized' });
+  var cache = CacheService.getScriptCache();
+
+  // Вход: проверяем пароль и выдаём сессию с ограниченным сроком жизни
+  if (data.op === 'login') {
+    var adminToken = PropertiesService.getScriptProperties().getProperty('ADMIN_TOKEN');
+    if (!adminToken || data.token !== adminToken) {
+      return jsonResponse({ ok: false, error: 'unauthorized' });
+    }
+    var sid = Utilities.getUuid();
+    cache.put('sess:' + sid, '1', SESSION_TTL_SEC);
+    return jsonResponse({ ok: true, session: sid, ttl: SESSION_TTL_SEC });
   }
+
+  // Все остальные операции — только с живой сессией.
+  // Активность продлевает сессию ещё на SESSION_TTL_SEC.
+  var sid = String(data.session || '');
+  if (!sid || !cache.get('sess:' + sid)) {
+    return jsonResponse({ ok: false, error: 'session expired' });
+  }
+  cache.put('sess:' + sid, '1', SESSION_TTL_SEC);
 
   var sheet = getSheet(NEWS_SHEET, NEWS_HEADERS);
 
@@ -163,37 +215,43 @@ function handleAdmin(data) {
   if (data.op === 'add') {
     var item = data.item || {};
     var id = 'n' + new Date().getTime();
-    sheet.appendRow([
-      id,
-      item.date || Utilities.formatDate(new Date(), Session.getScriptTimeZone(), 'yyyy-MM-dd'),
-      item.title_en || '', item.title_ru || '',
-      item.summary_en || '', item.summary_ru || '',
-      item.body_en || '', item.body_ru || '',
-      item.image || '',
-    ]);
+    withLock(function () {
+      sheet.appendRow([
+        id,
+        item.date || Utilities.formatDate(new Date(), Session.getScriptTimeZone(), 'yyyy-MM-dd'),
+        item.title_en || '', item.title_ru || '',
+        item.summary_en || '', item.summary_ru || '',
+        item.body_en || '', item.body_ru || '',
+        item.image || '',
+      ]);
+    });
     return jsonResponse({ ok: true, id: id });
   }
 
   if (data.op === 'update') {
     var item = data.item || {};
-    var rowIndex = findNewsRow(sheet, item.id);
-    if (rowIndex === -1) return jsonResponse({ ok: false, error: 'not found' });
-    sheet.getRange(rowIndex, 1, 1, NEWS_HEADERS.length).setValues([[
-      item.id,
-      item.date || '',
-      item.title_en || '', item.title_ru || '',
-      item.summary_en || '', item.summary_ru || '',
-      item.body_en || '', item.body_ru || '',
-      item.image || '',
-    ]]);
-    return jsonResponse({ ok: true });
+    return withLock(function () {
+      var rowIndex = findNewsRow(sheet, item.id);
+      if (rowIndex === -1) return jsonResponse({ ok: false, error: 'not found' });
+      sheet.getRange(rowIndex, 1, 1, NEWS_HEADERS.length).setValues([[
+        item.id,
+        item.date || '',
+        item.title_en || '', item.title_ru || '',
+        item.summary_en || '', item.summary_ru || '',
+        item.body_en || '', item.body_ru || '',
+        item.image || '',
+      ]]);
+      return jsonResponse({ ok: true });
+    });
   }
 
   if (data.op === 'delete') {
-    var rowIndex = findNewsRow(sheet, data.id);
-    if (rowIndex === -1) return jsonResponse({ ok: false, error: 'not found' });
-    sheet.deleteRow(rowIndex);
-    return jsonResponse({ ok: true });
+    return withLock(function () {
+      var rowIndex = findNewsRow(sheet, data.id);
+      if (rowIndex === -1) return jsonResponse({ ok: false, error: 'not found' });
+      sheet.deleteRow(rowIndex);
+      return jsonResponse({ ok: true });
+    });
   }
 
   return jsonResponse({ ok: false, error: 'unknown op' });

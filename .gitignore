@@ -1,5 +1,7 @@
 # Локальные служебные файлы
 .pptx-preview/
 .claude/
+dist/
+__pycache__/
 Thumbs.db
 Desktop.ini
