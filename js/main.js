@@ -328,18 +328,22 @@
     }
   }
 
-  // Проверка одного поля. Телефон — мягко: 7–15 цифр в любом формате
-  // (+, пробелы, скобки, дефисы допустимы), чтобы не отсекать валидные
-  // международные номера.
+  // Разрешённые в телефоне символы: цифры, + ( ) - и пробел
+  var PHONE_DISALLOWED = /[^0-9+()\-\s]/g;
+
+  // Проверка одного поля.
+  // Телефон необязателен: пустой — ок; если заполнен — мягко 7–15 цифр
+  // в любом формате (не отсекаем валидные международные номера).
   function fieldIsBad(input) {
     var v = input.value.trim();
     var nm = input.getAttribute("name");
     if (nm === "email") return !EMAIL_RE.test(v);
     if (nm === "phone") {
+      if (!v) return false;
       var digits = v.replace(/\D/g, "");
       return digits.length < 7 || digits.length > 15;
     }
-    return !v; // name и прочие обязательные — просто непустые
+    return !v; // name — обязательное непустое
   }
 
   function validateField(input) {
@@ -348,11 +352,50 @@
     return !bad;
   }
 
-  var REQUIRED_FIELDS = ["name", "email", "phone"];
+  // Фильтр ввода телефона: оставляет только разрешённые символы —
+  // работает и при наборе, и при вставке из буфера, сохраняя позицию курсора.
+  function attachPhoneFilter(input) {
+    input.addEventListener("input", function () {
+      var before = input.value;
+      var filtered = before.replace(PHONE_DISALLOWED, "");
+      if (filtered === before) return;
+      var caret = input.selectionStart;
+      var removedBeforeCaret = before.slice(0, caret).replace(/[0-9+()\-\s]/g, "").length;
+      input.value = filtered;
+      var pos = caret - removedBeforeCaret;
+      try { input.setSelectionRange(pos, pos); } catch (e) {}
+    });
+  }
+
+  // --- Резюме (CV) ---
+  var CV_MAX_BYTES = 5 * 1024 * 1024;
+  var CV_ALLOWED_EXT = ["pdf", "doc", "docx"];
+
+  function cvFileError(file) {
+    var ext = (file.name.split(".").pop() || "").toLowerCase();
+    if (CV_ALLOWED_EXT.indexOf(ext) === -1) return "form.cvBadType";
+    if (file.size > CV_MAX_BYTES) return "form.cvTooBig";
+    return null;
+  }
+
+  function readFileAsBase64(file) {
+    return new Promise(function (resolve, reject) {
+      var reader = new FileReader();
+      reader.onload = function () {
+        var res = String(reader.result);
+        var comma = res.indexOf(","); // убираем префикс "data:...;base64,"
+        resolve(comma >= 0 ? res.slice(comma + 1) : res);
+      };
+      reader.onerror = function () { reject(reader.error); };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  var VALIDATED_FIELDS = ["name", "email", "phone"];
 
   function validateForm(formEl) {
     var ok = true;
-    REQUIRED_FIELDS.forEach(function (nm) {
+    VALIDATED_FIELDS.forEach(function (nm) {
       var inp = formEl.querySelector('[name="' + nm + '"]');
       if (inp && !validateField(inp)) ok = false;
     });
@@ -377,8 +420,12 @@
       });
     }
 
+    // Телефон: разрешаем вводить/вставлять только цифры и + ( ) - пробел
+    var phoneInput = opts.form.querySelector('[name="phone"]');
+    if (phoneInput) attachPhoneFilter(phoneInput);
+
     // Валидация на лету: проверяем поле при потере фокуса, ошибку убираем по мере ввода
-    REQUIRED_FIELDS.forEach(function (nm) {
+    VALIDATED_FIELDS.forEach(function (nm) {
       var inp = opts.form.querySelector('[name="' + nm + '"]');
       if (!inp) return;
       inp.addEventListener("blur", function () { validateField(inp); });
@@ -401,6 +448,31 @@
       updateCounter();
     }
 
+    // Загрузка резюме (поле есть только на форме карьеры)
+    var fileInput = opts.form.querySelector('input[type="file"]');
+    var cvField = fileInput && fileInput.closest(".cv-field");
+    function setCvError(key) {
+      if (!cvField) return;
+      cvField.querySelector(".cv-error").textContent = key ? window.t(key) : "";
+      cvField.classList.toggle("invalid", !!key);
+    }
+    function resetCvName() {
+      var fn = opts.form.querySelector(".file-name");
+      if (fn) { fn.textContent = window.t("form.cvNoFile"); fn.classList.remove("has-file"); }
+    }
+    if (fileInput) {
+      fileInput.addEventListener("change", function () {
+        setCvError(null);
+        var f = fileInput.files && fileInput.files[0];
+        var fn = opts.form.querySelector(".file-name");
+        if (fn) {
+          fn.textContent = f ? f.name : window.t("form.cvNoFile");
+          fn.classList.toggle("has-file", !!f);
+        }
+        if (f) setCvError(cvFileError(f));
+      });
+    }
+
     function showSuccess() {
       if (opts.stageEl && opts.successEl) {
         opts.stageEl.hidden = true;
@@ -415,6 +487,7 @@
         f.classList.remove("invalid");
       });
       if (msg && counter) msg.dispatchEvent(new Event("input"));
+      if (fileInput) { setCvError(null); resetCvName(); }
       opts.statusEl.className = "form-status";
       opts.statusEl.textContent = "";
       if (opts.stageEl && opts.successEl) {
@@ -423,43 +496,8 @@
       }
     }
 
-    opts.form.addEventListener("submit", function (e) {
-      e.preventDefault();
-      var statusEl = opts.statusEl;
-      var submitBtn = opts.submitBtn;
-      if (!validateForm(opts.form)) return;
-
-      statusEl.className = "form-status";
-      statusEl.textContent = "";
-
-      var captchaToken = "";
-      if (widgetId !== null && window.grecaptcha) {
-        captchaToken = grecaptcha.getResponse(widgetId);
-        if (!captchaToken) {
-          statusEl.className = "form-status error";
-          statusEl.textContent = window.t("form.captchaRequired");
-          return;
-        }
-      }
-
-      var payload = {
-        action: "lead",
-        name: opts.form.querySelector('[name="name"]').value.trim(),
-        email: opts.form.querySelector('[name="email"]').value.trim(),
-        phone: opts.form.querySelector('[name="phone"]').value.trim(),
-        message: (opts.form.querySelector('[name="message"]').value || "").trim(),
-        service: opts.getService ? opts.getService() : "",
-        lang: window.currentLang || "en",
-        website: opts.form.querySelector('[name="website"]').value, // honeypot
-        captcha: captchaToken,
-      };
-
-      if (!cfg.APPS_SCRIPT_URL) {
-        statusEl.className = "form-status error";
-        statusEl.textContent = window.t("form.demoNote");
-        return;
-      }
-
+    // Отправка готового payload в Apps Script
+    function send(payload, statusEl, submitBtn) {
       submitBtn.disabled = true;
       submitBtn.firstElementChild.textContent = window.t("form.sending");
 
@@ -474,6 +512,7 @@
           if (!data.ok) throw new Error(data.error || "server error");
           opts.form.reset();
           if (msg && counter) msg.dispatchEvent(new Event("input"));
+          if (fileInput) resetCvName();
           if (widgetId !== null && window.grecaptcha) grecaptcha.reset(widgetId);
           showSuccess();
           if (opts.onSuccess) opts.onSuccess();
@@ -488,6 +527,74 @@
           submitBtn.disabled = false;
           submitBtn.firstElementChild.textContent = window.t("form.submit");
         });
+    }
+
+    opts.form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      var statusEl = opts.statusEl;
+      var submitBtn = opts.submitBtn;
+      if (!validateForm(opts.form)) return;
+
+      // Проверка файла резюме (если он выбран)
+      var file = fileInput && fileInput.files && fileInput.files[0];
+      if (file) {
+        var ek = cvFileError(file);
+        if (ek) { setCvError(ek); return; }
+      }
+
+      statusEl.className = "form-status";
+      statusEl.textContent = "";
+
+      var captchaToken = "";
+      if (widgetId !== null && window.grecaptcha) {
+        captchaToken = grecaptcha.getResponse(widgetId);
+        if (!captchaToken) {
+          statusEl.className = "form-status error";
+          statusEl.textContent = window.t("form.captchaRequired");
+          return;
+        }
+      }
+
+      var profileEl = opts.form.querySelector('[name="profile"]');
+      var payload = {
+        action: "lead",
+        name: opts.form.querySelector('[name="name"]').value.trim(),
+        email: opts.form.querySelector('[name="email"]').value.trim(),
+        phone: opts.form.querySelector('[name="phone"]').value.trim(),
+        message: (opts.form.querySelector('[name="message"]').value || "").trim(),
+        profile: profileEl ? profileEl.value.trim() : "",
+        service: opts.getService ? opts.getService() : "",
+        lang: window.currentLang || "en",
+        website: opts.form.querySelector('[name="website"]').value, // honeypot
+        captcha: captchaToken,
+      };
+
+      if (!cfg.APPS_SCRIPT_URL) {
+        statusEl.className = "form-status error";
+        statusEl.textContent = window.t("form.demoNote");
+        return;
+      }
+
+      if (file) {
+        // Читаем файл в base64 и отправляем вместе с заявкой
+        submitBtn.disabled = true;
+        submitBtn.firstElementChild.textContent = window.t("form.sending");
+        readFileAsBase64(file)
+          .then(function (b64) {
+            payload.cvName = file.name;
+            payload.cvType = file.type;
+            payload.cvData = b64;
+            send(payload, statusEl, submitBtn);
+          })
+          .catch(function () {
+            submitBtn.disabled = false;
+            submitBtn.firstElementChild.textContent = window.t("form.submit");
+            statusEl.className = "form-status error";
+            statusEl.textContent = window.t("form.error");
+          });
+      } else {
+        send(payload, statusEl, submitBtn);
+      }
     });
 
     return { ensureCaptcha: ensureCaptcha, reset: resetForm };
@@ -511,7 +618,9 @@
     onSuccess: function () { setTimeout(closeForm, 3500); },
   });
 
-  function openForm(service) {
+  var careerFields = document.getElementById("careerFields");
+
+  function openForm(service, showCv) {
     currentService = service || "";
     lastTrigger = document.activeElement; // куда вернуть фокус после закрытия
     modalForm.reset();
@@ -519,6 +628,7 @@
       serviceTag.hidden = !currentService;
       serviceTag.textContent = currentService ? window.t("form.service") + ": " + currentService : "";
     }
+    if (careerFields) careerFields.hidden = !showCv; // поля резюме — только для «Отправить резюме»
     modalForm.ensureCaptcha();
     modal.classList.add("open");
     document.body.style.overflow = "hidden";
@@ -537,7 +647,7 @@
     var opener = e.target.closest("[data-open-form]");
     if (opener) {
       e.preventDefault();
-      openForm(opener.getAttribute("data-service"));
+      openForm(opener.getAttribute("data-service"), opener.hasAttribute("data-cv"));
     }
   });
   document.getElementById("contactModalClose").addEventListener("click", closeForm);

@@ -32,7 +32,11 @@ var NEWS_SHEET = 'News';
 var LEADS_SHEET = 'Leads';
 
 var NEWS_HEADERS = ['id', 'date', 'title_en', 'title_ru', 'summary_en', 'summary_ru', 'body_en', 'body_ru', 'image'];
-var LEADS_HEADERS = ['timestamp', 'name', 'email', 'phone', 'message', 'service', 'lang'];
+var LEADS_HEADERS = ['timestamp', 'name', 'email', 'phone', 'message', 'service', 'lang', 'profile', 'cv'];
+
+var CV_MAX_BYTES = 5 * 1024 * 1024;        // лимит размера резюме
+var CV_ALLOWED_EXT = ['pdf', 'doc', 'docx'];
+var CV_FOLDER_NAME = 'Website CV uploads'; // папка на Drive по умолчанию
 
 /* ---------------- Вспомогательные ---------------- */
 
@@ -109,13 +113,15 @@ function handleLead(data) {
   }
 
   // 2. Проверка обязательных полей и формата (дублирует клиентскую,
-  //    т.к. клиентскую валидацию легко обойти)
-  if (!data.name || !data.email || !data.phone) {
+  //    т.к. клиентскую валидацию легко обойти). Телефон необязателен.
+  if (!data.name || !data.email) {
     return jsonResponse({ ok: false, error: 'missing fields' });
   }
-  var phoneDigits = String(data.phone).replace(/\D/g, '');
-  if (phoneDigits.length < 7 || phoneDigits.length > 15) {
-    return jsonResponse({ ok: false, error: 'invalid phone' });
+  if (data.phone) {
+    var phoneDigits = String(data.phone).replace(/\D/g, '');
+    if (phoneDigits.length < 7 || phoneDigits.length > 15) {
+      return jsonResponse({ ok: false, error: 'invalid phone' });
+    }
   }
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(String(data.email).trim())) {
     return jsonResponse({ ok: false, error: 'invalid email' });
@@ -146,29 +152,46 @@ function handleLead(data) {
   cache.put(emailKey, String(emailCount + 1), 3600);
   cache.put('lead:total', String(totalCount + 1), 3600);
 
-  // 5. Сохранение в таблицу
+  var notify = PropertiesService.getScriptProperties().getProperty('NOTIFY_EMAIL');
+
+  // 5. Резюме: сохраняем файл на Drive, получаем ссылку
+  var profile = String(data.profile || '').slice(0, 500);
+  var cvUrl = '';
+  if (data.cvData) {
+    try {
+      cvUrl = saveCv(data, notify);
+    } catch (err) {
+      return jsonResponse({ ok: false, error: 'cv error' });
+    }
+  }
+
+  // 6. Сохранение в таблицу
   var sheet = getSheet(LEADS_SHEET, LEADS_HEADERS);
   withLock(function () {
     sheet.appendRow([
       new Date(),
       String(data.name).slice(0, 200),
       String(data.email).slice(0, 200),
-      String(data.phone).slice(0, 50),
+      String(data.phone || '').slice(0, 50),
       String(data.message || '').slice(0, 5000),
       String(data.service || '').slice(0, 200),
       String(data.lang || ''),
+      profile,
+      cvUrl,
     ]);
   });
 
-  // 6. Уведомление на почту (если настроено)
-  var notify = PropertiesService.getScriptProperties().getProperty('NOTIFY_EMAIL');
+  // 7. Уведомление на почту (если настроено)
   if (notify) {
     try {
       MailApp.sendEmail(
         notify,
         'Новая заявка с сайта: ' + (data.service || 'общая'),
-        'Имя: ' + data.name + '\nEmail: ' + data.email + '\nТелефон: ' + data.phone +
-        '\nСервис: ' + (data.service || '-') + '\n\nСообщение:\n' + (data.message || '-')
+        'Имя: ' + data.name + '\nEmail: ' + data.email + '\nТелефон: ' + (data.phone || '-') +
+        '\nСервис: ' + (data.service || '-') +
+        (profile ? '\nПрофиль: ' + profile : '') +
+        (cvUrl ? '\nРезюме: ' + cvUrl : '') +
+        '\n\nСообщение:\n' + (data.message || '-')
       );
     } catch (err) {
       // Заявка уже сохранена — ошибку почты не считаем фатальной
@@ -176,6 +199,35 @@ function handleLead(data) {
   }
 
   return jsonResponse({ ok: true });
+}
+
+/* ---------------- Сохранение резюме на Google Drive ---------------- */
+
+function saveCv(data, notifyEmail) {
+  var name = String(data.cvName || 'cv');
+  var ext = (name.split('.').pop() || '').toLowerCase();
+  if (CV_ALLOWED_EXT.indexOf(ext) === -1) throw new Error('bad type');
+
+  var bytes = Utilities.base64Decode(data.cvData);
+  if (bytes.length > CV_MAX_BYTES) throw new Error('too big');
+
+  var safeName = name.replace(/[^\w.\- ]+/g, '_').slice(0, 120);
+  var stamp = Utilities.formatDate(new Date(), Session.getScriptTimeZone(), 'yyyyMMdd-HHmmss');
+  var blob = Utilities.newBlob(bytes, data.cvType || 'application/octet-stream', stamp + '_' + safeName);
+
+  var file = getCvFolder().createFile(blob);
+  // Файл остаётся приватным; при необходимости даём доступ получателю уведомлений
+  if (notifyEmail) {
+    try { file.addViewer(notifyEmail); } catch (e) {}
+  }
+  return file.getUrl();
+}
+
+function getCvFolder() {
+  var id = PropertiesService.getScriptProperties().getProperty('CV_FOLDER_ID');
+  if (id) return DriveApp.getFolderById(id);
+  var it = DriveApp.getFoldersByName(CV_FOLDER_NAME);
+  return it.hasNext() ? it.next() : DriveApp.createFolder(CV_FOLDER_NAME);
 }
 
 /* ---------------- Блокировка одновременных записей ---------------- */

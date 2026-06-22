@@ -98,8 +98,8 @@
               <div class="field-error" data-i18n="form.invalidEmail">Please enter a valid email address.</div>
             </div>
             <div class="form-field">
-              <label for="heroPhone"><span data-i18n="form.phone">Phone number</span><span class="label-req" aria-hidden="true">*</span></label>
-              <input type="tel" id="heroPhone" name="phone" inputmode="tel" autocomplete="tel" required />
+              <label for="heroPhone"><span data-i18n="form.phone">Phone number</span><span class="label-opt" data-i18n="form.optional">(optional)</span></label>
+              <input type="tel" id="heroPhone" name="phone" inputmode="tel" autocomplete="tel" />
               <div class="field-error" data-i18n="form.invalidPhone">Please enter a valid phone number.</div>
             </div>
             <div class="form-field">
@@ -222,7 +222,7 @@
           <p class="careers-sub" data-i18n="careers.sub">We are always glad to meet people who love data.</p>
           <p data-i18n="careers.text">We are a growing team of BI engineers, analysts and consultants. If you want to build reporting solutions that real businesses rely on every day — send us your CV.</p>
         </div>
-        <button class="btn btn-primary" data-open-form data-service="Careers / CV">
+        <button class="btn btn-primary" data-open-form data-service="Careers / CV" data-cv>
           <span data-i18n="careers.cta">Send your CV</span>
         </button>
       </div>
@@ -319,14 +319,33 @@
             <div class="field-error" data-i18n="form.invalidEmail">Please enter a valid email address.</div>
           </div>
           <div class="form-field">
-            <label for="cfPhone"><span data-i18n="form.phone">Phone number</span><span class="label-req" aria-hidden="true">*</span></label>
-            <input type="tel" id="cfPhone" name="phone" inputmode="tel" autocomplete="tel" required />
+            <label for="cfPhone"><span data-i18n="form.phone">Phone number</span><span class="label-opt" data-i18n="form.optional">(optional)</span></label>
+            <input type="tel" id="cfPhone" name="phone" inputmode="tel" autocomplete="tel" />
             <div class="field-error" data-i18n="form.invalidPhone">Please enter a valid phone number.</div>
           </div>
           <div class="form-field">
             <label for="cfMessage"><span data-i18n="form.message">Message</span><span class="label-opt" data-i18n="form.optional">(optional)</span></label>
             <textarea id="cfMessage" name="message" maxlength="5000" data-i18n-placeholder="form.messagePh"></textarea>
             <div class="char-counter" aria-hidden="true"><span class="cc-now">0</span> / 5000</div>
+          </div>
+
+          <!-- Поля для отклика на вакансию: показываются только по кнопке «Отправить резюме» -->
+          <div class="career-fields" id="careerFields" hidden>
+            <div class="form-field">
+              <label for="cfProfile"><span data-i18n="form.profileLink">Profile link</span><span class="label-opt" data-i18n="form.optional">(optional)</span></label>
+              <input type="url" id="cfProfile" name="profile" autocomplete="url" data-i18n-placeholder="form.profileLinkPh" />
+            </div>
+            <div class="form-field cv-field">
+              <label for="cfCv" data-i18n="form.cv">Attach CV</label>
+              <label class="file-drop" for="cfCv">
+                <span class="file-btn" data-i18n="form.cvChoose">Choose file</span>
+                <span class="file-name" id="cfCvName" data-i18n="form.cvNoFile">No file selected</span>
+              </label>
+              <input type="file" id="cfCv" name="cv" hidden
+                     accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document" />
+              <div class="cv-hint" data-i18n="form.cvHint">PDF or Word, up to 5 MB</div>
+              <div class="field-error cv-error"></div>
+            </div>
           </div>
 
           <!-- Honeypot: люди это поле не видят и не заполняют, боты — заполняют -->
