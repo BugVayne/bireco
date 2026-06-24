@@ -339,6 +339,8 @@ a:hover { text-decoration: underline; }
   max-width: 560px;
 }
 .hero-actions { display: flex; gap: 14px; flex-wrap: wrap; }
+/* Кнопка-раскрытие формы видна только на мобильных (см. медиазапрос ниже) */
+.hero-form-toggle { display: none; }
 
 /* ---------- Insights (лента новостей) ---------- */
 .insights-head {
@@ -945,8 +947,26 @@ a:hover { text-decoration: underline; }
   .burger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
   .header-inner { gap: 14px; }
   .hero { padding: 76px 0 72px; }
-  .hero-form-card { padding: 22px 20px 20px; }
-  .hero-form-card #heroRecaptcha { transform: scale(0.92); transform-origin: left top; }
+
+  /* На мобильных форма свёрнута по умолчанию (экономит место в начале страницы)
+     и раскрывается кнопкой "Get in touch" из .hero-actions */
+  .hero-form-toggle { display: inline-flex; }
+  .hero-form-card { display: none; }
+  .hero-form-card.open { display: block; }
+
+  /* Компактная форма, чтобы помещалась в один экран */
+  .hero-form-card { padding: 18px 16px 16px; border-radius: 14px; }
+  .hero-form-card h3 { font-size: 18px; }
+  .hero-form-card .hero-form-sub { margin-bottom: 12px; font-size: 12.5px; }
+  .hero-form-card .form-field { margin-bottom: 9px; }
+  .hero-form-card .form-field label { margin-bottom: 4px; }
+  .hero-form-card .form-field input,
+  .hero-form-card .form-field textarea { padding: 9px 12px; font-size: 14px; border-radius: 9px; }
+  .hero-form-card textarea { min-height: 52px; }
+  .hero-form-card .char-counter { margin-top: 2px; }
+  .hero-form-card .captcha-wrap { margin: 2px 0 8px; min-height: 0; }
+  .hero-form-card #heroRecaptcha { transform: scale(0.85); transform-origin: left top; margin-bottom: -8px; }
+  .hero-form-card .btn-primary { padding: 11px 20px; }
   .news-card { flex-basis: 272px; }
   .industries-grid { grid-template-columns: 1fr; }
   .careers-box { padding: 40px 28px; }

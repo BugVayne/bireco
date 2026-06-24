@@ -74,6 +74,10 @@
         </h1>
         <p data-i18n="hero.sub">We design and build business intelligence solutions that turn raw numbers into clear answers for executives and teams.</p>
         <div class="hero-actions">
+          <!-- Только для мобильных: раскрывает форму заявки, которая по умолчанию свёрнута -->
+          <button class="btn btn-primary hero-form-toggle" id="heroFormToggle" type="button" aria-expanded="false" aria-controls="heroFormCard">
+            <span data-i18n="hero.contact">Get in touch</span>
+          </button>
           <button class="btn btn-light-outline" id="watchOverviewBtn">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
             <span data-i18n="hero.watch">Watch overview</span>
@@ -82,7 +86,7 @@
       </div>
 
       <!-- Встроенная форма заявки (на сервисах та же форма открывается модально) -->
-      <div class="hero-form-card">
+      <div class="hero-form-card" id="heroFormCard" tabindex="-1">
         <div class="form-stage" id="heroStage">
           <h3 data-i18n="form.title">Tell us about your project</h3>
           <p class="hero-form-sub" data-i18n="form.subtitle">Leave your contacts — we will get back to you within one business day.</p>

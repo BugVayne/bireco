@@ -682,6 +682,23 @@
     heroForm.ensureCaptcha();
   }
 
+  /* На мобильных форма в hero свёрнута — раскрываем её кнопкой "Get in touch".
+     После раскрытия кнопку убираем и плавно прокручиваем к форме. */
+  var heroFormToggle = document.getElementById("heroFormToggle");
+  var heroFormCard = document.getElementById("heroFormCard");
+  if (heroFormToggle && heroFormCard) {
+    heroFormToggle.addEventListener("click", function () {
+      heroFormCard.classList.add("open");
+      heroFormToggle.setAttribute("aria-expanded", "true");
+      heroFormToggle.hidden = true;
+      // дать форме отрисоваться, затем прокрутить к ней и перевести фокус
+      requestAnimationFrame(function () {
+        scrollToSection(heroFormCard);
+        try { heroFormCard.focus({ preventScroll: true }); } catch (e) {}
+      });
+    });
+  }
+
   /* ---------- Видео "Watch overview" ---------- */
   var videoModal = document.getElementById("videoModal");
   var videoFrame = document.getElementById("videoFrame");
