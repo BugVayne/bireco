@@ -80,7 +80,8 @@ window.I18N = {
 
     "form.title": "Tell us about your project",
     "form.subtitle": "Leave your contacts — we will get back to you within one business day.",
-    "form.service": "Service",
+    "form.cvTitle": "Join our team",
+    "form.cvSubtitle": "Tell us a bit about yourself and attach your CV — we will get back to you soon.",
     "form.name": "Your name",
     "form.email": "Email",
     "form.phone": "Phone number",
@@ -191,7 +192,8 @@ window.I18N = {
 
     "form.title": "Расскажите о вашем проекте",
     "form.subtitle": "Оставьте контакты — мы ответим в течение одного рабочего дня.",
-    "form.service": "Сервис",
+    "form.cvTitle": "Присоединяйтесь к команде",
+    "form.cvSubtitle": "Расскажите немного о себе и прикрепите резюме — мы скоро свяжемся с вами.",
     "form.name": "Ваше имя",
     "form.email": "Email",
     "form.phone": "Номер телефона",

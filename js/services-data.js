@@ -1,5 +1,7 @@
 // Данные о сервисах компании. Тексты-заготовки — замените на реальные описания.
 // Поле icon — встроенный SVG; tint — оттенок карточки-«фото».
+// Поле full — массив блоков: { h: "заголовок" } или { p: "абзац" } (рендерится
+// в js/main.js и build.py). Допускается и обычная строка (один абзац).
 
 window.SERVICES = [
   {
@@ -12,8 +14,22 @@ window.SERVICES = [
       ru: "Дашборды и KPI-отчётность, которые дают руководству единую достоверную картину бизнеса.",
     },
     full: {
-      en: "We build management reporting systems that consolidate financial and operational data from all your sources into one coherent picture. Monthly close packs, P&L and cash-flow dashboards, plan-vs-actual analysis, drill-down from company level to individual transactions. Reports update automatically, so your team spends time on decisions, not on assembling spreadsheets. We also help define the right KPI tree so that every metric on the dashboard has an owner and a target.",
-      ru: "Мы строим системы управленческой отчётности, которые консолидируют финансовые и операционные данные из всех ваших источников в единую картину. Пакеты закрытия месяца, дашборды P&L и денежных потоков, план-факт анализ, детализация от уровня компании до отдельных транзакций. Отчёты обновляются автоматически — команда тратит время на решения, а не на сведение таблиц. Также помогаем выстроить дерево KPI, чтобы у каждой метрики был владелец и целевое значение.",
+      en: [
+        { h: "What we build" },
+        { p: "We build management reporting systems that consolidate financial and operational data from all your sources into one coherent picture." },
+        { p: "This includes monthly close packs, P&L and cash-flow dashboards, plan-vs-actual analysis, and drill-down from company level all the way to individual transactions." },
+        { h: "What you get" },
+        { p: "Reports update automatically, so your team spends time on decisions instead of assembling spreadsheets." },
+        { p: "We also help define the right KPI tree, so every metric on the dashboard has a clear owner and a target." },
+      ],
+      ru: [
+        { h: "Что мы делаем" },
+        { p: "Мы строим системы управленческой отчётности, которые консолидируют финансовые и операционные данные из всех ваших источников в единую картину." },
+        { p: "Сюда входят пакеты закрытия месяца, дашборды P&L и денежных потоков, план-факт анализ и детализация от уровня компании до отдельных транзакций." },
+        { h: "Что вы получаете" },
+        { p: "Отчёты обновляются автоматически — команда тратит время на решения, а не на сведение таблиц." },
+        { p: "Также помогаем выстроить дерево KPI, чтобы у каждой метрики был владелец и целевое значение." },
+      ],
     },
   },
   {
@@ -26,8 +42,22 @@ window.SERVICES = [
       ru: "Аналитика воронки, конверсии и выручки, которая показывает, где именно выигрываются и теряются продажи.",
     },
     full: {
-      en: "Sales reporting connected directly to your CRM and billing systems: pipeline health, conversion by stage, win/loss analysis, sales rep performance, territory and product mix. Forecasting models based on historical conversion so managers can see expected revenue weeks ahead. Daily-updated leaderboards and target tracking keep the team focused, while management gets reliable forecasts instead of optimistic guesses.",
-      ru: "Отчётность по продажам, подключённая напрямую к CRM и биллингу: состояние воронки, конверсия по этапам, анализ выигранных и проигранных сделок, эффективность менеджеров, разрезы по территориям и продуктам. Модели прогноза на основе исторической конверсии — руководители видят ожидаемую выручку на недели вперёд. Ежедневно обновляемые рейтинги и контроль целей держат команду в фокусе, а менеджмент получает надёжные прогнозы вместо оптимистичных оценок.",
+      en: [
+        { h: "What we build" },
+        { p: "Sales reporting connected directly to your CRM and billing systems: pipeline health, conversion by stage, win/loss analysis, sales-rep performance, and territory and product mix." },
+        { p: "Forecasting models built on historical conversion let managers see expected revenue weeks ahead." },
+        { h: "What you get" },
+        { p: "Daily-updated leaderboards and target tracking keep the team focused." },
+        { p: "Management gets reliable forecasts backed by data instead of optimistic guesses." },
+      ],
+      ru: [
+        { h: "Что мы делаем" },
+        { p: "Отчётность по продажам, подключённая напрямую к CRM и биллингу: состояние воронки, конверсия по этапам, анализ выигранных и проигранных сделок, эффективность менеджеров, разрезы по территориям и продуктам." },
+        { p: "Модели прогноза на основе исторической конверсии — руководители видят ожидаемую выручку на недели вперёд." },
+        { h: "Что вы получаете" },
+        { p: "Ежедневно обновляемые рейтинги и контроль целей держат команду в фокусе." },
+        { p: "Менеджмент получает надёжные прогнозы на основе данных вместо оптимистичных оценок." },
+      ],
     },
   },
   {
@@ -40,8 +70,22 @@ window.SERVICES = [
       ru: "Эффективность кампаний, ROI каналов и аналитика воронки по всем маркетинговым платформам.",
     },
     full: {
-      en: "We unify data from advertising platforms, web analytics, email tools and CRM into a single marketing data model. Cost per lead and per acquisition by channel and campaign, multi-touch attribution, cohort retention, funnel drop-off analysis. Marketing leaders see which budgets actually generate revenue — not just clicks — and can reallocate spend with confidence backed by data.",
-      ru: "Мы объединяем данные рекламных платформ, веб-аналитики, email-сервисов и CRM в единую маркетинговую модель данных. Стоимость лида и привлечения по каналам и кампаниям, мультиканальная атрибуция, когортный анализ удержания, анализ потерь на этапах воронки. Руководители маркетинга видят, какие бюджеты действительно приносят выручку, а не только клики, и могут уверенно перераспределять расходы на основе данных.",
+      en: [
+        { h: "What we build" },
+        { p: "We unify data from advertising platforms, web analytics, email tools and CRM into a single marketing data model." },
+        { p: "On top of it: cost per lead and per acquisition by channel and campaign, multi-touch attribution, cohort retention, and funnel drop-off analysis." },
+        { h: "What you get" },
+        { p: "Marketing leaders see which budgets actually generate revenue — not just clicks." },
+        { p: "Spend can be reallocated with confidence, backed by data rather than intuition." },
+      ],
+      ru: [
+        { h: "Что мы делаем" },
+        { p: "Мы объединяем данные рекламных платформ, веб-аналитики, email-сервисов и CRM в единую маркетинговую модель данных." },
+        { p: "Поверх неё: стоимость лида и привлечения по каналам и кампаниям, мультиканальная атрибуция, когортный анализ удержания и анализ потерь на этапах воронки." },
+        { h: "Что вы получаете" },
+        { p: "Руководители маркетинга видят, какие бюджеты действительно приносят выручку, а не только клики." },
+        { p: "Расходы можно перераспределять уверенно — на основе данных, а не интуиции." },
+      ],
     },
   },
   {
@@ -54,8 +98,20 @@ window.SERVICES = [
       ru: "Отчётность по OEE, простоям, качеству и себестоимости — производство как на ладони в реальном времени.",
     },
     full: {
-      en: "Production reporting built on data from MES, SCADA, ERP and manual logs: overall equipment effectiveness (OEE), downtime causes, scrap and rework rates, output per line and per shift, unit cost dynamics. Shift dashboards on the shop floor, weekly performance reviews for plant management, and consolidated views for the holding level. Bottlenecks and recurring loss patterns become visible — and fixable.",
-      ru: "Производственная отчётность на данных MES, SCADA, ERP и ручных журналов: общая эффективность оборудования (OEE), причины простоев, доля брака и переделок, выработка по линиям и сменам, динамика себестоимости. Сменные дашборды в цеху, еженедельные обзоры эффективности для руководства завода и консолидированные представления на уровне холдинга. Узкие места и повторяющиеся потери становятся видимыми — и устранимыми.",
+      en: [
+        { h: "What we build" },
+        { p: "Production reporting built on data from MES, SCADA, ERP and manual logs: overall equipment effectiveness (OEE), downtime causes, scrap and rework rates, output per line and per shift, and unit-cost dynamics." },
+        { p: "We deliver shift dashboards on the shop floor, weekly performance reviews for plant management, and consolidated views at the holding level." },
+        { h: "What you get" },
+        { p: "Bottlenecks and recurring loss patterns become visible — and fixable." },
+      ],
+      ru: [
+        { h: "Что мы делаем" },
+        { p: "Производственная отчётность на данных MES, SCADA, ERP и ручных журналов: общая эффективность оборудования (OEE), причины простоев, доля брака и переделок, выработка по линиям и сменам, динамика себестоимости." },
+        { p: "Мы делаем сменные дашборды в цеху, еженедельные обзоры эффективности для руководства завода и консолидированные представления на уровне холдинга." },
+        { h: "Что вы получаете" },
+        { p: "Узкие места и повторяющиеся потери становятся видимыми — и устранимыми." },
+      ],
     },
   },
   {
@@ -68,8 +124,20 @@ window.SERVICES = [
       ru: "Аналитика запасов, SLA доставки и эффективности поставщиков по всей цепочке поставок.",
     },
     full: {
-      en: "End-to-end supply chain visibility: stock levels and turnover by warehouse and SKU, out-of-stock and overstock alerts, OTIF delivery performance, supplier lead times and reliability scoring, transportation cost analytics. Demand-vs-supply dashboards help planners act before shortages happen, and procurement gets objective data for supplier negotiations.",
-      ru: "Сквозная прозрачность цепочки поставок: уровни запасов и оборачиваемость по складам и SKU, алерты по дефициту и излишкам, показатель OTIF, сроки и надёжность поставщиков, аналитика транспортных затрат. Дашборды «спрос-предложение» позволяют планировщикам действовать до возникновения дефицита, а закупки получают объективные данные для переговоров с поставщиками.",
+      en: [
+        { h: "What we build" },
+        { p: "End-to-end supply chain visibility: stock levels and turnover by warehouse and SKU, out-of-stock and overstock alerts, OTIF delivery performance, supplier lead times and reliability scoring, and transportation cost analytics." },
+        { h: "What you get" },
+        { p: "Demand-vs-supply dashboards help planners act before shortages happen." },
+        { p: "Procurement gets objective data to back supplier negotiations." },
+      ],
+      ru: [
+        { h: "Что мы делаем" },
+        { p: "Сквозная прозрачность цепочки поставок: уровни запасов и оборачиваемость по складам и SKU, алерты по дефициту и излишкам, показатель OTIF, сроки и надёжность поставщиков, аналитика транспортных затрат." },
+        { h: "Что вы получаете" },
+        { p: "Дашборды «спрос-предложение» позволяют планировщикам действовать до возникновения дефицита." },
+        { p: "Закупки получают объективные данные для переговоров с поставщиками." },
+      ],
     },
   },
   {
@@ -82,8 +150,20 @@ window.SERVICES = [
       ru: "Отчётность по инцидентам, SLA и состоянию инфраструктуры для команд ИТ и ИБ.",
     },
     full: {
-      en: "Reporting for CIO and CISO offices: incident volume and resolution times, SLA compliance by service, infrastructure availability and capacity trends, vulnerability and patching status, audit-ready compliance reports. Data is collected from ITSM, monitoring and security tools automatically, replacing manual monthly slide decks with always-current dashboards.",
-      ru: "Отчётность для офисов CIO и CISO: объём инцидентов и сроки их решения, соблюдение SLA по сервисам, доступность и ёмкость инфраструктуры, статус уязвимостей и патчей, отчёты для аудитов и комплаенса. Данные собираются из ITSM, систем мониторинга и средств защиты автоматически — вместо ручных ежемесячных презентаций всегда актуальные дашборды.",
+      en: [
+        { h: "What we build" },
+        { p: "Reporting for CIO and CISO offices: incident volume and resolution times, SLA compliance by service, infrastructure availability and capacity trends, vulnerability and patching status, and audit-ready compliance reports." },
+        { h: "What you get" },
+        { p: "Data is collected from ITSM, monitoring and security tools automatically." },
+        { p: "Manual monthly slide decks are replaced with always-current dashboards." },
+      ],
+      ru: [
+        { h: "Что мы делаем" },
+        { p: "Отчётность для офисов CIO и CISO: объём инцидентов и сроки их решения, соблюдение SLA по сервисам, доступность и ёмкость инфраструктуры, статус уязвимостей и патчей, отчёты для аудитов и комплаенса." },
+        { h: "Что вы получаете" },
+        { p: "Данные собираются из ITSM, систем мониторинга и средств защиты автоматически." },
+        { p: "Ручные ежемесячные презентации заменяются всегда актуальными дашбордами." },
+      ],
     },
   },
   {
@@ -96,8 +176,22 @@ window.SERVICES = [
       ru: "Реестры рисков, дашборды экспозиции и индикаторы раннего предупреждения для менеджмента и совета директоров.",
     },
     full: {
-      en: "We turn risk management from a static register into a living reporting system: consolidated risk maps, key risk indicators with thresholds and alerts, exposure and limit utilization dashboards, scenario and sensitivity views, board-level risk reports generated automatically. Risk owners see their indicators in real time, and the risk function spends time on analysis instead of data collection.",
-      ru: "Мы превращаем управление рисками из статичного реестра в живую систему отчётности: консолидированные карты рисков, ключевые индикаторы риска с порогами и алертами, дашборды экспозиции и использования лимитов, сценарные представления, автоматическая подготовка риск-отчётов для совета директоров. Владельцы рисков видят свои индикаторы в реальном времени, а риск-функция тратит время на анализ, а не на сбор данных.",
+      en: [
+        { h: "What we build" },
+        { p: "We turn risk management from a static register into a living reporting system: consolidated risk maps, key risk indicators with thresholds and alerts, exposure and limit-utilization dashboards, and scenario and sensitivity views." },
+        { p: "Board-level risk reports are generated automatically." },
+        { h: "What you get" },
+        { p: "Risk owners see their indicators in real time." },
+        { p: "The risk function spends its time on analysis instead of data collection." },
+      ],
+      ru: [
+        { h: "Что мы делаем" },
+        { p: "Мы превращаем управление рисками из статичного реестра в живую систему отчётности: консолидированные карты рисков, ключевые индикаторы риска с порогами и алертами, дашборды экспозиции и использования лимитов, сценарные представления." },
+        { p: "Риск-отчёты для совета директоров готовятся автоматически." },
+        { h: "Что вы получаете" },
+        { p: "Владельцы рисков видят свои индикаторы в реальном времени." },
+        { p: "Риск-функция тратит время на анализ, а не на сбор данных." },
+      ],
     },
   },
 ];

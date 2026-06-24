@@ -140,6 +140,20 @@ def safe_id(news_id):
 
 # ---------- Готовые куски разметки (зеркалят js/main.js) ----------
 
+def render_full(blocks):
+    """Доп. описание (read more): массив блоков {h}/{p} -> заголовки и абзацы.
+    Поддерживает и обычную строку (один абзац)."""
+    if isinstance(blocks, str):
+        return f"<p>{esc(blocks)}</p>"
+    out = []
+    for b in blocks or []:
+        if b.get("h") is not None:
+            out.append(f'<h4>{esc(b["h"])}</h4>')
+        else:
+            out.append(f'<p>{esc(b.get("p", ""))}</p>')
+    return "".join(out)
+
+
 def service_row_html(s, i, lang):
     num = f"{i + 1:02d}"
     flip = " flip" if i % 2 else ""
@@ -154,7 +168,7 @@ def service_row_html(s, i, lang):
         f"</div>"
         f'<div class="service-info">'
         f'<p class="service-short">{esc(s["short"][lang])}</p>'
-        f'<div class="service-full-wrap"><div><p class="service-full">{esc(s["full"][lang])}</p></div></div>'
+        f'<div class="service-full-wrap"><div><div class="service-full">{render_full(s["full"][lang])}</div></div></div>'
         f'<div class="service-actions">'
         f'<button class="btn btn-primary" data-open-form data-service="{esc(s["title"]["en"])}">{esc(t("services.interested", lang))}</button>'
         f'<button class="btn-link read-more-btn" data-action="toggle" aria-expanded="false">'

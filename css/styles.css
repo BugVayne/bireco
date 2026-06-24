@@ -442,10 +442,48 @@ a:hover { text-decoration: underline; }
   border-radius: 20px;
   overflow: hidden;
   box-shadow: var(--shadow);
-  transition: box-shadow 0.35s, transform 0.35s var(--ease-out);
+  transition: box-shadow 0.35s, grid-template-columns 0.5s var(--ease-out);
 }
-.service-row:hover { box-shadow: var(--shadow-lg); transform: translateY(-4px); }
+/* Только тень при наведении, без подъёма: transform сдвигает и саму зону
+   наведения, из-за чего при перекомпоновке во время раскрытия hover
+   срабатывал по кругу и карточка «тряслась». */
+.service-row:hover { box-shadow: var(--shadow-lg); }
 .service-row.flip .service-banner { order: 2; }
+
+/* При раскрытии read more баннер превращается в тонкую цветную полосу:
+   название сервиса разворачивается вертикально, иконка/номер/эквалайзер
+   скрываются — так под развёрнутый текст освобождается максимум места.
+   Только для десктопа; на мобильных ряд остаётся в одну колонку. */
+@media (min-width: 981px) {
+  /* Ширина задаётся в fr (а не px) — так колонки анимируются плавно:
+     px↔fr браузер интерполировать не умеет и «прыгает» скачком. */
+  .service-row.expanded { grid-template-columns: 0.09fr 1fr; }
+  .service-row.flip.expanded { grid-template-columns: 1fr 0.09fr; }
+  .service-row.expanded .service-banner {
+    padding: 22px 8px;
+    align-items: center;
+    justify-content: center;
+  }
+  .service-row.expanded .service-icon,
+  .service-row.expanded .service-num,
+  .service-row.expanded .pulse-bars { display: none; }
+  .service-row.expanded .service-banner h3 {
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    max-width: none;
+    max-height: 100%;
+    margin: 0;
+    text-align: center;
+    font-size: clamp(16px, 1.5vw, 21px);
+    line-height: 1.25;
+  }
+
+  /* Кнопки прижаты к внешнему краю карточки (со стороны, противоположной
+     баннеру). При раскрытии информационная колонка расширяется внутрь,
+     внешний край не двигается — кнопки смещаются только вниз, без рывка вбок. */
+  .service-actions { justify-content: flex-end; }
+  .service-row.flip .service-actions { justify-content: flex-start; }
+}
 
 /* Цветная сторона с названием сервиса */
 .service-banner {
@@ -562,8 +600,21 @@ a:hover { text-decoration: underline; }
   color: var(--muted);
   font-size: 15px;
   border-left: 3px solid var(--tint, var(--blue));
-  padding: 2px 0 2px 16px;
+  padding: 4px 0 4px 18px;
+  opacity: 0;
+  transition: opacity 0.45s var(--ease-out);
 }
+.service-row.expanded .service-full { opacity: 1; }
+.service-full h4 {
+  margin: 18px 0 7px;
+  color: var(--navy);
+  font-size: 15.5px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+.service-full h4:first-child { margin-top: 2px; }
+.service-full p { margin: 0 0 11px; line-height: 1.7; }
+.service-full p:last-child { margin-bottom: 0; }
 .service-row.expanded .service-full-wrap { grid-template-rows: 1fr; }
 .service-full-wrap > div { padding-bottom: 0; }
 .service-row.expanded .service-full-wrap > div { padding-bottom: 2px; }
@@ -844,17 +895,6 @@ a:hover { text-decoration: underline; }
 .form-field.invalid input,
 .form-field.invalid textarea { border-color: #dc2626; }
 .form-field.invalid .field-error { display: block; }
-
-.service-tag {
-  display: inline-block;
-  background: var(--ice);
-  color: var(--navy);
-  font-size: 13.5px;
-  font-weight: 600;
-  border-radius: 8px;
-  padding: 7px 12px;
-  margin-bottom: 18px;
-}
 
 /* Поле-ловушка для ботов: скрыто от людей */
 .hp-field {

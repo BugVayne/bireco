@@ -127,6 +127,18 @@
      описание с кнопками Read more / I am interested.            */
   var grid = document.getElementById("servicesGrid");
 
+  // Доп. описание (read more): массив блоков { h } / { p } -> заголовки и абзацы.
+  // Поддерживаем и обычную строку (один абзац) для обратной совместимости.
+  function renderFull(blocks) {
+    if (!blocks) return "";
+    if (typeof blocks === "string") return "<p>" + esc(blocks) + "</p>";
+    return blocks
+      .map(function (b) {
+        return b.h != null ? "<h4>" + esc(b.h) + "</h4>" : "<p>" + esc(b.p) + "</p>";
+      })
+      .join("");
+  }
+
   function renderServices() {
     if (!grid) return;
     var lang = window.currentLang || "en";
@@ -150,7 +162,7 @@
           '<div class="service-info">' +
           '<p class="service-short">' + esc(s.short[lang]) + "</p>" +
           '<div class="service-full-wrap"><div>' +
-          '<p class="service-full">' + esc(s.full[lang]) + "</p>" +
+          '<div class="service-full">' + renderFull(s.full[lang]) + "</div>" +
           "</div></div>" +
           '<div class="service-actions">' +
           '<button class="btn btn-primary" data-open-form data-service="' + esc(s.title.en) + '">' + esc(window.t("services.interested")) + "</button>" +
@@ -602,7 +614,8 @@
 
   /* Модальная форма — для кнопок "I am interested" и "Send your CV" */
   var modal = document.getElementById("contactModal");
-  var serviceTag = document.getElementById("formServiceTag");
+  var modalTitle = document.getElementById("contactModalTitle");
+  var modalSub = modal ? modal.querySelector(".modal-sub") : null;
   var currentService = "";
   var lastTrigger = null;
 
@@ -624,10 +637,12 @@
     currentService = service || "";
     lastTrigger = document.activeElement; // куда вернуть фокус после закрытия
     modalForm.reset();
-    if (serviceTag) {
-      serviceTag.hidden = !currentService;
-      serviceTag.textContent = currentService ? window.t("form.service") + ": " + currentService : "";
-    }
+    // Заголовок/подзаголовок зависят от типа формы: отклик на вакансию vs обычная заявка.
+    // Сервис в интерфейсе не показываем, но он по-прежнему уходит в payload.
+    var titleKey = showCv ? "form.cvTitle" : "form.title";
+    var subKey = showCv ? "form.cvSubtitle" : "form.subtitle";
+    if (modalTitle) { modalTitle.setAttribute("data-i18n", titleKey); modalTitle.textContent = window.t(titleKey); }
+    if (modalSub) { modalSub.setAttribute("data-i18n", subKey); modalSub.textContent = window.t(subKey); }
     if (careerFields) careerFields.hidden = !showCv; // поля резюме — только для «Отправить резюме»
     modalForm.ensureCaptcha();
     modal.classList.add("open");
