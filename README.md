@@ -1,4 +1,4 @@
-# ClearMetrics — сайт BI-консалтинга
+# Bireco — сайт BI-консалтинга
 
 Статический сайт (HTML/CSS/JS) + бесплатный бэкенд на Google Apps Script:
 заявки с формы и новости хранятся в Google Таблице, новости добавляются через
@@ -168,7 +168,7 @@ python build.py        # результат — в папке dist/
 
 ## Что поменять под себя
 
-- **Название и логотип**: «ClearMetrics» в `index.html`, `news.html`, `admin.html` (поиск по тексту), логотип — блок `.logo`.
+- **Название и логотип**: «Bireco» в `index.html`, `news.html`, `admin.html` (поиск по тексту), логотип — блок `.logo`.
 - **Контакты в футере**: `js/config.js` → `CONTACT_EMAIL`, `LINKEDIN_URL`.
 - **Видео для "Watch overview"**: `js/config.js` → `OVERVIEW_VIDEO_URL`
   (embed-ссылка YouTube вида `https://www.youtube.com/embed/XXXX`).

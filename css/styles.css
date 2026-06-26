@@ -1,5 +1,5 @@
 /* ============================================================
-   ClearMetrics — стили сайта
+   Bireco — стили сайта
    Палитра: синий / белый / немного чёрного + оттенки
    ============================================================ */
 
@@ -1059,6 +1059,166 @@ a:hover { text-decoration: underline; }
 
 @media (max-width: 760px) {
   .to-top { right: 16px; bottom: 16px; width: 44px; height: 44px; }
+}
+
+/* ---------- Кнопка светлая (на тёмном фоне) ---------- */
+.btn-light { background: #fff; color: var(--navy); }
+.btn-light:hover { background: var(--ice); color: var(--navy); box-shadow: 0 10px 24px rgba(0, 0, 0, 0.18); }
+
+/* ---------- Hero: список преимуществ ---------- */
+.hero-points {
+  list-style: none;
+  margin: 0 0 32px;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px 26px;
+  max-width: 560px;
+  opacity: 0;
+  animation: heroLine 0.9s var(--ease-out) 0.58s forwards;
+}
+.hero-points li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: rgba(255, 255, 255, 0.92);
+  font-size: 15px;
+  font-weight: 500;
+}
+.hero-points svg {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  color: #8db4ff;
+}
+
+/* ---------- Сервисы: списки в раскрытом описании ---------- */
+.service-full ul { margin: 4px 0 11px; padding-left: 2px; list-style: none; }
+.service-full li {
+  position: relative;
+  padding-left: 18px;
+  margin-bottom: 5px;
+  line-height: 1.6;
+}
+.service-full li::before {
+  content: "";
+  position: absolute;
+  left: 2px;
+  top: 9px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--tint, var(--blue));
+}
+
+/* ---------- Our Approach ---------- */
+.approach-steps {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 18px;
+  counter-reset: step;
+}
+.approach-step {
+  position: relative;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 26px 22px 24px;
+  box-shadow: var(--shadow);
+  transition: transform 0.3s var(--ease-out), box-shadow 0.3s;
+}
+.approach-step:hover { transform: translateY(-6px); box-shadow: var(--shadow-lg); }
+.approach-num {
+  display: inline-block;
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--blue);
+  letter-spacing: 0.04em;
+  background: var(--ice);
+  border-radius: 8px;
+  padding: 5px 10px;
+  margin-bottom: 14px;
+}
+.approach-step h3 { margin: 0 0 8px; font-size: 17px; color: var(--navy); }
+.approach-step p { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.6; }
+
+/* ---------- Why Choose Us ---------- */
+.why-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 22px;
+}
+.why-card {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 28px 26px;
+  box-shadow: var(--shadow);
+  transition: transform 0.3s var(--ease-out), box-shadow 0.3s;
+}
+.why-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-lg); }
+.why-icon {
+  width: 46px;
+  height: 46px;
+  border-radius: 12px;
+  background: var(--ice);
+  color: var(--blue);
+  display: grid;
+  place-items: center;
+  margin-bottom: 16px;
+  transition: background 0.3s, color 0.3s, transform 0.3s var(--ease-out);
+}
+.why-card:hover .why-icon { background: var(--blue); color: #fff; transform: scale(1.08); }
+.why-icon svg { width: 24px; height: 24px; }
+.why-card h3 { margin: 0 0 8px; font-size: 18px; color: var(--navy); }
+.why-card p { margin: 0; color: var(--muted); font-size: 14.5px; line-height: 1.6; }
+
+/* ---------- Call to Action ---------- */
+.cta-box {
+  background: linear-gradient(135deg, var(--navy-dark), var(--navy) 70%, #16407e);
+  color: #fff;
+  border-radius: 20px;
+  padding: 56px 48px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.cta-box::after {
+  content: "";
+  position: absolute;
+  right: -70px;
+  top: -90px;
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  background: rgba(37, 99, 235, 0.35);
+  filter: blur(10px);
+  animation: floatY 12s ease-in-out infinite;
+  pointer-events: none;
+}
+.cta-box > * { position: relative; z-index: 1; }
+.cta-box h2 { font-size: clamp(26px, 3.4vw, 36px); margin: 0 0 14px; letter-spacing: -0.02em; }
+.cta-box p { color: rgba(255, 255, 255, 0.85); margin: 0 auto 28px; max-width: 640px; font-size: 16px; }
+
+/* ---------- About: миссия ---------- */
+.about-mission {
+  margin-top: 22px !important;
+  padding-left: 18px;
+  border-left: 3px solid var(--blue);
+  font-weight: 600;
+  color: var(--navy) !important;
+}
+
+/* ---------- Адаптив новых секций ---------- */
+@media (max-width: 980px) {
+  .approach-steps { grid-template-columns: repeat(2, 1fr); }
+  .why-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 620px) {
+  .hero-points { grid-template-columns: 1fr; }
+  .approach-steps { grid-template-columns: 1fr; }
+  .why-grid { grid-template-columns: 1fr; }
+  .cta-box { padding: 40px 26px; }
 }
 
 /* ---------- Уважение к prefers-reduced-motion ---------- */

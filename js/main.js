@@ -23,7 +23,7 @@
   }
 
   /* ---------- Подсветка активного пункта меню при скролле ---------- */
-  var sections = ["insights", "services", "industries", "careers", "about"];
+  var sections = ["insights", "services", "approach", "why", "industries", "careers", "about"];
   function highlightNav() {
     var fromTop = window.scrollY + 120;
     var current = "";
@@ -134,7 +134,11 @@
     if (typeof blocks === "string") return "<p>" + esc(blocks) + "</p>";
     return blocks
       .map(function (b) {
-        return b.h != null ? "<h4>" + esc(b.h) + "</h4>" : "<p>" + esc(b.p) + "</p>";
+        if (b.h != null) return "<h4>" + esc(b.h) + "</h4>";
+        if (b.list) {
+          return "<ul>" + b.list.map(function (x) { return "<li>" + esc(x) + "</li>"; }).join("") + "</ul>";
+        }
+        return "<p>" + esc(b.p) + "</p>";
       })
       .join("");
   }

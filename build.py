@@ -149,6 +149,9 @@ def render_full(blocks):
     for b in blocks or []:
         if b.get("h") is not None:
             out.append(f'<h4>{esc(b["h"])}</h4>')
+        elif b.get("list"):
+            items = "".join(f"<li>{esc(x)}</li>" for x in b["list"])
+            out.append(f"<ul>{items}</ul>")
         else:
             out.append(f'<p>{esc(b.get("p", ""))}</p>')
     return "".join(out)
@@ -308,7 +311,7 @@ def build_article(src, n, lang):
     sid = safe_id(n["id"])
     soup = BeautifulSoup(src, "html5lib")
     translate(soup, lang)
-    title = f"{loc(n, 'title', lang)} — ClearMetrics"
+    title = f"{loc(n, 'title', lang)} — Bireco"
     desc = (loc(n, "summary", lang) or loc(n, "body", lang))[:160]
     set_head(soup, lang, title, desc,
              SITE + f"news/{sid}.html", SITE + f"ru/news/{sid}.html",
