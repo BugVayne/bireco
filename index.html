@@ -26,7 +26,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/styles.css?v=3" />
+  <link rel="stylesheet" href="css/styles.css?v=4" />
   <noscript><style>.reveal { opacity: 1 !important; transform: none !important; }</style></noscript>
 </head>
 <body>
@@ -350,36 +350,89 @@
         <h2 data-i18n="industries.title">Industries</h2>
         <p data-i18n="industries.sub">We work with companies across sectors and adapt reporting to the specifics of each industry.</p>
       </div>
-      <div class="industries-grid">
-        <div class="industry-card reveal" style="--c:#b45309">
-          <div class="ind-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 21V9l6 4V9l6 4V7l6-3v17"/><path d="M3 21h18"/></svg></div>
-          <h3 data-i18n="industries.i1.title">Manufacturing</h3>
-          <p data-i18n="industries.i1.text">Production efficiency, OEE, quality and cost reporting for plants and holdings.</p>
+      <div class="orbit-stage reveal" id="industriesOrbit">
+        <div class="orbit-ring">
+          <i class="orbit-spoke" style="--angle:-90deg"></i>
+          <i class="orbit-spoke" style="--angle:-30deg"></i>
+          <i class="orbit-spoke" style="--angle:30deg"></i>
+          <i class="orbit-spoke" style="--angle:90deg"></i>
+          <i class="orbit-spoke" style="--angle:150deg"></i>
+          <i class="orbit-spoke" style="--angle:210deg"></i>
+
+          <div class="orbit-item" style="--angle:-90deg">
+            <div class="orbit-counter">
+              <button class="orbit-node" type="button" style="--angle:-90deg;--c:#b45309" aria-expanded="false">
+                <span class="orbit-node-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 21V9l6 4V9l6 4V7l6-3v17"/><path d="M3 21h18"/></svg></span>
+                <span class="orbit-node-body">
+                  <span class="orbit-node-title" data-i18n="industries.i1.title">Manufacturing</span>
+                  <span class="orbit-node-text" data-i18n="industries.i1.text">Production efficiency, OEE, quality and cost reporting for plants and holdings.</span>
+                </span>
+              </button>
+            </div>
+          </div>
+          <div class="orbit-item" style="--angle:-30deg">
+            <div class="orbit-counter">
+              <button class="orbit-node" type="button" style="--angle:-30deg;--c:#7c3aed" aria-expanded="false">
+                <span class="orbit-node-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M6 7h12l1.5 13h-15z"/><path d="M9 10V6a3 3 0 0 1 6 0v4"/></svg></span>
+                <span class="orbit-node-body">
+                  <span class="orbit-node-title" data-i18n="industries.i2.title">Retail &amp; E-commerce</span>
+                  <span class="orbit-node-text" data-i18n="industries.i2.text">Sales funnels, assortment analytics, stock turnover and promotion effectiveness.</span>
+                </span>
+              </button>
+            </div>
+          </div>
+          <div class="orbit-item" style="--angle:30deg">
+            <div class="orbit-counter">
+              <button class="orbit-node" type="button" style="--angle:30deg;--c:#0f766e" aria-expanded="false">
+                <span class="orbit-node-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3l9 5H3z"/><path d="M5 8v9M10 8v9M14 8v9M19 8v9"/><path d="M3 20h18"/></svg></span>
+                <span class="orbit-node-body">
+                  <span class="orbit-node-title" data-i18n="industries.i3.title">Financial Services</span>
+                  <span class="orbit-node-text" data-i18n="industries.i3.text">Regulatory and management reporting, risk dashboards, portfolio analytics.</span>
+                </span>
+              </button>
+            </div>
+          </div>
+          <div class="orbit-item" style="--angle:90deg">
+            <div class="orbit-counter">
+              <button class="orbit-node" type="button" style="--angle:90deg;--c:#2563eb" aria-expanded="false">
+                <span class="orbit-node-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="2.5" y="8.5" width="11" height="8" rx="1"/><path d="M13.5 11h4l3 3v2.5h-7z"/><circle cx="7" cy="18.5" r="1.7"/><circle cx="17" cy="18.5" r="1.7"/></svg></span>
+                <span class="orbit-node-body">
+                  <span class="orbit-node-title" data-i18n="industries.i4.title">Logistics &amp; Distribution</span>
+                  <span class="orbit-node-text" data-i18n="industries.i4.text">Supply chain visibility, delivery SLA monitoring and warehouse performance.</span>
+                </span>
+              </button>
+            </div>
+          </div>
+          <div class="orbit-item" style="--angle:150deg">
+            <div class="orbit-counter">
+              <button class="orbit-node" type="button" style="--angle:150deg;--c:#ca8a04" aria-expanded="false">
+                <span class="orbit-node-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M13 2L5 13h6l-1 9 8-11h-6z"/></svg></span>
+                <span class="orbit-node-body">
+                  <span class="orbit-node-title" data-i18n="industries.i5.title">Energy &amp; Utilities</span>
+                  <span class="orbit-node-text" data-i18n="industries.i5.text">Asset performance, consumption analytics and maintenance reporting.</span>
+                </span>
+              </button>
+            </div>
+          </div>
+          <div class="orbit-item" style="--angle:210deg">
+            <div class="orbit-counter">
+              <button class="orbit-node" type="button" style="--angle:210deg;--c:#0891b2" aria-expanded="false">
+                <span class="orbit-node-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="4" width="18" height="13" rx="1.5"/><path d="M8 21h8M12 17v4"/></svg></span>
+                <span class="orbit-node-body">
+                  <span class="orbit-node-title" data-i18n="industries.i6.title">Technology &amp; Services</span>
+                  <span class="orbit-node-text" data-i18n="industries.i6.text">SaaS metrics, project profitability and resource utilization reporting.</span>
+                </span>
+              </button>
+            </div>
+          </div>
         </div>
-        <div class="industry-card reveal" style="--c:#7c3aed">
-          <div class="ind-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M6 7h12l1.5 13h-15z"/><path d="M9 10V6a3 3 0 0 1 6 0v4"/></svg></div>
-          <h3 data-i18n="industries.i2.title">Retail &amp; E-commerce</h3>
-          <p data-i18n="industries.i2.text">Sales funnels, assortment analytics, stock turnover and promotion effectiveness.</p>
-        </div>
-        <div class="industry-card reveal" style="--c:#0f766e">
-          <div class="ind-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3l9 5H3z"/><path d="M5 8v9M10 8v9M14 8v9M19 8v9"/><path d="M3 20h18"/></svg></div>
-          <h3 data-i18n="industries.i3.title">Financial Services</h3>
-          <p data-i18n="industries.i3.text">Regulatory and management reporting, risk dashboards, portfolio analytics.</p>
-        </div>
-        <div class="industry-card reveal" style="--c:#2563eb">
-          <div class="ind-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="2.5" y="8.5" width="11" height="8" rx="1"/><path d="M13.5 11h4l3 3v2.5h-7z"/><circle cx="7" cy="18.5" r="1.7"/><circle cx="17" cy="18.5" r="1.7"/></svg></div>
-          <h3 data-i18n="industries.i4.title">Logistics &amp; Distribution</h3>
-          <p data-i18n="industries.i4.text">Supply chain visibility, delivery SLA monitoring and warehouse performance.</p>
-        </div>
-        <div class="industry-card reveal" style="--c:#ca8a04">
-          <div class="ind-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M13 2L5 13h6l-1 9 8-11h-6z"/></svg></div>
-          <h3 data-i18n="industries.i5.title">Energy &amp; Utilities</h3>
-          <p data-i18n="industries.i5.text">Asset performance, consumption analytics and maintenance reporting.</p>
-        </div>
-        <div class="industry-card reveal" style="--c:#0891b2">
-          <div class="ind-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="4" width="18" height="13" rx="1.5"/><path d="M8 21h8M12 17v4"/></svg></div>
-          <h3 data-i18n="industries.i6.title">Technology &amp; Services</h3>
-          <p data-i18n="industries.i6.text">SaaS metrics, project profitability and resource utilization reporting.</p>
+
+        <div class="orbit-core" aria-hidden="true">
+          <span class="orbit-core-mark">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M5 19v-4"/><path d="M12 19v-8.5"/><path d="M19 19V8"/><circle cx="19" cy="5" r="1.6" fill="currentColor" stroke="none"/></svg>
+          </span>
+          <span class="orbit-core-title" data-i18n="industries.coreTitle">Bireco</span>
+          <span class="orbit-core-sub" data-i18n="industries.coreSub">One reporting layer</span>
         </div>
       </div>
     </div>
@@ -568,11 +621,11 @@
     </div>
   </div>
 
-  <script src="js/config.js?v=3"></script>
-  <script src="js/i18n.js?v=3"></script>
-  <script src="js/services-data.js?v=3"></script>
-  <script src="js/news-api.js?v=3"></script>
-  <script src="js/main.js?v=3"></script>
-  <script src="js/ui.js?v=3"></script>
+  <script src="js/config.js?v=4"></script>
+  <script src="js/i18n.js?v=4"></script>
+  <script src="js/services-data.js?v=4"></script>
+  <script src="js/news-api.js?v=4"></script>
+  <script src="js/main.js?v=4"></script>
+  <script src="js/ui.js?v=4"></script>
 </body>
 </html>

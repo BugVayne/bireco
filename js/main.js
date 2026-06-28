@@ -48,6 +48,27 @@
   var liEl = document.getElementById("footerLinkedin");
   if (liEl && cfg.LINKEDIN_URL) liEl.href = cfg.LINKEDIN_URL;
 
+  /* ---------- Орбита отраслей: тап раскрывает карточку (для тач-устройств,
+     где :hover не срабатывает надёжно) ---------- */
+  var orbitStage = document.getElementById("industriesOrbit");
+  if (orbitStage) {
+    var orbitNodes = orbitStage.querySelectorAll(".orbit-node");
+    orbitStage.addEventListener("click", function (e) {
+      var node = e.target.closest(".orbit-node");
+      if (!node) return;
+      var wasOpen = node.classList.contains("is-open");
+      orbitNodes.forEach(function (n) {
+        n.classList.remove("is-open");
+        n.setAttribute("aria-expanded", "false");
+      });
+      if (!wasOpen) {
+        node.classList.add("is-open");
+        node.setAttribute("aria-expanded", "true");
+      }
+      orbitStage.classList.toggle("is-interacting", !wasOpen);
+    });
+  }
+
   /* ---------- Scroll reveal (плавное появление при прокрутке) ---------- */
   var revealObserver = null;
   if ("IntersectionObserver" in window) {

@@ -644,56 +644,162 @@ a:hover { text-decoration: underline; }
 .read-more-btn .arr { display: inline-block; transition: transform 0.3s var(--ease-out); }
 .service-row.expanded .read-more-btn .arr { transform: rotate(90deg); }
 
-/* ---------- Industries ---------- */
-.industries-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 22px;
-}
-.industry-card {
+/* ---------- Industries: orbit ---------- */
+.orbit-stage {
   position: relative;
-  background: #fff;
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  padding: 26px;
-  box-shadow: var(--shadow);
-  overflow: hidden;
-  transition: transform 0.3s var(--ease-out), box-shadow 0.3s, border-color 0.3s;
+  width: 560px;
+  height: 560px;
+  max-width: 100%;
+  margin: 30px auto 10px;
+  --r: 215px;
 }
-/* верхняя акцентная полоска появляется при наведении */
-.industry-card::before {
-  content: "";
+.orbit-ring {
+  position: absolute;
+  inset: 0;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .orbit-ring { animation: orbitSpin 90s linear infinite; }
+  .orbit-counter { animation: orbitCounterSpin 90s linear infinite; }
+  .orbit-stage:hover .orbit-ring,
+  .orbit-stage:hover .orbit-counter,
+  .orbit-stage:focus-within .orbit-ring,
+  .orbit-stage:focus-within .orbit-counter,
+  .orbit-stage.is-interacting .orbit-ring,
+  .orbit-stage.is-interacting .orbit-counter {
+    animation-play-state: paused;
+  }
+}
+@keyframes orbitSpin { to { transform: rotate(360deg); } }
+@keyframes orbitCounterSpin { to { transform: rotate(-360deg); } }
+
+/* радиальные спицы от ядра к узлам */
+.orbit-spoke {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: var(--r);
+  height: 2px;
+  background: linear-gradient(90deg, color-mix(in srgb, var(--blue) 30%, transparent), transparent 92%);
+  transform-origin: 0 50%;
+  transform: rotate(var(--angle));
+}
+
+/* позиционирование узла по окружности (статичное смещение на угол) */
+.orbit-item {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  transform: rotate(var(--angle)) translateX(var(--r));
+}
+/* компенсирует анимированное вращение кольца, чтобы карточка не крутилась */
+.orbit-counter {
   position: absolute;
   top: 0;
   left: 0;
-  right: 0;
-  height: 3px;
-  background: var(--c);
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform 0.4s var(--ease-out);
 }
-.industry-card:hover {
-  transform: translateY(-6px);
-  box-shadow: var(--shadow-lg);
-  border-color: color-mix(in srgb, var(--c) 40%, var(--line));
+
+.orbit-node {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: translate(-50%, -50%) rotate(calc(-1 * var(--angle)));
+  display: flex;
+  align-items: center;
+  gap: 0;
+  width: 64px;
+  height: 64px;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: #fff;
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  overflow: hidden;
+  font: inherit;
+  text-align: left;
+  white-space: nowrap;
+  z-index: 1;
+  transition: width 0.4s var(--ease-out), height 0.3s var(--ease-out), padding 0.4s var(--ease-out),
+    box-shadow 0.3s, border-color 0.3s, background 0.3s;
 }
-.industry-card:hover::before { transform: scaleX(1); }
-.industry-card .ind-icon {
-  width: 50px;
-  height: 50px;
-  border-radius: 14px;
-  background: color-mix(in srgb, var(--c) 12%, #fff);
-  color: var(--c);
+.orbit-node-icon {
+  flex: none;
+  width: 64px;
+  height: 64px;
   display: grid;
   place-items: center;
-  margin-bottom: 14px;
-  transition: background 0.3s, color 0.3s, transform 0.3s var(--ease-out);
+  color: var(--c);
+  transition: color 0.3s, background 0.3s;
 }
-.industry-card:hover .ind-icon { background: var(--c); color: #fff; transform: scale(1.08) rotate(-3deg); }
-.industry-card .ind-icon svg { width: 25px; height: 25px; }
-.industry-card h3 { margin: 0 0 8px; font-size: 18px; color: var(--navy); }
-.industry-card p { margin: 0; color: var(--muted); font-size: 14.5px; }
+.orbit-node-icon svg { width: 26px; height: 26px; }
+.orbit-node-body {
+  flex: none;
+  max-width: 0;
+  opacity: 0;
+  padding-right: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  transition: max-width 0.4s var(--ease-out), opacity 0.25s;
+}
+.orbit-node-title { font-size: 14.5px; font-weight: 700; color: var(--navy); white-space: nowrap; }
+.orbit-node-text {
+  font-size: 12.5px;
+  color: var(--muted);
+  line-height: 1.4;
+  white-space: normal;
+  max-width: 200px;
+}
+.orbit-node:hover,
+.orbit-node:focus-visible,
+.orbit-node.is-open {
+  width: auto;
+  height: auto;
+  min-height: 64px;
+  padding: 10px 18px 10px 0;
+  background: color-mix(in srgb, var(--c) 6%, #fff);
+  border-color: color-mix(in srgb, var(--c) 45%, var(--line));
+  box-shadow: var(--shadow-lg);
+  z-index: 5;
+}
+.orbit-node:hover .orbit-node-icon,
+.orbit-node:focus-visible .orbit-node-icon,
+.orbit-node.is-open .orbit-node-icon { background: var(--c); color: #fff; }
+.orbit-node:hover .orbit-node-body,
+.orbit-node:focus-visible .orbit-node-body,
+.orbit-node.is-open .orbit-node-body {
+  max-width: 220px;
+  opacity: 1;
+  padding-right: 4px;
+  padding-left: 14px;
+}
+
+/* центральное «ядро» BI */
+.orbit-core {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  background: linear-gradient(150deg, var(--blue), var(--navy));
+  color: #fff;
+  box-shadow: 0 0 0 8px color-mix(in srgb, var(--blue) 10%, transparent), 0 18px 40px rgba(15, 42, 95, 0.28);
+  z-index: 2;
+}
+.orbit-core-mark { width: 36px; height: 36px; display: grid; place-items: center; }
+.orbit-core-mark svg { width: 22px; height: 22px; }
+.orbit-core-title { font-size: 16px; font-weight: 800; letter-spacing: -0.01em; }
+.orbit-core-sub { font-size: 11px; color: rgba(255, 255, 255, 0.78); text-align: center; max-width: 96px; }
 
 /* ---------- Careers ---------- */
 .careers-box {
@@ -989,7 +1095,6 @@ a:hover { text-decoration: underline; }
   .service-row { grid-template-columns: 1fr; }
   .service-row.flip .service-banner { order: 0; }
   .service-banner { min-height: 220px; }
-  .industries-grid { grid-template-columns: repeat(2, 1fr); }
   .about-grid { grid-template-columns: 1fr; gap: 36px; }
   .footer-main { grid-template-columns: 1fr 1fr; }
   .hero-inner { grid-template-columns: 1fr; gap: 34px; }
@@ -1044,7 +1149,6 @@ a:hover { text-decoration: underline; }
   .hero-form-card #heroRecaptcha { transform: scale(0.85); transform-origin: left top; margin-bottom: -8px; }
   .hero-form-card .btn-primary { padding: 11px 20px; }
   .news-card { flex-basis: 82%; }
-  .industries-grid { grid-template-columns: 1fr; }
   .careers-box { padding: 40px 28px; }
   .footer-main { grid-template-columns: 1fr; gap: 32px; padding: 44px 0 32px; }
   .modal { padding: 28px 22px; }
@@ -1608,6 +1712,76 @@ a:hover { text-decoration: underline; }
   /* дашборд уходит под таймлайн, перестаёт «прилипать» */
   .approach-layout { grid-template-columns: 1fr; gap: 36px; }
   .approach-visual { position: static; width: 100%; max-width: 520px; margin: 4px auto 0; }
+
+  /* Отрасли: орбита вырождается в вертикальный список карточек —
+     та же разметка, без вращения, спицы скрыты, узлы всегда раскрыты. */
+  .orbit-stage {
+    width: auto;
+    height: auto;
+    margin: 22px 0 0;
+  }
+  .orbit-spoke { display: none; }
+  .orbit-ring,
+  .orbit-counter,
+  .orbit-item {
+    position: static;
+    width: auto;
+    height: auto;
+    transform: none !important;
+    animation: none !important;
+  }
+  .orbit-ring {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .orbit-core {
+    position: static;
+    transform: none;
+    flex-direction: row;
+    width: auto;
+    height: auto;
+    border-radius: var(--radius);
+    justify-content: flex-start;
+    gap: 14px;
+    padding: 16px 20px;
+    margin-bottom: 14px;
+    box-shadow: var(--shadow);
+  }
+  .orbit-core-sub { text-align: left; max-width: none; }
+  .orbit-node {
+    position: static;
+    display: flex;
+    align-items: flex-start;
+    width: 100%;
+    height: auto;
+    min-height: 0;
+    padding: 16px 18px 16px 0;
+    border-radius: var(--radius);
+    background: #fff;
+    overflow: visible;
+    white-space: normal;
+    transform: none !important;
+  }
+  .orbit-node-icon { width: 56px; height: 56px; }
+  .orbit-node-body {
+    flex: 1 1 auto;
+    max-width: none;
+    opacity: 1;
+    overflow: visible;
+    white-space: normal;
+    padding-left: 14px;
+    padding-right: 6px;
+    min-width: 0;
+  }
+  .orbit-node-title { white-space: normal; }
+  .orbit-node-text { max-width: none; white-space: normal; }
+  .orbit-node:hover,
+  .orbit-node:focus-visible,
+  .orbit-node.is-open {
+    width: 100%;
+    padding: 16px 18px 16px 0;
+  }
 }
 @media (max-width: 768px) {
   /* на узких экранах номер выравниваем по шапке карточки, а не по центру */
