@@ -7,6 +7,7 @@ window.SERVICES = [
   {
     id: "management-reporting",
     tint: "#1d4ed8",
+    img: "../images/services/management-reporting.jpg",
     icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 21h18"/><rect x="5" y="10" width="3.4" height="8" rx="0.6"/><rect x="10.3" y="6" width="3.4" height="12" rx="0.6"/><rect x="15.6" y="13" width="3.4" height="5" rx="0.6"/><path d="M5 6.5l5-3 5 2.5 4.5-2.5"/></svg>',
     title: { en: "Management Reporting", ru: "Управленческая отчётность" },
     short: {
@@ -33,6 +34,7 @@ window.SERVICES = [
   {
     id: "sales-reporting",
     tint: "#0e7490",
+    img: "../images/services/sales-reporting.jpg",
     icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 17l5.2-5.2 3.6 3.6L21 7"/><path d="M15.5 7H21v5.5"/></svg>',
     title: { en: "Sales Reporting", ru: "Отчётность по продажам" },
     short: {
@@ -55,6 +57,7 @@ window.SERVICES = [
   {
     id: "marketing-reporting",
     tint: "#7c3aed",
+    img: "../images/services/marketing-reporting.jpg",
     icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.6" fill="currentColor" stroke="none"/></svg>',
     title: { en: "Marketing Reporting", ru: "Маркетинговая отчётность" },
     short: {
@@ -77,6 +80,7 @@ window.SERVICES = [
   {
     id: "production-reporting",
     tint: "#b45309",
+    img: "../images/services/production-reporting.jpg",
     icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.8v2.6M12 18.6v2.6M2.8 12h2.6M18.6 12h2.6M5.5 5.5l1.9 1.9M16.6 16.6l1.9 1.9M18.5 5.5l-1.9 1.9M7.4 16.6l-1.9 1.9"/></svg>',
     title: { en: "Production Reporting", ru: "Производственная отчётность" },
     short: {
@@ -99,6 +103,7 @@ window.SERVICES = [
   {
     id: "supply-chain-reporting",
     tint: "#047857",
+    img: "../images/services/supply-chain-reporting.jpg",
     icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="2.5" y="8.5" width="11" height="8" rx="1"/><path d="M13.5 11h4l3 3v2.5h-7z"/><circle cx="7" cy="18.5" r="1.7"/><circle cx="17" cy="18.5" r="1.7"/></svg>',
     title: { en: "Supply Chain Reporting", ru: "Отчётность по цепочкам поставок" },
     short: {
@@ -121,6 +126,7 @@ window.SERVICES = [
   {
     id: "security-it-reporting",
     tint: "#334155",
+    img: "../images/services/security-it-reporting.jpg",
     icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 3l7.5 3v5.2c0 4.6-3.1 8-7.5 9.8-4.4-1.8-7.5-5.2-7.5-9.8V6z"/><path d="M9 12.2l2.1 2.1L15.3 10"/></svg>',
     title: { en: "IT & Cybersecurity Reporting", ru: "Отчётность по ИТ и кибербезопасности" },
     short: {
@@ -143,6 +149,7 @@ window.SERVICES = [
   {
     id: "risk-management-reporting",
     tint: "#be123c",
+    img: "../images/services/risk-management-reporting.jpg",
     icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 4l9 16H3z"/><path d="M12 10v4.5"/><circle cx="12" cy="17.2" r="0.4" fill="currentColor"/></svg>',
     title: { en: "Risk Management Reporting", ru: "Отчётность по управлению рисками" },
     short: {

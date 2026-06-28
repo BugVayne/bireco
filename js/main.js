@@ -153,12 +153,10 @@
 
     grid.innerHTML = (window.SERVICES || [])
       .map(function (s, i) {
-        var num = (i + 1 < 10 ? "0" : "") + (i + 1);
         var expanded = expandedIds[s.id] ? " expanded" : "";
         return (
           '<article class="service-row reveal' + (i % 2 ? " flip" : "") + expanded + '" data-id="' + s.id + '" style="--tint:' + s.tint + ";--tint-dark:" + s.tint + 'd9">' +
-          '<div class="service-banner">' +
-          '<span class="service-num" aria-hidden="true">' + num + "</span>" +
+          '<div class="service-banner"' + (s.img ? ' style="--photo:url(\'' + esc(s.img) + "')\"" : "") + ">" +
           '<span class="service-icon">' + s.icon + "</span>" +
           "<h3>" + esc(s.title[lang]) + "</h3>" +
           '<span class="pulse-bars" aria-hidden="true"><span></span><span></span><span></span><span></span></span>' +

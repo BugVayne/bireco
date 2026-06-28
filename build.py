@@ -158,13 +158,13 @@ def render_full(blocks):
 
 
 def service_row_html(s, i, lang):
-    num = f"{i + 1:02d}"
     flip = " flip" if i % 2 else ""
     return (
         f'<article class="service-row{flip}" data-id="{esc(s["id"])}" '
         f'style="--tint:{s["tint"]};--tint-dark:{s["tint"]}d9">'
-        f'<div class="service-banner">'
-        f'<span class="service-num" aria-hidden="true">{num}</span>'
+        f'<div class="service-banner"'
+        + (f' style="--photo:url(\'{esc(s["img"])}\')"' if s.get("img") else "")
+        + ">"
         f'<span class="service-icon">{s["icon"]}</span>'
         f'<h3>{esc(s["title"][lang])}</h3>'
         f'<span class="pulse-bars" aria-hidden="true"><span></span><span></span><span></span><span></span></span>'
