@@ -644,24 +644,14 @@ a:hover { text-decoration: underline; }
 .read-more-btn .arr { display: inline-block; transition: transform 0.3s var(--ease-out); }
 .service-row.expanded .read-more-btn .arr { transform: rotate(90deg); }
 
-/* ---------- Industries: bento grid ---------- */
+/* ---------- Industries: masonry bento ----------
+   Колонки вместо жёсткой сетки: высота каждой плитки определяется её
+   собственным текстом, браузер сам балансирует колонки — без выделения
+   одной из плиток и без пустот внутри коротких карточек. */
 .industries-bento {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  grid-template-rows: repeat(3, minmax(150px, 1fr));
-  grid-template-areas:
-    "feat feat t2"
-    "feat feat t3"
-    "t4   t5   t6";
-  gap: 16px;
+  column-count: 3;
+  column-gap: 16px;
 }
-.ind-tile:nth-child(1) { grid-area: feat; }
-.ind-tile:nth-child(2) { grid-area: t2; }
-.ind-tile:nth-child(3) { grid-area: t3; }
-.ind-tile:nth-child(4) { grid-area: t4; }
-.ind-tile:nth-child(5) { grid-area: t5; }
-.ind-tile:nth-child(6) { grid-area: t6; }
-
 .ind-tile {
   position: relative;
   display: flex;
@@ -672,14 +662,16 @@ a:hover { text-decoration: underline; }
   padding: 22px 24px 24px;
   box-shadow: var(--shadow);
   overflow: hidden;
+  break-inside: avoid;
+  margin: 0 0 16px;
   transition: transform 0.35s var(--ease-out), box-shadow 0.35s, border-color 0.3s;
 }
-.ind-tile:not(.feat):hover {
+.ind-tile:hover {
   transform: translateY(-5px);
   box-shadow: var(--shadow-lg);
   border-color: color-mix(in srgb, var(--c) 45%, var(--line));
 }
-.ind-tile:not(.feat)::before {
+.ind-tile::before {
   content: "";
   position: absolute;
   inset: 0 0 auto 0;
@@ -689,7 +681,7 @@ a:hover { text-decoration: underline; }
   transform-origin: left;
   transition: transform 0.4s var(--ease-out);
 }
-.ind-tile:not(.feat):hover::before { transform: scaleX(1); }
+.ind-tile:hover::before { transform: scaleX(1); }
 
 .ind-ic {
   width: 44px;
@@ -704,7 +696,7 @@ a:hover { text-decoration: underline; }
   transition: transform 0.35s var(--ease-out);
 }
 .ind-ic svg { width: 22px; height: 22px; }
-.ind-tile:not(.feat):hover .ind-ic { transform: rotate(-4deg) scale(1.06); }
+.ind-tile:hover .ind-ic { transform: rotate(-4deg) scale(1.06); }
 .ind-tile h3 {
   margin: 0 0 8px;
   font-size: 17px;
@@ -713,27 +705,6 @@ a:hover { text-decoration: underline; }
   color: var(--navy);
 }
 .ind-tile p { margin: 0; color: var(--muted); font-size: 14.5px; line-height: 1.6; }
-
-/* featured tile: large colored panel, fills the top-left 2x2 block */
-.ind-tile.feat {
-  justify-content: flex-end;
-  padding: 30px;
-  border: 0;
-  color: #fff;
-  background: linear-gradient(150deg, var(--c), color-mix(in srgb, var(--c) 62%, var(--navy-dark)));
-}
-.ind-tile.feat:hover { transform: translateY(-5px); box-shadow: var(--shadow-lg); }
-.ind-tile.feat .ind-ic {
-  width: 52px;
-  height: 52px;
-  border-radius: 14px;
-  background: rgba(255, 255, 255, 0.16);
-  color: #fff;
-  margin-bottom: 18px;
-}
-.ind-tile.feat .ind-ic svg { width: 26px; height: 26px; }
-.ind-tile.feat h3 { color: #fff; font-size: 21px; margin-bottom: 10px; }
-.ind-tile.feat p { color: rgba(255, 255, 255, 0.88); font-size: 15px; line-height: 1.7; max-width: 34ch; }
 
 /* ---------- Careers ---------- */
 .careers-box {
@@ -1509,11 +1480,11 @@ a:hover { text-decoration: underline; }
 /* ---------- Why Choose Us (static radial) ---------- */
 .why-radial {
   position: relative;
-  width: 780px;
-  height: 780px;
+  width: 900px;
+  height: 760px;
   max-width: 100%;
   margin: 30px auto 10px;
-  --r: 270px;
+  --r: 300px;
 }
 /* радиальные спицы от ядра к карточкам — статичные, без анимации */
 .why-spoke {
@@ -1557,7 +1528,7 @@ a:hover { text-decoration: underline; }
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 230px;
+  width: 300px;
   display: flex;
   flex-direction: column;
   background: #fff;
@@ -1587,6 +1558,12 @@ a:hover { text-decoration: underline; }
 }
 .why-tile:hover::before { transform: scaleX(1); }
 
+.why-tile-head {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 10px;
+}
 .why-ic {
   width: 44px;
   height: 44px;
@@ -1596,13 +1573,12 @@ a:hover { text-decoration: underline; }
   place-items: center;
   color: var(--c);
   background: color-mix(in srgb, var(--c) 12%, #fff);
-  margin-bottom: 14px;
   transition: transform 0.35s var(--ease-out);
 }
 .why-ic svg { width: 22px; height: 22px; }
 .why-tile:hover .why-ic { transform: rotate(-4deg) scale(1.06); }
 .why-tile h3 {
-  margin: 0 0 8px;
+  margin: 0;
   font-size: 16px;
   font-weight: 700;
   letter-spacing: -0.01em;
@@ -1653,17 +1629,8 @@ a:hover { text-decoration: underline; }
 
 /* ---------- Адаптив новых секций ---------- */
 @media (max-width: 980px) {
-  /* Отрасли: bento сжимается до 2 колонок, feat-плитка — баннер сверху */
-  .industries-bento {
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: auto;
-    grid-template-areas:
-      "feat feat"
-      "t2 t3"
-      "t4 t5"
-      "t6 t6";
-  }
-  .ind-tile.feat p { max-width: 46ch; }
+  /* Отрасли: masonry сжимается до 2 колонок */
+  .industries-bento { column-count: 2; }
 }
 @media (max-width: 900px) {
   /* дашборд уходит под таймлайн, перестаёт «прилипать» */
@@ -1708,11 +1675,7 @@ a:hover { text-decoration: underline; }
 }
 @media (max-width: 620px) {
   .hero-points { grid-template-columns: 1fr; }
-  .industries-bento {
-    grid-template-columns: 1fr;
-    grid-template-areas: "feat" "t2" "t3" "t4" "t5" "t6";
-  }
-  .ind-tile.feat { padding: 26px 24px; }
+  .industries-bento { column-count: 1; }
   .cta-box { padding: 40px 26px; }
 }
 
