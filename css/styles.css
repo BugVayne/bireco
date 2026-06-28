@@ -10,6 +10,8 @@
   --blue-hover: #1d4ed8;
   --ice: #eef4fc;
   --ice-2: #e2ecf9;
+  --accent: #0891b2;
+  --c: var(--blue); /* per-card tint fallback */
   --ink: #0b1220;
   --muted: #5b6b85;
   --line: #dde6f2;
@@ -169,23 +171,34 @@ a:hover { text-decoration: underline; }
 }
 .logo:hover { text-decoration: none; }
 .logo-mark {
-  width: 32px;
-  height: 32px;
-  border-radius: 8px;
+  width: 34px;
+  height: 34px;
+  border-radius: 9px;
   background: linear-gradient(135deg, var(--blue), var(--navy));
   display: grid;
   place-items: center;
   color: #fff;
   flex: none;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  transition: transform 0.3s var(--ease-out), box-shadow 0.3s;
 }
-.logo-mark svg { width: 18px; height: 18px; }
+.logo:hover .logo-mark { transform: translateY(-1px) rotate(-3deg); box-shadow: 0 8px 20px rgba(37, 99, 235, 0.45); }
+.logo-mark svg { width: 19px; height: 19px; overflow: visible; }
 .logo:hover .logo-mark svg path { animation: logoBars 0.7s var(--ease-out); }
+.logo:hover .logo-mark svg path:nth-child(2) { animation-delay: 0.07s; }
+.logo:hover .logo-mark svg path:nth-child(3) { animation-delay: 0.14s; }
+.logo:hover .logo-mark svg circle { animation: logoPeak 0.7s var(--ease-out) 0.2s; }
 @keyframes logoBars {
   0% { transform: scaleY(1); }
-  40% { transform: scaleY(0.55); }
+  40% { transform: scaleY(0.5); }
   100% { transform: scaleY(1); }
 }
-.logo-mark svg path { transform-origin: center bottom; }
+@keyframes logoPeak {
+  0%, 100% { transform: translateY(0); opacity: 1; }
+  45% { transform: translateY(3px); opacity: 0.4; }
+}
+.logo-mark svg path { transform-origin: center bottom; transform-box: fill-box; }
+.logo-mark svg circle { transform-box: fill-box; transform-origin: center; }
 
 .main-nav { display: flex; gap: 26px; margin-left: auto; }
 .main-nav a {
@@ -374,19 +387,21 @@ a:hover { text-decoration: underline; }
   display: flex;
   gap: 22px;
   overflow-x: auto;
+  overflow-y: hidden;
   scroll-snap-type: x mandatory;
   scroll-behavior: smooth;
-  padding: 4px 4px 18px;
+  padding: 12px 4px 30px;
   scrollbar-width: thin;
   scrollbar-color: var(--ice-2) transparent;
 }
 .news-card {
-  flex: 0 0 320px;
+  flex: 0 0 calc((100% - 44px) / 3);
+  min-height: 264px;
   scroll-snap-align: start;
   background: #fff;
   border: 1px solid var(--line);
   border-radius: var(--radius);
-  padding: 24px;
+  padding: 26px 24px;
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -636,27 +651,47 @@ a:hover { text-decoration: underline; }
   gap: 22px;
 }
 .industry-card {
+  position: relative;
   background: #fff;
   border: 1px solid var(--line);
   border-radius: var(--radius);
   padding: 26px;
   box-shadow: var(--shadow);
-  transition: transform 0.3s var(--ease-out), box-shadow 0.3s;
+  overflow: hidden;
+  transition: transform 0.3s var(--ease-out), box-shadow 0.3s, border-color 0.3s;
 }
-.industry-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-lg); }
+/* верхняя акцентная полоска появляется при наведении */
+.industry-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--c);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.4s var(--ease-out);
+}
+.industry-card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-lg);
+  border-color: color-mix(in srgb, var(--c) 40%, var(--line));
+}
+.industry-card:hover::before { transform: scaleX(1); }
 .industry-card .ind-icon {
-  width: 46px;
-  height: 46px;
-  border-radius: 50%;
-  background: var(--ice);
-  color: var(--blue);
+  width: 50px;
+  height: 50px;
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--c) 12%, #fff);
+  color: var(--c);
   display: grid;
   place-items: center;
   margin-bottom: 14px;
   transition: background 0.3s, color 0.3s, transform 0.3s var(--ease-out);
 }
-.industry-card:hover .ind-icon { background: var(--blue); color: #fff; transform: scale(1.08); }
-.industry-card .ind-icon svg { width: 24px; height: 24px; }
+.industry-card:hover .ind-icon { background: var(--c); color: #fff; transform: scale(1.08) rotate(-3deg); }
+.industry-card .ind-icon svg { width: 25px; height: 25px; }
 .industry-card h3 { margin: 0 0 8px; font-size: 18px; color: var(--navy); }
 .industry-card p { margin: 0; color: var(--muted); font-size: 14.5px; }
 
@@ -960,6 +995,7 @@ a:hover { text-decoration: underline; }
   .hero-inner { grid-template-columns: 1fr; gap: 34px; }
   .hero-copy { max-width: 680px; }
   .hero-form-card { max-width: 480px; }
+  .news-card { flex-basis: calc((100% - 22px) / 2); }
 }
 
 @media (max-width: 760px) {
@@ -1007,7 +1043,7 @@ a:hover { text-decoration: underline; }
   .hero-form-card .captcha-wrap { margin: 2px 0 8px; min-height: 0; }
   .hero-form-card #heroRecaptcha { transform: scale(0.85); transform-origin: left top; margin-bottom: -8px; }
   .hero-form-card .btn-primary { padding: 11px 20px; }
-  .news-card { flex-basis: 272px; }
+  .news-card { flex-basis: 82%; }
   .industries-grid { grid-template-columns: 1fr; }
   .careers-box { padding: 40px 28px; }
   .footer-main { grid-template-columns: 1fr; gap: 32px; padding: 44px 0 32px; }
@@ -1093,12 +1129,19 @@ a:hover { text-decoration: underline; }
 }
 
 /* ---------- Сервисы: списки в раскрытом описании ---------- */
-.service-full ul { margin: 4px 0 11px; padding-left: 2px; list-style: none; }
+.service-full ul {
+  margin: 6px 0 14px;
+  padding-left: 2px;
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: 4px 26px;
+}
 .service-full li {
   position: relative;
   padding-left: 18px;
-  margin-bottom: 5px;
-  line-height: 1.6;
+  margin-bottom: 4px;
+  line-height: 1.5;
 }
 .service-full li::before {
   content: "";
@@ -1111,67 +1154,412 @@ a:hover { text-decoration: underline; }
   background: var(--tint, var(--blue));
 }
 
-/* ---------- Our Approach ---------- */
-.approach-steps {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 18px;
-  counter-reset: step;
+/* ---------- Our Approach (профессиональный таймлайн с центральной осью) ---------- */
+.approach-timeline {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 4px 0 0;
+}
+/* центральная ось: вертикальный «рельс» с растворяющимися концами */
+.approach-timeline::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 34px;
+  width: 3px;
+  border-radius: 3px;
+  background: linear-gradient(
+    180deg,
+    transparent 0,
+    var(--ice-2) 7%,
+    var(--ice-2) 93%,
+    transparent 100%
+  );
+  z-index: 0;
 }
 .approach-step {
   position: relative;
-  background: #fff;
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  padding: 26px 22px 24px;
-  box-shadow: var(--shadow);
-  transition: transform 0.3s var(--ease-out), box-shadow 0.3s;
-}
-.approach-step:hover { transform: translateY(-6px); box-shadow: var(--shadow-lg); }
-.approach-num {
-  display: inline-block;
-  font-size: 15px;
-  font-weight: 800;
-  color: var(--blue);
-  letter-spacing: 0.04em;
-  background: var(--ice);
-  border-radius: 8px;
-  padding: 5px 10px;
-  margin-bottom: 14px;
-}
-.approach-step h3 { margin: 0 0 8px; font-size: 17px; color: var(--navy); }
-.approach-step p { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.6; }
-
-/* ---------- Why Choose Us ---------- */
-.why-grid {
+  z-index: 1;
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 22px;
+  grid-template-columns: 68px 1fr;
+  column-gap: 28px;
+  align-items: center;
 }
-.why-card {
+/* узел-номер на оси */
+.approach-node {
+  grid-column: 1;
+  grid-row: 1;
+  justify-self: center;
+  position: relative;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  width: 62px;
+  height: 62px;
+  border-radius: 50%;
+  background: linear-gradient(150deg, var(--c), color-mix(in srgb, var(--c) 58%, var(--navy)));
+  color: #fff;
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+  border: 4px solid #fff;
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--c) 28%, transparent),
+    0 10px 24px color-mix(in srgb, var(--c) 34%, transparent);
+  transition: transform 0.35s var(--ease-out), box-shadow 0.35s;
+}
+/* соединительная «рука» от узла к карточке */
+.approach-node::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 34px;
+  height: 2px;
+  background: color-mix(in srgb, var(--c) 55%, var(--ice-2));
+  transform: translateY(-50%);
+}
+.approach-node::after { left: 100%; }
+/* карточка этапа */
+.approach-card {
+  grid-column: 2;
+  grid-row: 1;
+  justify-self: start;
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 620px;
   background: #fff;
   border: 1px solid var(--line);
-  border-radius: var(--radius);
-  padding: 28px 26px;
+  border-radius: 16px;
+  padding: 18px 22px 19px;
   box-shadow: var(--shadow);
-  transition: transform 0.3s var(--ease-out), box-shadow 0.3s;
+  overflow: hidden;
+  transition: transform 0.35s var(--ease-out), box-shadow 0.35s, border-color 0.35s;
 }
-.why-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-lg); }
-.why-icon {
+.approach-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--c), color-mix(in srgb, var(--c) 35%, #fff));
+}
+.approach-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-lg);
+  border-color: color-mix(in srgb, var(--c) 38%, var(--line));
+}
+.approach-step:hover .approach-node {
+  transform: scale(1.08);
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--c) 32%, transparent),
+    0 14px 30px color-mix(in srgb, var(--c) 45%, transparent);
+}
+.approach-card-head {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 9px;
+}
+.approach-icon {
+  flex: none;
   width: 46px;
   height: 46px;
   border-radius: 12px;
-  background: var(--ice);
-  color: var(--blue);
+  background: color-mix(in srgb, var(--c) 12%, #fff);
+  color: var(--c);
   display: grid;
   place-items: center;
-  margin-bottom: 16px;
-  transition: background 0.3s, color 0.3s, transform 0.3s var(--ease-out);
+  transition: background 0.35s, color 0.35s, transform 0.35s var(--ease-out);
 }
-.why-card:hover .why-icon { background: var(--blue); color: #fff; transform: scale(1.08); }
-.why-icon svg { width: 24px; height: 24px; }
-.why-card h3 { margin: 0 0 8px; font-size: 18px; color: var(--navy); }
-.why-card p { margin: 0; color: var(--muted); font-size: 14.5px; line-height: 1.6; }
+.approach-icon svg { width: 23px; height: 23px; }
+.approach-card:hover .approach-icon {
+  background: var(--c);
+  color: #fff;
+  transform: scale(1.06) rotate(-3deg);
+}
+.approach-card h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--navy);
+  letter-spacing: -0.01em;
+  line-height: 1.25;
+}
+.approach-card p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 14.5px;
+  line-height: 1.62;
+}
+
+/* ---------- финальный этап: «результат», акцентный ---------- */
+.approach-step:last-child .approach-node {
+  width: 68px;
+  height: 68px;
+  font-size: 19px;
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--c) 30%, transparent),
+    0 0 0 9px color-mix(in srgb, var(--c) 13%, transparent),
+    0 12px 28px color-mix(in srgb, var(--c) 42%, transparent);
+}
+/* расходящееся кольцо-пульс у финального узла */
+.approach-step:last-child .approach-node::before {
+  content: "";
+  position: absolute;
+  inset: -5px;
+  border-radius: 50%;
+  border: 2px solid color-mix(in srgb, var(--c) 55%, transparent);
+  animation: approachPulse 2.6s var(--ease-out) infinite;
+  z-index: -1;
+}
+@keyframes approachPulse {
+  0% { transform: scale(0.9); opacity: 0.85; }
+  70%, 100% { transform: scale(1.5); opacity: 0; }
+}
+.approach-step:last-child .approach-card {
+  background: linear-gradient(150deg,
+    color-mix(in srgb, var(--c) 92%, #fff) 0%,
+    var(--c) 52%,
+    color-mix(in srgb, var(--c) 72%, var(--navy)) 100%);
+  border-color: transparent;
+  box-shadow: 0 18px 44px color-mix(in srgb, var(--c) 36%, transparent);
+}
+.approach-step:last-child .approach-card::before { display: none; }
+.approach-step:last-child .approach-card h3 { color: #fff; }
+.approach-step:last-child .approach-card p { color: rgba(255, 255, 255, 0.88); }
+.approach-step:last-child .approach-icon {
+  background: rgba(255, 255, 255, 0.18);
+  color: #fff;
+}
+.approach-step:last-child .approach-card:hover .approach-icon {
+  background: rgba(255, 255, 255, 0.28);
+  color: #fff;
+}
+.approach-step:last-child .approach-node::after {
+  background: color-mix(in srgb, var(--c) 70%, var(--ice-2));
+}
+
+/* ---------- Раскладка: таймлайн слева + дашборд-макет справа ---------- */
+.approach-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 0.82fr);
+  gap: 44px;
+  align-items: start;
+}
+.approach-visual {
+  position: sticky;
+  top: 96px;
+}
+
+/* мини-дашборд (декоративный макет) */
+.dash {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  box-shadow: var(--shadow-lg);
+  padding: 16px;
+  overflow: hidden;
+}
+.dash-top {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 2px 4px 13px;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 14px;
+}
+.dash-dots { display: flex; gap: 5px; }
+.dash-dots i { width: 9px; height: 9px; border-radius: 50%; background: var(--ice-2); }
+.dash-dots i:nth-child(1) { background: #ff5f57; }
+.dash-dots i:nth-child(2) { background: #febc2e; }
+.dash-dots i:nth-child(3) { background: #28c840; }
+.dash-name { font-size: 13px; font-weight: 700; color: var(--navy); }
+.dash-live {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #059669;
+}
+.dash-live i {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: #059669;
+  box-shadow: 0 0 0 3px color-mix(in srgb, #059669 20%, transparent);
+}
+.dash-kpis {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 13px;
+}
+.dash-kpi { background: var(--ice); border-radius: 11px; padding: 10px 12px; }
+.dash-kpi-l { display: block; font-size: 11px; color: var(--muted); }
+.dash-kpi-v {
+  display: block;
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--navy);
+  letter-spacing: -0.02em;
+  margin: 3px 0 2px;
+}
+.dash-kpi-d { font-size: 11px; font-weight: 700; }
+.dash-kpi-d.up { color: #059669; }
+.dash-kpi-d.down { color: #dc2626; }
+.dash-row {
+  display: grid;
+  grid-template-columns: 1.45fr 1fr;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.dash-panel {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 13px;
+  padding: 12px 13px;
+}
+.dash-panel-t {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--muted);
+  margin-bottom: 11px;
+}
+.dash-bars-grid {
+  display: flex;
+  align-items: flex-end;
+  gap: 7px;
+  height: 96px;
+}
+.dash-bars-grid i {
+  flex: 1;
+  height: var(--h, 50%);
+  min-height: 6px;
+  border-radius: 4px 4px 0 0;
+  background: linear-gradient(180deg, var(--blue), color-mix(in srgb, var(--blue) 45%, var(--accent)));
+}
+.dash-bars-grid i:last-child {
+  background: linear-gradient(180deg, #059669, #34d399);
+}
+.dash-donut { display: flex; flex-direction: column; }
+.donut {
+  width: 88px;
+  height: 88px;
+  margin: 0 auto 10px;
+  border-radius: 50%;
+  background: conic-gradient(var(--blue) 0 46%, var(--accent) 46% 74%, #0d9488 74% 100%);
+  position: relative;
+}
+.donut::after {
+  content: "";
+  position: absolute;
+  inset: 26%;
+  border-radius: 50%;
+  background: #fff;
+}
+.donut-leg { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 5px; }
+.donut-leg li { display: flex; align-items: center; gap: 7px; font-size: 11px; color: var(--ink); }
+.donut-leg i { width: 9px; height: 9px; border-radius: 3px; flex: none; }
+.dash-trend svg { display: block; width: 100%; height: 60px; }
+
+/* ---------- Why Choose Us (bento) ---------- */
+.why-bento {
+  display: grid;
+  grid-template-columns: 1.25fr 1fr 1fr;
+  grid-auto-rows: 1fr;
+  gap: 16px;
+}
+.why-tile {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 24px 24px 26px;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  transition: transform 0.35s var(--ease-out), box-shadow 0.35s, border-color 0.3s;
+}
+.why-tile:not(.feat):hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-lg);
+  border-color: color-mix(in srgb, var(--c) 45%, var(--line));
+}
+/* thin colored top accent on the small tiles */
+.why-tile:not(.feat)::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 3px;
+  background: var(--c);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.4s var(--ease-out);
+}
+.why-tile:not(.feat):hover::before { transform: scaleX(1); }
+
+.why-tile-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+.why-ic {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  flex: none;
+  display: grid;
+  place-items: center;
+  color: var(--c);
+  background: color-mix(in srgb, var(--c) 12%, #fff);
+  transition: transform 0.35s var(--ease-out);
+}
+.why-ic svg { width: 22px; height: 22px; }
+.why-tile:not(.feat):hover .why-ic { transform: rotate(-4deg) scale(1.06); }
+.why-tile h3 {
+  margin: 0 0 8px;
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--navy);
+}
+.why-tile p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 14.5px;
+  line-height: 1.65;
+}
+
+/* featured tile: big colored panel, spans full height of the right 2x2 */
+.why-tile.feat {
+  grid-column: 1;
+  grid-row: 1 / span 2;
+  justify-content: flex-end;
+  padding: 30px;
+  border: 0;
+  color: #fff;
+  background: linear-gradient(150deg, var(--c), color-mix(in srgb, var(--c) 62%, var(--navy-dark)));
+}
+.why-tile.feat:hover { transform: translateY(-5px); box-shadow: var(--shadow-lg); }
+.why-tile.feat .why-ic {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.16);
+  color: #fff;
+  margin-bottom: 18px;
+}
+.why-tile.feat .why-ic svg { width: 26px; height: 26px; }
+.why-tile.feat h3 { color: #fff; font-size: 21px; margin-bottom: 10px; }
+.why-tile.feat p { color: rgba(255, 255, 255, 0.88); font-size: 15px; line-height: 1.7; max-width: 30ch; }
 
 /* ---------- Call to Action ---------- */
 .cta-box {
@@ -1211,13 +1599,25 @@ a:hover { text-decoration: underline; }
 
 /* ---------- Адаптив новых секций ---------- */
 @media (max-width: 980px) {
-  .approach-steps { grid-template-columns: repeat(2, 1fr); }
-  .why-grid { grid-template-columns: repeat(2, 1fr); }
+  /* feat tile becomes a full-width banner; the rest flow as a 2-col grid */
+  .why-bento { grid-template-columns: 1fr 1fr; }
+  .why-tile.feat { grid-column: 1 / -1; grid-row: auto; }
+  .why-tile.feat p { max-width: 46ch; }
+}
+@media (max-width: 900px) {
+  /* дашборд уходит под таймлайн, перестаёт «прилипать» */
+  .approach-layout { grid-template-columns: 1fr; gap: 36px; }
+  .approach-visual { position: static; width: 100%; max-width: 520px; margin: 4px auto 0; }
+}
+@media (max-width: 768px) {
+  /* на узких экранах номер выравниваем по шапке карточки, а не по центру */
+  .approach-step { align-items: start; }
+  .approach-card { max-width: none; }
 }
 @media (max-width: 620px) {
   .hero-points { grid-template-columns: 1fr; }
-  .approach-steps { grid-template-columns: 1fr; }
-  .why-grid { grid-template-columns: 1fr; }
+  .why-bento { grid-template-columns: 1fr; }
+  .why-tile.feat { padding: 26px 24px; }
   .cta-box { padding: 40px 26px; }
 }
 
