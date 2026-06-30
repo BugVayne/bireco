@@ -160,7 +160,7 @@ def render_full(blocks):
 def service_row_html(s, i, lang):
     flip = " flip" if i % 2 else ""
     return (
-        f'<article class="service-row{flip}" data-id="{esc(s["id"])}" '
+        f'<article class="service-row reveal{flip}" data-id="{esc(s["id"])}" '
         f'style="--tint:{s["tint"]};--tint-dark:{s["tint"]}d9">'
         f'<div class="service-banner"'
         + (f' style="--photo:url(\'{esc(s["img"])}\')"' if s.get("img") else "")
@@ -179,10 +179,11 @@ def service_row_html(s, i, lang):
     )
 
 
-def news_card_html(n, lang):
+def news_card_html(n, i, lang):
     img = f'<img class="news-img" src="{esc(n["image"])}" alt="" loading="lazy">' if n["image"] else ""
+    delay = min(i * 0.08, 0.4)
     return (
-        f'<article class="news-card">{img}'
+        f'<article class="news-card reveal" style="--reveal-delay:{delay}s">{img}'
         f'<span class="news-date">{esc(fmt_date(n["date"], lang))}</span>'
         f"<h3>{esc(loc(n, 'title', lang))}</h3>"
         f"<p>{esc(loc(n, 'summary', lang))}</p>"
@@ -288,7 +289,7 @@ def build_home(src, news, lang):
     set_inner(soup.find(id="servicesGrid"),
               "".join(service_row_html(s, i, lang) for i, s in enumerate(SERVICES)))
     set_inner(soup.find(id="newsTrack"),
-              "".join(news_card_html(n, lang) for n in news[:10]))
+              "".join(news_card_html(n, i, lang) for i, n in enumerate(news[:10])))
     depth = 0 if lang == "en" else 1
     rewrite_paths(soup, asset_depth=depth, page_depth=0)
     write(("" if lang == "en" else "ru/") + "index.html", soup)

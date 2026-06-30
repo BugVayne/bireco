@@ -83,7 +83,9 @@
       })
       .catch(function (err) {
         loginStatus.className = "admin-status error";
-        loginStatus.textContent = err.message === "unauthorized" ? "Неверный пароль." : err.message;
+        if (err.message === "unauthorized") loginStatus.textContent = "Неверный пароль.";
+        else if (err.message === "too many attempts") loginStatus.textContent = "Слишком много попыток входа. Подождите и попробуйте снова.";
+        else loginStatus.textContent = err.message;
       })
       .finally(function () { loginBtn.disabled = false; });
   });
