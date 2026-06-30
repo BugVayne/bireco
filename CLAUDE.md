@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What this is
 
-Bilingual (EN/RU) static marketing site for a BI consultancy (brand: **Bireco**), with a serverless Google Apps Script backend. No build step is required to develop — `index.html` / `news.html` are real, openable pages. There is no framework, bundler, or `package.json`; the JS is plain browser scripts loaded via `<script>` tags.
+Bilingual (EN/RU) static marketing site for a BI consultancy (brand: **Clear Metrics**), with a serverless Google Apps Script backend. No build step is required to develop — `index.html` / `news.html` are real, openable pages. There is no framework, bundler, or `package.json`; the JS is plain browser scripts loaded via `<script>` tags.
 
 The codebase has three layers that must stay in sync:
 1. **Browser runtime** — the `js/*.js` files render content and handle interaction client-side.

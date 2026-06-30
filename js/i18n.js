@@ -5,10 +5,10 @@
 
 window.I18N = {
   en: {
-    "meta.title": "Bireco — Business Intelligence & Reporting",
+    "meta.title": "Clear Metrics — Business Intelligence & Reporting",
     "meta.description": "We transform your data into meaningful insights for business decisions. Management, sales, marketing, production, supply chain, IT and risk reporting.",
-    "meta.newsTitle": "Insights & News — Bireco",
-    "meta.newsDescription": "All news, releases and analytics from the Bireco team.",
+    "meta.newsTitle": "Insights & News — Clear Metrics",
+    "meta.newsDescription": "All news, releases and analytics from the Clear Metrics team.",
 
     "nav.insights": "Insights",
     "nav.services": "Services",
@@ -91,7 +91,7 @@ window.I18N = {
     "why.eyebrow": "Why us",
     "why.title": "Why Choose Us?",
     "why.sub": "Reporting that is built by people who understand business — not just dashboards.",
-    "why.hubTitle": "Why Bireco",
+    "why.hubTitle": "Clear Metrics",
     "why.r1.title": "Finance-Led Expertise",
     "why.r1.text": "We understand business performance — not just data visualization.",
     "why.r2.title": "Executive Perspective",
@@ -169,10 +169,10 @@ window.I18N = {
   },
 
   ru: {
-    "meta.title": "Bireco — Business Intelligence и отчётность",
+    "meta.title": "Clear Metrics — Business Intelligence и отчётность",
     "meta.description": "Превращаем ваши данные в осмысленные инсайты для бизнес-решений. Управленческая отчётность, продажи, маркетинг, производство, цепочки поставок, ИТ и риски.",
-    "meta.newsTitle": "Новости и аналитика — Bireco",
-    "meta.newsDescription": "Все новости, релизы и аналитика от команды Bireco.",
+    "meta.newsTitle": "Новости и аналитика — Clear Metrics",
+    "meta.newsDescription": "Все новости, релизы и аналитика от команды Clear Metrics.",
 
     "nav.insights": "Новости",
     "nav.services": "Сервисы",
@@ -255,7 +255,7 @@ window.I18N = {
     "why.eyebrow": "Почему мы",
     "why.title": "Почему выбирают нас?",
     "why.sub": "Отчётность, которую создают люди, понимающие бизнес, — а не просто дашборды.",
-    "why.hubTitle": "Почему Bireco",
+    "why.hubTitle": "Clear Metrics",
     "why.r1.title": "Финансовая экспертиза",
     "why.r1.text": "Мы понимаем работу бизнеса, а не только визуализацию данных.",
     "why.r2.title": "Взгляд руководителя",

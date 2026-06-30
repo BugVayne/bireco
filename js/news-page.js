@@ -58,6 +58,8 @@
   // список поверх статьи не перерисовываем
   if (document.body.hasAttribute("data-static-article")) return;
 
+  // i18n.js всегда диспатчит "langchange" при первой установке языка на DOMContentLoaded,
+  // так что отдельный первичный load() не нужен — он привёл бы к двойному рендеру
+  // (и повторному проигрыванию CSS-анимации появления карточек).
   document.addEventListener("langchange", load);
-  load();
 })();

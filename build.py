@@ -165,9 +165,8 @@ def service_row_html(s, i, lang):
         f'<div class="service-banner"'
         + (f' style="--photo:url(\'{esc(s["img"])}\')"' if s.get("img") else "")
         + ">"
-        f'<span class="service-icon">{s["icon"]}</span>'
         f'<h3>{esc(s["title"][lang])}</h3>'
-        f'<span class="pulse-bars" aria-hidden="true"><span></span><span></span><span></span><span></span></span>'
+        f'<span class="service-icon service-icon-ghost" aria-hidden="true">{s["icon"]}</span>'
         f"</div>"
         f'<div class="service-info">'
         f'<p class="service-short">{esc(s["short"][lang])}</p>'
@@ -311,7 +310,7 @@ def build_article(src, n, lang):
     sid = safe_id(n["id"])
     soup = BeautifulSoup(src, "html5lib")
     translate(soup, lang)
-    title = f"{loc(n, 'title', lang)} — Bireco"
+    title = f"{loc(n, 'title', lang)} — Clear Metrics"
     desc = (loc(n, "summary", lang) or loc(n, "body", lang))[:160]
     set_head(soup, lang, title, desc,
              SITE + f"news/{sid}.html", SITE + f"ru/news/{sid}.html",
@@ -364,7 +363,7 @@ def build_sitemap(news):
 
 
 def copy_static():
-    for d in ("css", "js"):
+    for d in ("css", "js", "images"):
         shutil.copytree(ROOT / d, DIST / d)
     for f in ("favicon.svg", "og-image.png", "robots.txt", "admin.html"):
         shutil.copy2(ROOT / f, DIST / f)

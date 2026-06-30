@@ -1,5 +1,5 @@
 /* ============================================================
-   Bireco — стили сайта
+   Clear Metrics — стили сайта
    Палитра: синий / белый / немного чёрного + оттенки
    ============================================================ */
 
@@ -479,8 +479,7 @@ a:hover { text-decoration: underline; }
     align-items: center;
     justify-content: center;
   }
-  .service-row.expanded .service-icon,
-  .service-row.expanded .pulse-bars { display: none; }
+  .service-row.expanded .service-icon { display: none; }
   .service-row.expanded .service-banner h3 {
     writing-mode: vertical-rl;
     transform: rotate(180deg);
@@ -512,7 +511,7 @@ a:hover { text-decoration: underline; }
   color: #fff;
   background-color: var(--tint, var(--blue));
   background-image:
-    linear-gradient(180deg, rgba(8, 15, 30, 0) 45%, rgba(8, 15, 30, 0.6) 100%),
+    linear-gradient(180deg, rgba(8, 15, 30, 0.22) 0%, rgba(8, 15, 30, 0.72) 100%),
     var(--photo, none);
   background-repeat: no-repeat;
   background-size: auto, cover;
@@ -534,7 +533,7 @@ a:hover { text-decoration: underline; }
 .service-icon svg { width: 32px; height: 32px; }
 
 .service-banner h3 {
-  margin: 0;
+  margin: auto 0 0;
   font-size: clamp(24px, 2.6vw, 34px);
   line-height: 1.15;
   letter-spacing: -0.02em;
@@ -542,32 +541,12 @@ a:hover { text-decoration: underline; }
   max-width: 360px;
 }
 
-/* Мини-эквалайзер из "живых" столбиков */
-.pulse-bars {
-  display: flex;
-  align-items: flex-end;
-  gap: 5px;
-  height: 30px;
+/* Вторая, приглушённая иконка сервиса — зеркало верхней, в нижнем углу баннера */
+.service-icon-ghost {
   position: absolute;
   right: 34px;
   bottom: 32px;
-  opacity: 0.75;
 }
-.pulse-bars span {
-  width: 6px;
-  border-radius: 3px;
-  background: rgba(255, 255, 255, 0.85);
-  animation: barPulse 1.6s ease-in-out infinite;
-}
-.pulse-bars span:nth-child(1) { height: 40%; animation-delay: 0s; }
-.pulse-bars span:nth-child(2) { height: 75%; animation-delay: 0.22s; }
-.pulse-bars span:nth-child(3) { height: 55%; animation-delay: 0.44s; }
-.pulse-bars span:nth-child(4) { height: 90%; animation-delay: 0.66s; }
-@keyframes barPulse {
-  0%, 100% { transform: scaleY(1); }
-  50% { transform: scaleY(0.45); }
-}
-.pulse-bars span { transform-origin: bottom; }
 
 /* Сторона с описанием и кнопками */
 .service-info {
@@ -1458,18 +1437,20 @@ a:hover { text-decoration: underline; }
 /* ---------- Why Choose Us (static radial) ---------- */
 .why-radial {
   position: relative;
-  width: 900px;
-  height: 760px;
+  width: 1100px;
+  height: 580px;
   max-width: 100%;
-  margin: 30px auto 10px;
-  --r: 300px;
+  margin: 20px auto 0;
+  /* эллипс, сплюснутый по вертикали, а не идеальный круг */
+  --rx: 400px;
+  --ry: 210px;
 }
 /* радиальные спицы от ядра к карточкам — статичные, без анимации */
 .why-spoke {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: var(--r);
+  width: 210px;
   height: 2px;
   background: linear-gradient(90deg, color-mix(in srgb, var(--blue) 30%, transparent), transparent 92%);
   transform-origin: 0 50%;
@@ -1499,23 +1480,23 @@ a:hover { text-decoration: underline; }
 .why-hub-mark svg { width: 22px; height: 22px; }
 .why-hub-title { font-size: 15px; font-weight: 800; letter-spacing: -0.01em; text-align: center; max-width: 110px; }
 
-/* карточка на окружности: один элемент, центр которого совпадает с центром
-   сцены, затем поворот + смещение по радиусу + обратный поворот, чтобы
-   контент оставался прямым (без вращения, в отличие от орбиты Отраслей) */
+/* карточка на эллипсе: центр элемента совпадает с центром сцены, затем
+   смещается на (rx*cos, ry*sin) от угла — ry меньше rx, поэтому раскладка
+   сплюснута по вертикали, а не идеальный круг. Карточка не вращается. */
 .why-tile {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 300px;
+  width: 290px;
   display: flex;
   flex-direction: column;
   background: #fff;
   border: 1px solid var(--line);
   border-radius: var(--radius);
-  padding: 22px 22px 24px;
+  padding: 18px 20px 20px;
   box-shadow: var(--shadow);
   overflow: hidden;
-  transform: translate(-50%, -50%) rotate(var(--angle)) translateX(var(--r)) rotate(calc(-1 * var(--angle)));
+  transform: translate(calc(-50% + var(--rx) * cos(var(--angle))), calc(-50% + var(--ry) * sin(var(--angle))));
   transition: transform 0.35s var(--ease-out), box-shadow 0.35s, border-color 0.3s;
   z-index: 1;
 }

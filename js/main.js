@@ -157,9 +157,8 @@
         return (
           '<article class="service-row reveal' + (i % 2 ? " flip" : "") + expanded + '" data-id="' + s.id + '" style="--tint:' + s.tint + ";--tint-dark:" + s.tint + 'd9">' +
           '<div class="service-banner"' + (s.img ? ' style="--photo:url(\'' + esc(s.img) + "')\"" : "") + ">" +
-          '<span class="service-icon">' + s.icon + "</span>" +
           "<h3>" + esc(s.title[lang]) + "</h3>" +
-          '<span class="pulse-bars" aria-hidden="true"><span></span><span></span><span></span><span></span></span>' +
+          '<span class="service-icon service-icon-ghost" aria-hidden="true">' + s.icon + "</span>" +
           "</div>" +
           '<div class="service-info">' +
           '<p class="service-short">' + esc(s.short[lang]) + "</p>" +
@@ -756,9 +755,9 @@
     window.NewsAPI.fetchNews().then(renderNewsCards).catch(function () {});
   });
 
-  // Первичный рендер (langchange уже мог отработать до подключения этого скрипта)
-  renderServices();
-  loadNews();
+  // i18n.js всегда диспатчит "langchange" на DOMContentLoaded, который произойдёт
+  // после выполнения этого скрипта — отдельные renderServices()/loadNews() здесь
+  // приводили бы к двойному рендеру (и повтору reveal-анимации карточек новостей).
   highlightNav();
   onScrollHeader();
   observeReveals(document);
