@@ -131,15 +131,13 @@ function handleLead(data) {
   }
 
   // 2. Проверка обязательных полей и формата (дублирует клиентскую,
-  //    т.к. клиентскую валидацию легко обойти). Телефон необязателен.
-  if (!data.name || !data.email) {
+  //    т.к. клиентскую валидацию легко обойти). Телефон обязателен.
+  if (!data.name || !data.email || !data.phone) {
     return jsonResponse({ ok: false, error: 'missing fields' });
   }
-  if (data.phone) {
-    var phoneDigits = String(data.phone).replace(/\D/g, '');
-    if (phoneDigits.length < 7 || phoneDigits.length > 15) {
-      return jsonResponse({ ok: false, error: 'invalid phone' });
-    }
+  var phoneDigits = String(data.phone).replace(/\D/g, '');
+  if (phoneDigits.length < 7 || phoneDigits.length > 15) {
+    return jsonResponse({ ok: false, error: 'invalid phone' });
   }
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(String(data.email).trim())) {
     return jsonResponse({ ok: false, error: 'invalid email' });

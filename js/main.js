@@ -345,14 +345,13 @@
   var PHONE_DISALLOWED = /[^0-9+()\-\s]/g;
 
   // Проверка одного поля.
-  // Телефон необязателен: пустой — ок; если заполнен — мягко 7–15 цифр
-  // в любом формате (не отсекаем валидные международные номера).
+  // Телефон обязателен: мягко 7–15 цифр в любом формате
+  // (не отсекаем валидные международные номера).
   function fieldIsBad(input) {
     var v = input.value.trim();
     var nm = input.getAttribute("name");
     if (nm === "email") return !EMAIL_RE.test(v);
     if (nm === "phone") {
-      if (!v) return false;
       var digits = v.replace(/\D/g, "");
       return digits.length < 7 || digits.length > 15;
     }
