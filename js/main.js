@@ -521,7 +521,11 @@
       })
         .then(function (r) { return r.json(); })
         .then(function (data) {
-          if (!data.ok) throw new Error(data.error || "server error");
+          if (!data.ok) {
+            var err = new Error(data.error || "server error");
+            err.debug = data.debug;
+            throw err;
+          }
           opts.form.reset();
           if (msg && counter) msg.dispatchEvent(new Event("input"));
           if (fileInput) resetCvName();
@@ -530,6 +534,10 @@
           if (opts.onSuccess) opts.onSuccess();
         })
         .catch(function (err) {
+          // Полный текст ошибки сервера (включая debug-поле при DEBUG=true
+          // в Script Properties Apps Script) — виден только в консоли,
+          // на UI всегда показывается переведённое общее сообщение.
+          console.error("Lead submit failed:", err && err.message, err && err.debug);
           statusEl.className = "form-status error";
           statusEl.textContent = window.t(
             err && err.message === "rate limited" ? "form.tooMany" : "form.error"
