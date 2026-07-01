@@ -53,3 +53,12 @@ A single contact form (modal on Services/CTA, inline in the hero) posts JSON to 
 ## CSS
 
 Single stylesheet `css/styles.css`; theme colors are CSS variables at the top (`--navy`, `--blue`, `--ice`, ...). Section backgrounds alternate via `.section` / `.section.alt` — preserve the alternation when inserting new sections.
+
+## Design & color rules
+
+- **No pure white section backgrounds.** `body` and the base `.section` use `--bg-soft` (`#f2f6fc`, a barely-tinted off-white), and `.section.alt` uses `--ice` (`#dbe9fb`, a clearly saturated light blue) — not `#fff`. Card/row elements placed inside sections (`.approach-card`, `.service-row`, news cards, etc.) still use solid white (`#fff`) so they pop against the tinted section background; that contrast is intentional — don't flatten it by whitening the section too.
+- **Don't let tint colors drift back toward gray.** If you introduce a new light-blue tint, keep saturation high enough to read as "blue," not "light gray" — check it doesn't look like a desaturated neutral next to `--ice`.
+- **Buttons use the darker blue.** `--blue` is `#1d4ed8` / `--blue-hover` is `#1e3a8a` (deliberately deepened from the original `#2563eb`/`#1d4ed8`) so `.btn-primary` and `.btn-link` read as a confident, darker blue rather than a bright/light one. When adding new solid-blue UI (buttons, active states, focus rings), reuse `var(--blue)` / `var(--blue-hover)` — don't hardcode a lighter blue hex.
+- **Decorative glow/shadow rgba values must track `--blue`.** Several shadows/gradients (logo mark, hero radial glows, CTA blur, focus rings) hardcode the blue as `rgba(29, 78, 216, ...)` instead of referencing the variable (CSS custom properties can't be used inside `rgba()` directly). If `--blue` changes again, update these `rgba(R, G, B, ...)` triplets to match, or the glows will look mismatched against the solid buttons.
+- **`#8db4ff` is a separate light accent**, used only for text/lines sitting directly on the dark navy hero/CTA background (`.hero .eyebrow`, `.hero h1 .accent`, footer gradients) for contrast. It's intentionally lighter than `--blue` — don't merge it with the button-blue variable.
+- **Per-card accent tints** (`--c` inline style on `.approach-step`, `.why-tile`, `.ind-tile`, and the `tint` field in `js/services-data.js`) are a fixed rainbow palette, one color per card — not derived from `--blue`. When one of them happens to represent "the blue slot" it should match `--blue`'s current value (`#1d4ed8`) for consistency, but the rest of the palette stays as-is.
