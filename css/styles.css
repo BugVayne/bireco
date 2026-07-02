@@ -462,7 +462,12 @@ a:hover { text-decoration: underline; }
   border-radius: 20px;
   overflow: hidden;
   box-shadow: var(--shadow);
-  transition: box-shadow 0.35s, grid-template-columns 0.5s var(--ease-out);
+  /* opacity/transform добавлены, чтобы работала reveal-анимация появления:
+     без них transition у .service-row перекрывал transition из .reveal
+     (одинаковая специфичность, .service-row ниже по файлу) и карточки
+     проявлялись рывком. box-shadow — ховер, grid-template-columns — раскрытие. */
+  transition: box-shadow 0.35s, grid-template-columns 0.5s var(--ease-out),
+              opacity 0.7s var(--ease-out), transform 0.7s var(--ease-out);
 }
 /* Только тень при наведении, без подъёма: transform сдвигает и саму зону
    наведения, из-за чего при перекомпоновке во время раскрытия hover
