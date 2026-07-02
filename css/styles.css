@@ -1289,7 +1289,7 @@ a:hover { text-decoration: underline; }
   70%, 100% { transform: scale(1.5); opacity: 0; }
 }
 .approach-step:last-child .approach-card {
-  background: linear-gradient(150deg,
+  background: linear-gradient(330deg,
     color-mix(in srgb, var(--c) 92%, #fff) 0%,
     var(--c) 52%,
     color-mix(in srgb, var(--c) 72%, var(--navy)) 100%);
