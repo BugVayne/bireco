@@ -72,6 +72,39 @@
     });
   }
 
+  /* ---------- Мобайл: hover-микроанимации карточек по скроллу ----------
+     На тач-экранах :hover не срабатывает, поэтому активное состояние
+     (.in-view) карточек включаем, пока блок проходит центр экрана, и
+     снимаем на выходе. CSS-часть — в блоке @media (hover: none). Не трогаем
+     десктоп (там работает :hover) и prefers-reduced-motion. */
+  var activeObserver = null;
+  if (
+    window.matchMedia("(hover: none)").matches &&
+    !window.matchMedia("(prefers-reduced-motion: reduce)").matches &&
+    "IntersectionObserver" in window
+  ) {
+    activeObserver = new IntersectionObserver(
+      function (entries) {
+        entries.forEach(function (entry) {
+          entry.target.classList.toggle("in-view", entry.isIntersecting);
+        });
+      },
+      { rootMargin: "-40% 0px -40% 0px", threshold: 0 }
+    );
+  }
+
+  // .news-card намеренно НЕ здесь: лента новостей — горизонтальный свайп-
+  // карусель, а observer ловит проход по вертикальному центру, поэтому все
+  // видимые карточки подсвечивались бы разом (см. также сборный --shadow-lg
+  // под лентой). На мобильных новости остаются в обычном виде.
+  var ACTIVE_SEL = ".service-row, .ind-tile, .stat-card, .approach-step, .why-tile";
+  function observeActives(root) {
+    if (!activeObserver) return;
+    (root || document).querySelectorAll(ACTIVE_SEL).forEach(function (el) {
+      activeObserver.observe(el);
+    });
+  }
+
   /* ---------- Сжатие шапки при прокрутке ---------- */
   var header = document.querySelector(".site-header");
   function onScrollHeader() {
@@ -175,6 +208,7 @@
       })
       .join("");
     observeReveals(grid);
+    observeActives(grid);
   }
 
   if (grid) {
@@ -768,4 +802,5 @@
   highlightNav();
   onScrollHeader();
   observeReveals(document);
+  observeActives(document);
 })();

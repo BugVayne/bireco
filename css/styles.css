@@ -391,7 +391,11 @@ a:hover { text-decoration: underline; }
   overflow-y: hidden;
   scroll-snap-type: x mandatory;
   scroll-behavior: smooth;
-  padding: 12px 4px 30px;
+  /* overflow-y: hidden (обязателен при overflow-x: auto) обрезает тень карточек
+     по вертикали. Вертикальные отступы держим больше, чем размах тени карточки
+     (--shadow = 0 10px 30px → ~40px вниз), чтобы тень успевала полностью сойти
+     на нет до края клиппинга и не было резкого «шва». */
+  padding: 20px 4px 46px;
   scrollbar-width: thin;
   scrollbar-color: var(--ice-2) transparent;
 }
@@ -1637,6 +1641,66 @@ a:hover { text-decoration: underline; }
   .hero-points { grid-template-columns: 1fr; }
   .industries-bento { column-count: 1; }
   .cta-box { padding: 40px 26px; }
+}
+
+/* ---------- Мобильная версия: прячем декоративные SVG-иконки у заголовков
+   (сервисы / подход / отрасли) и стрелки-навигацию ленты новостей.
+   Ленту всё так же можно листать свайпом (.news-track: overflow-x: auto). ---------- */
+@media (max-width: 760px) {
+  .carousel-controls { display: none; }
+  .service-icon { display: none; }
+  .approach-icon { display: none; }
+  .ind-ic { display: none; }
+}
+
+/* ---------- Тач-устройства: hover-микроанимации карточек проигрываются
+   по мере скролла. На тач-экранах :hover не срабатывает (или «залипает»
+   после тапа), поэтому те же активные состояния включаем классом .in-view,
+   который js/main.js вешает, пока блок проходит вертикальный центр экрана,
+   и снимает, когда блок из центра уходит — получается «подсветка по скроллу».
+   Значения продублированы с :hover-правил выше (CSS custom properties внутри
+   color-mix()/rgba() наследуются от самих карточек). Иконки сервисов/подхода/
+   отраслей на узких экранах скрыты (блок выше) — их трансформации здесь
+   ни на что не влияют, но оставлены для широких тач-экранов (планшетов). ---------- */
+@media (hover: none) {
+  .service-row.in-view { box-shadow: var(--shadow-lg); }
+  .service-row.in-view .service-icon { transform: scale(1.1) rotate(-4deg); background: rgba(255, 255, 255, 0.26); }
+
+  .ind-tile.in-view {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-lg);
+    border-color: color-mix(in srgb, var(--c) 45%, var(--line));
+  }
+  .ind-tile.in-view::before { transform: scaleX(1); }
+  .ind-tile.in-view .ind-ic { transform: rotate(-4deg) scale(1.06); }
+
+  .stat-card.in-view { transform: translateX(6px); }
+
+  .approach-step.in-view .approach-card {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-lg);
+    border-color: color-mix(in srgb, var(--c) 38%, var(--line));
+  }
+  .approach-step.in-view .approach-node {
+    transform: scale(1.08);
+    box-shadow:
+      0 0 0 1px color-mix(in srgb, var(--c) 32%, transparent),
+      0 14px 30px color-mix(in srgb, var(--c) 45%, transparent);
+  }
+  .approach-step.in-view .approach-icon {
+    background: var(--c);
+    color: #fff;
+    transform: scale(1.06) rotate(-3deg);
+  }
+  /* финальный (акцентный) шаг: иконка светлая, как и на :hover */
+  .approach-step:last-child.in-view .approach-icon { background: rgba(255, 255, 255, 0.28); color: #fff; }
+
+  .why-tile.in-view {
+    box-shadow: var(--shadow-lg);
+    border-color: color-mix(in srgb, var(--c) 45%, var(--line));
+  }
+  .why-tile.in-view::before { transform: scaleX(1); }
+  .why-tile.in-view .why-ic { transform: rotate(-4deg) scale(1.06); }
 }
 
 /* ---------- Уважение к prefers-reduced-motion ---------- */
