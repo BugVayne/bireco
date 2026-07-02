@@ -47,6 +47,10 @@ var CV_MAX_BYTES = 5 * 1024 * 1024;        // лимит размера резю
 var CV_ALLOWED_EXT = ['pdf', 'doc', 'docx'];
 var CV_FOLDER_NAME = 'Website CV uploads'; // папка на Drive по умолчанию
 
+var IMAGE_MAX_BYTES = 5 * 1024 * 1024;              // лимит размера картинки новости
+var IMAGE_ALLOWED_EXT = ['jpg', 'jpeg', 'png', 'webp', 'gif'];
+var IMAGE_FOLDER_NAME = 'Website news images';      // папка на Drive по умолчанию
+
 /* ---------------- Вспомогательные ---------------- */
 
 function jsonResponse(obj) {
@@ -341,6 +345,70 @@ function getCvFolder() {
   return DriveApp.createFolder(CV_FOLDER_NAME);
 }
 
+/* ---------------- Загрузка картинки новости на Google Drive ---------------- */
+
+function saveNewsImage(data) {
+  var name = String(data.imageName || 'image');
+  var ext = (name.split('.').pop() || '').toLowerCase();
+  dlog('saveNewsImage: name=' + name + ' ext=' + ext + ' type=' + data.imageType + ' b64len=' + (data.imageData ? data.imageData.length : 0));
+  if (IMAGE_ALLOWED_EXT.indexOf(ext) === -1) throw new Error('bad type: ' + ext);
+
+  var bytes;
+  try {
+    bytes = Utilities.base64Decode(data.imageData);
+  } catch (err) {
+    throw new Error('bad base64: ' + errInfo(err));
+  }
+  dlog('saveNewsImage: decoded bytes=' + bytes.length);
+  if (bytes.length > IMAGE_MAX_BYTES) throw new Error('too big: ' + bytes.length + ' bytes');
+
+  var safeName = name.replace(/[^\w.\- ]+/g, '_').slice(0, 120);
+  var stamp = Utilities.formatDate(new Date(), Session.getScriptTimeZone(), 'yyyyMMdd-HHmmss');
+  var blob = Utilities.newBlob(bytes, data.imageType || 'application/octet-stream', stamp + '_' + safeName);
+
+  var folder = getImageFolder();
+  dlog('saveNewsImage: target folder id=' + folder.getId() + ' name=' + folder.getName());
+  var file = folder.createFile(blob);
+  // Картинка используется в <img src> на публичном сайте — файл должен быть доступен по ссылке.
+  file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
+  dlog('saveNewsImage: file created id=' + file.getId());
+  return 'https://lh3.googleusercontent.com/d/' + file.getId();
+}
+
+// Достаёт id файла из ссылки вида https://lh3.googleusercontent.com/d/<id>,
+// которую сами же выдаём в saveNewsImage(). Не трогаем чужие/внешние ссылки.
+function extractDriveImageId(url) {
+  var m = /^https:\/\/lh3\.googleusercontent\.com\/d\/([a-zA-Z0-9_-]+)/.exec(String(url || ''));
+  return m ? m[1] : null;
+}
+
+// Убирает в корзину Drive картинку новости, которую мы сами туда когда-то положили
+// (при замене на другую или при удалении новости) — иначе файлы копятся без дела.
+// Корзина хранит файл ещё ~30 дней, так что случайную замену можно откатить вручную.
+function trashOwnedImage(url) {
+  var id = extractDriveImageId(url);
+  if (!id) return;
+  try {
+    DriveApp.getFileById(id).setTrashed(true);
+    dlog('trashOwnedImage: trashed ' + id);
+  } catch (err) {
+    dlog('trashOwnedImage: failed for ' + id + ': ' + errInfo(err));
+  }
+}
+
+function getImageFolder() {
+  var id = PropertiesService.getScriptProperties().getProperty('IMAGE_FOLDER_ID');
+  if (id) {
+    dlog('getImageFolder: using IMAGE_FOLDER_ID=' + id);
+    return DriveApp.getFolderById(id);
+  }
+  dlog('getImageFolder: IMAGE_FOLDER_ID not set, looking up by name "' + IMAGE_FOLDER_NAME + '"');
+  var it = DriveApp.getFoldersByName(IMAGE_FOLDER_NAME);
+  if (it.hasNext()) return it.next();
+  dlog('getImageFolder: folder not found, creating it');
+  return DriveApp.createFolder(IMAGE_FOLDER_NAME);
+}
+
 /* ---------------- Блокировка одновременных записей ---------------- */
 
 function withLock(fn) {
@@ -396,6 +464,12 @@ function handleAdmin(data) {
   if (data.op === 'add') {
     var item = data.item || {};
     var id = 'n' + new Date().getTime();
+    var imageUrl;
+    try {
+      imageUrl = item.imageData ? saveNewsImage(item) : (item.image || '');
+    } catch (err) {
+      return jsonResponse({ ok: false, error: 'image error: ' + errInfo(err) });
+    }
     withLock(function () {
       sheet.appendRow([
         id,
@@ -403,7 +477,7 @@ function handleAdmin(data) {
         item.title_en || '', item.title_ru || '',
         item.summary_en || '', item.summary_ru || '',
         item.body_en || '', item.body_ru || '',
-        item.image || '',
+        imageUrl,
       ]);
     });
     return jsonResponse({ ok: true, id: id });
@@ -411,17 +485,27 @@ function handleAdmin(data) {
 
   if (data.op === 'update') {
     var item = data.item || {};
+    var imageUrl;
+    try {
+      imageUrl = item.imageData ? saveNewsImage(item) : (item.image || '');
+    } catch (err) {
+      return jsonResponse({ ok: false, error: 'image error: ' + errInfo(err) });
+    }
     return withLock(function () {
       var rowIndex = findNewsRow(sheet, item.id);
       if (rowIndex === -1) return jsonResponse({ ok: false, error: 'not found' });
+      var imageCol = NEWS_HEADERS.indexOf('image') + 1;
+      var oldImage = sheet.getRange(rowIndex, imageCol).getValue();
       sheet.getRange(rowIndex, 1, 1, NEWS_HEADERS.length).setValues([[
         item.id,
         item.date || '',
         item.title_en || '', item.title_ru || '',
         item.summary_en || '', item.summary_ru || '',
         item.body_en || '', item.body_ru || '',
-        item.image || '',
+        imageUrl,
       ]]);
+      // Если картинку заменили или убрали — старый файл в Drive больше не нужен.
+      if (oldImage && oldImage !== imageUrl) trashOwnedImage(oldImage);
       return jsonResponse({ ok: true });
     });
   }
@@ -430,7 +514,10 @@ function handleAdmin(data) {
     return withLock(function () {
       var rowIndex = findNewsRow(sheet, data.id);
       if (rowIndex === -1) return jsonResponse({ ok: false, error: 'not found' });
+      var imageCol = NEWS_HEADERS.indexOf('image') + 1;
+      var oldImage = sheet.getRange(rowIndex, imageCol).getValue();
       sheet.deleteRow(rowIndex);
+      if (oldImage) trashOwnedImage(oldImage);
       return jsonResponse({ ok: true });
     });
   }

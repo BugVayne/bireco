@@ -44,11 +44,13 @@ There are **no tests, linters, or formatters** configured. The environment is Wi
 
 ## Config and per-deployment settings
 
-`js/config.js` holds `APPS_SCRIPT_URL`, `RECAPTCHA_SITE_KEY`, `OVERVIEW_VIDEO_URL`, `CONTACT_EMAIL`, `LINKEDIN_URL`. Backend secrets (`ADMIN_TOKEN`, `RECAPTCHA_SECRET`, `NOTIFY_EMAIL`, `CV_FOLDER_ID`) live in Apps Script **Script Properties**, not in the repo. After editing `apps-script/Code.gs`, a redeploy as a **new version** in Apps Script is required for changes to take effect (it is not deployed from this repo).
+`js/config.js` holds `APPS_SCRIPT_URL`, `RECAPTCHA_SITE_KEY`, `OVERVIEW_VIDEO_URL`, `CONTACT_EMAIL`, `LINKEDIN_URL`. Backend secrets (`ADMIN_TOKEN`, `RECAPTCHA_SECRET`, `NOTIFY_EMAIL`, `CV_FOLDER_ID`, `IMAGE_FOLDER_ID`) live in Apps Script **Script Properties**, not in the repo. After editing `apps-script/Code.gs`, a redeploy as a **new version** in Apps Script is required for changes to take effect (it is not deployed from this repo).
 
 ## Forms & admin (backend behavior)
 
 A single contact form (modal on Services/CTA, inline in the hero) posts JSON to Apps Script as `text/plain` (avoids CORS preflight). The Careers "Send CV" button reuses it with extra profile/CV-upload fields; uploads go to Google Drive and a link is written to the `Leads` sheet. Spam defense: reCAPTCHA v2 (server-verified) + honeypot field + rate limits (`LEAD_LIMIT_*` in `Code.gs`). Admin auth is a 2-hour sliding session (`SESSION_TTL_SEC`); the `ADMIN_TOKEN` is sent only at login, then a session id is used. Sheet writes are guarded by `LockService`.
+
+The admin news form (`admin.html`) can either upload an image file directly or accept a pasted URL. Before upload, `js/admin.js` resizes/recompresses images wider or taller than 1600px to JPEG (quality 0.82) client-side via `<canvas>` (PNG/GIF are left alone) to avoid pushing raw phone-camera-sized files through the pipeline. The result is base64-encoded and sent to Apps Script, where `saveNewsImage()` in `Code.gs` decodes it, writes it to a Drive folder, makes it link-shareable (`DriveApp.Access.ANYONE_WITH_LINK`), and stores it in the `News` sheet's `image` column as a `https://lh3.googleusercontent.com/d/<fileId>` URL — same column/shape as a manually pasted link, so `js/news-api.js` and `build.py` need no changes. This URL format is not an officially documented Drive API — if Google ever changes how it resolves, the admin's URL field still works as a manual fallback. On `update`/`delete`, `trashOwnedImage()` moves the previously stored Drive file to Trash if it was one we uploaded (matched by the `lh3.googleusercontent.com/d/` prefix) and is being replaced or is no longer referenced, so orphaned uploads don't accumulate; externally pasted URLs are never touched.
 
 ## CSS
 

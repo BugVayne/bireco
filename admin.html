@@ -104,8 +104,14 @@
             </div>
           </div>
           <div class="form-field">
-            <label for="nfImage">Ссылка на картинку (необязательно)</label>
+            <label for="nfImageFile">Картинка (необязательно)</label>
+            <input type="file" id="nfImageFile" accept="image/png,image/jpeg,image/webp,image/gif" />
+            <p class="muted-note" style="margin-top:6px;">Загрузите файл (до 5 МБ) — большие изображения автоматически уменьшаются и сжимаются в браузере перед отправкой, затем сохраняются на Google Drive. Либо, если картинка уже где-то размещена, укажите прямую ссылку на неё ниже вместо загрузки.</p>
+          </div>
+          <div class="form-field">
+            <label for="nfImage">Ссылка на картинку</label>
             <input type="url" id="nfImage" placeholder="https://…" />
+            <img id="nfImagePreview" class="hidden" alt="" style="margin-top:8px; max-width:220px; max-height:140px; border-radius:8px; border:1px solid var(--line); object-fit:cover;" />
           </div>
           <div style="display:flex; gap:10px; flex-wrap:wrap;">
             <button type="submit" class="btn btn-primary" id="saveBtn">Сохранить</button>
