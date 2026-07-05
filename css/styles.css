@@ -1649,13 +1649,14 @@ a:hover { text-decoration: underline; }
 }
 
 /* ---------- Мобильная версия: прячем декоративные SVG-иконки у заголовков
-   (сервисы / подход / отрасли) и стрелки-навигацию ленты новостей.
+   (сервисы / подход / отрасли / почему нас) и стрелки-навигацию ленты новостей.
    Ленту всё так же можно листать свайпом (.news-track: overflow-x: auto). ---------- */
 @media (max-width: 760px) {
   .carousel-controls { display: none; }
   .service-icon { display: none; }
   .approach-icon { display: none; }
   .ind-ic { display: none; }
+  .why-ic { display: none; }
 }
 
 /* ---------- Тач-устройства: hover-микроанимации карточек проигрываются
