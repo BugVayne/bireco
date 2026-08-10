@@ -111,7 +111,7 @@
 
   function apiRaw(payload) {
     if (!cfg.APPS_SCRIPT_URL) {
-      return Promise.reject(new Error("В js/config.js не задан APPS_SCRIPT_URL — см. README.md"));
+      return Promise.reject(new Error("Сервис временно недоступен. Попробуйте позже."));
     }
     payload.action = "admin";
     return fetch(cfg.APPS_SCRIPT_URL, {
