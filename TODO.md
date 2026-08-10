@@ -39,7 +39,7 @@ isn't auto-maintained.
 - [ ] Remove the stray `.pptx-preview/` directory (leftover artifact, not gitignored).
 - [ ] Decide on the final production domain — `build.py`'s `SITE` constant, `robots.txt`,
       and canonical/OG URLs all still point at `https://bugvayne.github.io/bireco/`. Update
-      once a custom domain (matching the Clear Metrics brand) is live.
+      once a custom domain (matching the Bireca brand) is live.
 - [ ] Get explicit customer sign-off on the shortened/paraphrased industry and
       "Why Choose Us" card copy — close to the brief in meaning but not verbatim.
 

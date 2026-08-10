@@ -311,7 +311,7 @@ def build_article(src, n, lang):
     sid = safe_id(n["id"])
     soup = BeautifulSoup(src, "html5lib")
     translate(soup, lang)
-    title = f"{loc(n, 'title', lang)} — Clear Metrics"
+    title = f"{loc(n, 'title', lang)} — Bireca"
     desc = (loc(n, "summary", lang) or loc(n, "body", lang))[:160]
     set_head(soup, lang, title, desc,
              SITE + f"news/{sid}.html", SITE + f"ru/news/{sid}.html",

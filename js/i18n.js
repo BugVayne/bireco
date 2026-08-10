@@ -5,10 +5,10 @@
 
 window.I18N = {
   en: {
-    "meta.title": "Clear Metrics — Business Intelligence & Reporting",
+    "meta.title": "Bireca — Business Intelligence & Reporting",
     "meta.description": "We transform your data into meaningful insights for business decisions. Management, sales, marketing, production, supply chain, IT and risk reporting.",
-    "meta.newsTitle": "Insights & News — Clear Metrics",
-    "meta.newsDescription": "All news, releases and analytics from the Clear Metrics team.",
+    "meta.newsTitle": "Insights & News — Bireca",
+    "meta.newsDescription": "All news, releases and analytics from the Bireca team.",
 
     "nav.insights": "Insights",
     "nav.services": "Services",
@@ -91,7 +91,7 @@ window.I18N = {
     "why.eyebrow": "Why us",
     "why.title": "Why Choose Us?",
     "why.sub": "Reporting that is built by people who understand business — not just dashboards.",
-    "why.hubTitle": "Clear Metrics",
+    "why.hubTitle": "Bireca",
     "why.r1.title": "Finance-Led Expertise",
     "why.r1.text": "We understand business performance — not just data visualization.",
     "why.r2.title": "Executive Perspective",
@@ -158,7 +158,7 @@ window.I18N = {
     "form.invalidEmail": "Please enter a valid email address.",
     "form.invalidPhone": "Please enter a valid phone number.",
     "form.optional": "(optional)",
-    "form.demoNote": "Form backend is not configured yet (see README).",
+    "form.demoNote": "Sending is temporarily unavailable. Please email us directly.",
     "form.close": "Close",
 
     "news.title": "Insights & News",
@@ -169,10 +169,10 @@ window.I18N = {
   },
 
   ru: {
-    "meta.title": "Clear Metrics — Business Intelligence и отчётность",
+    "meta.title": "Bireca — Business Intelligence и отчётность",
     "meta.description": "Превращаем ваши данные в осмысленные инсайты для бизнес-решений. Управленческая отчётность, продажи, маркетинг, производство, цепочки поставок, ИТ и риски.",
-    "meta.newsTitle": "Новости и аналитика — Clear Metrics",
-    "meta.newsDescription": "Все новости, релизы и аналитика от команды Clear Metrics.",
+    "meta.newsTitle": "Новости и аналитика — Bireca",
+    "meta.newsDescription": "Все новости, релизы и аналитика от команды Bireca.",
 
     "nav.insights": "Новости",
     "nav.services": "Сервисы",
@@ -255,7 +255,7 @@ window.I18N = {
     "why.eyebrow": "Почему мы",
     "why.title": "Почему выбирают нас?",
     "why.sub": "Отчётность, которую создают люди, понимающие бизнес, — а не просто дашборды.",
-    "why.hubTitle": "Clear Metrics",
+    "why.hubTitle": "Bireca",
     "why.r1.title": "Финансовая экспертиза",
     "why.r1.text": "Мы понимаем работу бизнеса, а не только визуализацию данных.",
     "why.r2.title": "Взгляд руководителя",
@@ -322,7 +322,7 @@ window.I18N = {
     "form.invalidEmail": "Пожалуйста, введите корректный email.",
     "form.invalidPhone": "Пожалуйста, введите корректный номер телефона.",
     "form.optional": "(необязательно)",
-    "form.demoNote": "Бэкенд формы ещё не настроен (см. README).",
+    "form.demoNote": "Отправка временно недоступна. Пожалуйста, напишите нам на почту.",
     "form.close": "Закрыть",
 
     "news.title": "Новости и аналитика",
