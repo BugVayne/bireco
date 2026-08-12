@@ -9,10 +9,10 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="css/styles.css" />
   <style>
-    body { background: var(--ice); }
+    body { background: linear-gradient(180deg, #f2eafc 0%, var(--lilac) 55%, #dccdf7 100%); }
     .admin-wrap { max-width: 880px; margin: 0 auto; padding: 40px 20px 80px; }
     .admin-card {
-      background: #fff;
+      background: var(--card-bg);
       border: 1px solid var(--line);
       border-radius: var(--radius);
       padding: 28px 32px;
@@ -20,7 +20,7 @@
       margin-bottom: 22px;
     }
     .admin-title { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 26px; }
-    .admin-title h1 { margin: 0; color: var(--navy); font-size: 26px; }
+    .admin-title h1 { margin: 0; color: var(--plum); font-size: 26px; }
     .admin-news-item {
       display: flex;
       justify-content: space-between;
@@ -30,7 +30,7 @@
       border-bottom: 1px solid var(--line);
     }
     .admin-news-item:last-child { border-bottom: none; }
-    .admin-news-item h3 { margin: 0 0 4px; font-size: 16px; color: var(--navy); }
+    .admin-news-item h3 { margin: 0 0 4px; font-size: 16px; color: var(--plum); }
     .admin-news-item .meta { font-size: 13px; color: var(--muted); }
     .admin-news-actions { display: flex; gap: 8px; flex: none; }
     .btn-sm { padding: 8px 14px; font-size: 13.5px; border-radius: 8px; }
@@ -57,7 +57,7 @@
 
     <!-- Экран входа -->
     <div class="admin-card" id="loginCard">
-      <h3 style="margin-top:0; color:var(--navy)">Вход</h3>
+      <h3 style="margin-top:0; color:var(--plum)">Вход</h3>
       <div class="form-field">
         <label for="adminToken">Пароль администратора</label>
         <input type="password" id="adminToken" autocomplete="current-password" />
@@ -69,7 +69,7 @@
     <!-- Панель управления -->
     <div id="panel" class="hidden">
       <div class="admin-card">
-        <h3 style="margin-top:0; color:var(--navy)" id="editorTitle">Добавить новость</h3>
+        <h3 style="margin-top:0; color:var(--plum)" id="editorTitle">Добавить новость</h3>
         <form id="newsForm">
           <input type="hidden" id="nfId" />
           <div class="form-field">
@@ -121,7 +121,7 @@
       </div>
 
       <div class="admin-card">
-        <h3 style="margin-top:0; color:var(--navy)">Опубликованные новости</h3>
+        <h3 style="margin-top:0; color:var(--plum)">Опубликованные новости</h3>
         <div id="newsAdminList"><div class="admin-status">Загрузка…</div></div>
       </div>
     </div>

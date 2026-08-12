@@ -191,7 +191,6 @@
           '<article class="service-row reveal' + (i % 2 ? " flip" : "") + expanded + '" data-id="' + s.id + '" style="--tint:' + s.tint + ";--tint-dark:" + s.tint + 'd9">' +
           '<div class="service-banner"' + (s.img ? ' style="--photo:url(\'' + esc(s.img) + "')\"" : "") + ">" +
           "<h3>" + esc(s.title[lang]) + "</h3>" +
-          '<span class="service-icon service-icon-ghost" aria-hidden="true">' + s.icon + "</span>" +
           "</div>" +
           '<div class="service-info">' +
           '<p class="service-short">' + esc(s.short[lang]) + "</p>" +

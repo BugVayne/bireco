@@ -1,25 +1,30 @@
 /* ============================================================
    Bireca — стили сайта
-   Палитра: синий / белый / немного чёрного + оттенки
+   Палитра: фиолетовый / белый / немного чёрного + оттенки
    ============================================================ */
 
 :root {
-  --navy: #0f2a5f;
-  --navy-dark: #0a1d42;
-  --blue: #1d4ed8;
-  --blue-hover: #1e3a8a;
-  --bg-soft: #f2f6fc;
-  --ice: #dbe9fb;
-  --ice-2: #c7dcf9;
-  --accent: #0891b2;
-  --c: var(--blue); /* per-card tint fallback */
-  --ink: #0b1220;
-  --muted: #5b6b85;
-  --line: #dde6f2;
+  --plum: #3b1668;        /* глубокий фиолетовый: заголовки, тёмный UI */
+  --plum-dark: #260d47;   /* тёмный конец градиентов, футер */
+  --plum-black: #0b0418;  /* почти чёрный фиолетовый: старт тёмных градиентов */
+  --plum-mid: #4a1d8f;    /* светлый конец тёмных градиентов */
+  --purple: #6d28d9;      /* основной акцент: кнопки, ссылки, активные состояния */
+  --purple-hover: #4c1d95;
+  --purple-light: #c4b5fd; /* светлый акцент — только по тёмному фону */
+  --bg-soft: #f7f4fd;     /* едва тонированный «белый» фон секций */
+  --bg-soft-2: #f3edfc;   /* второй стоп градиента обычной секции */
+  --lilac: #e8dcf9;       /* заметно насыщенный светло-фиолетовый (.section.alt) */
+  --lilac-2: #ddcbf6;
+  --accent: #c026d3;      /* второй акцент (фуксия) — графики, донат */
+  --c: var(--purple); /* per-card tint fallback */
+  --ink: #150e22;
+  --muted: #6d5b86;
+  --line: #e7e0f0;
   --white: #ffffff;
   --radius: 14px;
-  --shadow: 0 10px 30px rgba(15, 42, 95, 0.08);
-  --shadow-lg: 0 18px 50px rgba(15, 42, 95, 0.16);
+  --shadow: 0 10px 30px rgba(59, 22, 104, 0.09);
+  --shadow-lg: 0 18px 50px rgba(59, 22, 104, 0.17);
+  --card-bg: linear-gradient(170deg, #ffffff 0%, #fdfbff 55%, #f9f5ff 100%);
   --max-w: 1180px;
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
 }
@@ -38,13 +43,14 @@ body {
   margin: 0;
   font-family: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
   color: var(--ink);
-  background: var(--bg-soft);
+  background: linear-gradient(180deg, #fbf9fe 0%, var(--bg-soft) 45%, var(--bg-soft-2) 100%);
+  background-attachment: fixed;
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
 }
 
 img { max-width: 100%; display: block; }
-a { color: var(--blue); text-decoration: none; }
+a { color: var(--purple); text-decoration: none; }
 a:hover { text-decoration: underline; }
 
 .container {
@@ -53,8 +59,20 @@ a:hover { text-decoration: underline; }
   padding: 0 24px;
 }
 
-.section { padding: 96px 0; background: var(--bg-soft); }
-.section.alt { background: var(--ice); }
+/* Фон секций — низкоконтрастные градиенты вместо плоской заливки:
+   мягкий вертикальный переход + едва заметное фиолетовое свечение из угла.
+   Чередование .section / .section.alt сохраняется: alt заметно насыщеннее. */
+.section {
+  padding: 96px 0;
+  background:
+    radial-gradient(1100px 480px at 12% -8%, rgba(109, 40, 217, 0.055), transparent 62%),
+    linear-gradient(180deg, #fcfaff 0%, var(--bg-soft) 48%, var(--bg-soft-2) 100%);
+}
+.section.alt {
+  background:
+    radial-gradient(1000px 460px at 88% -6%, rgba(109, 40, 217, 0.1), transparent 62%),
+    linear-gradient(180deg, #ece1fb 0%, var(--lilac) 50%, #dccdf7 100%);
+}
 
 .eyebrow {
   display: inline-flex;
@@ -64,14 +82,14 @@ a:hover { text-decoration: underline; }
   font-weight: 700;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--blue);
+  color: var(--purple);
   margin-bottom: 14px;
 }
 .eyebrow::before {
   content: "";
   width: 26px;
   height: 2px;
-  background: var(--blue);
+  background: var(--purple);
   border-radius: 2px;
 }
 
@@ -79,7 +97,7 @@ a:hover { text-decoration: underline; }
 .section-head h2 {
   font-size: clamp(30px, 4.4vw, 46px);
   margin: 0 0 12px;
-  color: var(--navy);
+  color: var(--plum);
   letter-spacing: -0.025em;
   line-height: 1.1;
 }
@@ -111,23 +129,27 @@ a:hover { text-decoration: underline; }
 }
 .btn:hover { text-decoration: none; transform: translateY(-2px); }
 .btn:active { transform: translateY(0); }
-.btn-primary { background: var(--blue); color: #fff; }
-.btn-primary:hover { background: var(--blue-hover); color: #fff; box-shadow: 0 10px 24px rgba(29, 78, 216, 0.35); }
-.btn-outline { background: transparent; color: var(--navy); border-color: var(--navy); }
-.btn-outline:hover { background: var(--navy); color: #fff; }
+.btn-primary { background: linear-gradient(135deg, #7c3aed 0%, var(--purple) 55%, #5b21b6 100%); color: #fff; }
+.btn-primary:hover {
+  background: linear-gradient(135deg, var(--purple) 0%, var(--purple-hover) 75%);
+  color: #fff;
+  box-shadow: 0 10px 24px rgba(109, 40, 217, 0.35);
+}
+.btn-outline { background: transparent; color: var(--plum); border-color: var(--plum); }
+.btn-outline:hover { background: linear-gradient(135deg, var(--plum), var(--plum-dark)); color: #fff; }
 .btn-light-outline { background: transparent; color: #fff; border-color: rgba(255, 255, 255, 0.65); }
 .btn-light-outline:hover { background: rgba(255, 255, 255, 0.12); color: #fff; }
 .btn-link {
   background: none;
   border: none;
-  color: var(--blue);
+  color: var(--purple);
   font-weight: 600;
   cursor: pointer;
   padding: 0;
   font-size: 15px;
   font-family: inherit;
 }
-.btn-link:hover { color: var(--blue-hover); }
+.btn-link:hover { color: var(--purple-hover); }
 .btn[disabled] { opacity: 0.6; cursor: not-allowed; transform: none; }
 
 /* Стрелка, выезжающая на hover (как у ссылок BCG/Accenture) */
@@ -136,7 +158,7 @@ a:hover { text-decoration: underline; }
   align-items: center;
   gap: 7px;
   font-weight: 600;
-  color: var(--blue);
+  color: var(--purple);
 }
 .arrow-link .arr { transition: transform 0.25s var(--ease-out); }
 .arrow-link:hover { text-decoration: none; }
@@ -147,12 +169,12 @@ a:hover { text-decoration: underline; }
   position: sticky;
   top: 0;
   z-index: 50;
-  background: rgba(255, 255, 255, 0.92);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.95) 0%, rgba(247, 244, 253, 0.88) 100%);
   backdrop-filter: blur(10px);
   border-bottom: 1px solid var(--line);
   transition: box-shadow 0.3s;
 }
-.site-header.scrolled { box-shadow: 0 6px 24px rgba(15, 42, 95, 0.1); }
+.site-header.scrolled { box-shadow: 0 6px 24px rgba(59, 22, 104, 0.1); }
 .header-inner {
   display: flex;
   align-items: center;
@@ -161,29 +183,32 @@ a:hover { text-decoration: underline; }
   transition: height 0.3s;
 }
 .site-header.scrolled .header-inner { height: 60px; }
+/* Словесный знак — капслоком: при uppercase нужен положительный трекинг,
+   иначе буквы слипаются (у строчного начертания было отрицательное). */
 .logo {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 11px;
   font-weight: 800;
-  font-size: 20px;
-  color: var(--navy);
-  letter-spacing: -0.02em;
+  font-size: 25px;
+  text-transform: uppercase;
+  color: var(--plum);
+  letter-spacing: 0.05em;
 }
 .logo:hover { text-decoration: none; }
 .logo-mark {
   width: 34px;
   height: 34px;
   border-radius: 9px;
-  background: linear-gradient(135deg, var(--blue), var(--navy));
+  background: linear-gradient(140deg, #a855f7 0%, var(--purple) 45%, var(--plum) 100%);
   display: grid;
   place-items: center;
   color: #fff;
   flex: none;
-  box-shadow: 0 4px 12px rgba(29, 78, 216, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  box-shadow: 0 4px 12px rgba(109, 40, 217, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.25);
   transition: transform 0.3s var(--ease-out), box-shadow 0.3s;
 }
-.logo:hover .logo-mark { transform: translateY(-1px) rotate(-3deg); box-shadow: 0 8px 20px rgba(29, 78, 216, 0.45); }
+.logo:hover .logo-mark { transform: translateY(-1px) rotate(-3deg); box-shadow: 0 8px 20px rgba(109, 40, 217, 0.45); }
 .logo-mark svg { width: 19px; height: 19px; overflow: visible; }
 .logo:hover .logo-mark svg path { animation: logoBars 0.7s var(--ease-out); }
 .logo:hover .logo-mark svg path:nth-child(2) { animation-delay: 0.07s; }
@@ -216,14 +241,14 @@ a:hover { text-decoration: underline; }
   right: 0;
   bottom: 0;
   height: 2px;
-  background: var(--blue);
+  background: var(--purple);
   transform: scaleX(0);
   transform-origin: left;
   transition: transform 0.3s var(--ease-out);
 }
-.main-nav a:hover { color: var(--blue); text-decoration: none; }
+.main-nav a:hover { color: var(--purple); text-decoration: none; }
 .main-nav a:hover::after, .main-nav a.active::after { transform: scaleX(1); }
-.main-nav a.active { color: var(--blue); }
+.main-nav a.active { color: var(--purple); }
 
 .lang-switch {
   display: flex;
@@ -242,7 +267,7 @@ a:hover { text-decoration: underline; }
   font-family: inherit;
   transition: background 0.2s, color 0.2s;
 }
-.lang-switch button.active { background: var(--navy); color: #fff; }
+.lang-switch button.active { background: linear-gradient(150deg, var(--plum), var(--plum-dark)); color: #fff; }
 
 .burger {
   display: none;
@@ -256,7 +281,7 @@ a:hover { text-decoration: underline; }
   display: block;
   width: 22px;
   height: 2px;
-  background: var(--navy);
+  background: var(--plum);
   margin: 5px 0;
   border-radius: 2px;
   transition: transform 0.2s, opacity 0.2s;
@@ -264,27 +289,31 @@ a:hover { text-decoration: underline; }
 
 /* ---------- Hero ---------- */
 .hero {
-  background:
-    radial-gradient(900px 420px at 85% -10%, rgba(29, 78, 216, 0.38), transparent 60%),
-    radial-gradient(700px 420px at -10% 110%, rgba(29, 78, 216, 0.26), transparent 55%),
-    linear-gradient(135deg, var(--navy-dark) 0%, var(--navy) 60%, #16407e 100%);
+  background: linear-gradient(135deg, var(--plum-black) 0%, #180630 46%, #2a1052 100%);
   color: #fff;
   padding: 60px 0 65px;
   position: relative;
   overflow: hidden;
 }
-.hero-grid-decor {
+/* Декоративный слой: чёрно-фиолетовые радиальные пятна вместо прежней сетки.
+   Фиолетовые «засветки» задают глубину, почти чёрные — затемняют углы;
+   слой медленно дрейфует, поэтому вынесен за края (inset: -12%). */
+.hero-glow-decor {
   position: absolute;
-  inset: 0;
-  background-image: linear-gradient(rgba(255,255,255,0.045) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,0.045) 1px, transparent 1px);
-  background-size: 56px 56px;
+  inset: -12%;
+  background:
+    radial-gradient(36% 46% at 20% 26%, rgba(124, 58, 237, 0.42), transparent 68%),
+    radial-gradient(30% 38% at 76% 14%, rgba(168, 85, 247, 0.26), transparent 70%),
+    radial-gradient(34% 42% at 62% 84%, rgba(192, 38, 211, 0.2), transparent 72%),
+    radial-gradient(46% 52% at 4% 92%, rgba(6, 2, 14, 0.85), transparent 70%),
+    radial-gradient(42% 48% at 96% 66%, rgba(6, 2, 14, 0.8), transparent 70%);
+  filter: blur(12px);
   pointer-events: none;
-  animation: gridPan 40s linear infinite;
+  animation: heroGlowDrift 26s ease-in-out infinite alternate;
 }
-@keyframes gridPan {
-  from { background-position: 0 0, 0 0; }
-  to { background-position: 56px 56px, 56px 56px; }
+@keyframes heroGlowDrift {
+  from { transform: translate3d(-1.6%, -1.2%, 0) scale(1.02); }
+  to { transform: translate3d(1.6%, 1.4%, 0) scale(1.07); }
 }
 @keyframes floatY {
   0%, 100% { transform: translateY(0); }
@@ -303,7 +332,7 @@ a:hover { text-decoration: underline; }
 
 /* Встроенная форма заявки справа от заголовка */
 .hero-form-card {
-  background: #fff;
+  background: var(--card-bg);
   border-radius: 18px;
   padding: 26px 28px 24px;
   box-shadow: var(--shadow-lg);
@@ -311,13 +340,13 @@ a:hover { text-decoration: underline; }
   opacity: 0;
   animation: heroLine 0.9s var(--ease-out) 0.45s forwards;
 }
-.hero-form-card h3 { margin: 0 0 5px; color: var(--navy); font-size: 22px; letter-spacing: -0.01em; }
+.hero-form-card h3 { margin: 0 0 5px; color: var(--plum); font-size: 22px; letter-spacing: -0.01em; }
 .hero-form-card .hero-form-sub { margin: 0 0 18px; color: var(--muted); font-size: 14px; line-height: 1.5; }
 .hero-form-card .form-field { margin-bottom: 13px; }
 .hero-form-card textarea { min-height: 70px; }
 
-.hero .eyebrow { color: #8db4ff; }
-.hero .eyebrow::before { background: #8db4ff; }
+.hero .eyebrow { color: var(--purple-light); }
+.hero .eyebrow::before { background: var(--purple-light); }
 .hero h1 {
   font-size: clamp(32px, 4.6vw, 52px);
   line-height: 1.12;
@@ -326,7 +355,7 @@ a:hover { text-decoration: underline; }
   text-transform: uppercase;
   font-weight: 800;
 }
-.hero h1 .accent { color: #8db4ff; }
+.hero h1 .accent { color: var(--purple-light); }
 .hero h1 .line {
   display: block;
   opacity: 0;
@@ -373,16 +402,16 @@ a:hover { text-decoration: underline; }
   border-radius: 50%;
   border: 1.5px solid var(--line);
   background: #fff;
-  color: var(--navy);
+  color: var(--plum);
   font-size: 18px;
   cursor: pointer;
   display: grid;
   place-items: center;
   transition: background 0.2s, color 0.2s, transform 0.15s;
 }
-.carousel-btn:hover { background: var(--navy); color: #fff; transform: scale(1.06); }
+.carousel-btn:hover { background: linear-gradient(150deg, var(--plum), var(--plum-dark)); color: #fff; transform: scale(1.06); }
 .carousel-btn[disabled] { opacity: 0.35; cursor: default; transform: none; }
-.carousel-btn[disabled]:hover { background: #fff; color: var(--navy); }
+.carousel-btn[disabled]:hover { background: #fff; color: var(--plum); }
 
 .news-track {
   display: flex;
@@ -397,13 +426,13 @@ a:hover { text-decoration: underline; }
      на нет до края клиппинга и не было резкого «шва». */
   padding: 20px 4px 46px;
   scrollbar-width: thin;
-  scrollbar-color: var(--ice-2) transparent;
+  scrollbar-color: var(--lilac-2) transparent;
 }
 .news-card {
   flex: 0 0 calc((100% - 44px) / 3);
   min-height: 264px;
   scroll-snap-align: start;
-  background: #fff;
+  background: var(--card-bg);
   border: 1px solid var(--line);
   border-radius: var(--radius);
   padding: 26px 24px;
@@ -422,7 +451,7 @@ a:hover { text-decoration: underline; }
   left: 0;
   right: 0;
   height: 3px;
-  background: linear-gradient(90deg, var(--blue), #8db4ff);
+  background: linear-gradient(90deg, var(--purple), var(--purple-light));
   transform: scaleX(0);
   transform-origin: left;
   transition: transform 0.4s var(--ease-out);
@@ -432,11 +461,11 @@ a:hover { text-decoration: underline; }
 .news-card .news-date {
   font-size: 13px;
   font-weight: 700;
-  color: var(--blue);
+  color: var(--purple);
   text-transform: uppercase;
   letter-spacing: 0.06em;
 }
-.news-card h3 { margin: 0; font-size: 19px; line-height: 1.3; color: var(--navy); }
+.news-card h3 { margin: 0; font-size: 19px; line-height: 1.3; color: var(--plum); }
 .news-card p { margin: 0; color: var(--muted); font-size: 14.5px; flex: 1; }
 .news-card .news-img {
   border-radius: 10px;
@@ -457,7 +486,7 @@ a:hover { text-decoration: underline; }
 .service-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  background: #fff;
+  background: var(--card-bg);
   border: 1px solid var(--line);
   border-radius: 20px;
   overflow: hidden;
@@ -489,7 +518,6 @@ a:hover { text-decoration: underline; }
     align-items: center;
     justify-content: center;
   }
-  .service-row.expanded .service-icon { display: none; }
   .service-row.expanded .service-banner h3 {
     writing-mode: vertical-rl;
     transform: rotate(180deg);
@@ -519,29 +547,15 @@ a:hover { text-decoration: underline; }
   flex-direction: column;
   justify-content: space-between;
   color: #fff;
-  background-color: var(--tint, var(--blue));
+  background-color: var(--tint, var(--purple));
   background-image:
-    linear-gradient(180deg, rgba(8, 15, 30, 0.22) 0%, rgba(8, 15, 30, 0.72) 100%),
+    linear-gradient(180deg, rgba(22, 10, 38, 0.22) 0%, rgba(22, 10, 38, 0.72) 100%),
     var(--photo, none);
   background-repeat: no-repeat;
   background-size: auto, cover;
   background-position: 0 0, center;
   overflow: hidden;
 }
-.service-icon {
-  width: 58px;
-  height: 58px;
-  border-radius: 14px;
-  background: rgba(255, 255, 255, 0.16);
-  backdrop-filter: blur(4px);
-  display: grid;
-  place-items: center;
-  position: relative;
-  transition: transform 0.35s var(--ease-out), background 0.3s;
-}
-.service-row:hover .service-icon { transform: scale(1.1) rotate(-4deg); background: rgba(255, 255, 255, 0.26); }
-.service-icon svg { width: 32px; height: 32px; }
-
 .service-banner h3 {
   margin: auto 0 0;
   font-size: clamp(24px, 2.6vw, 34px);
@@ -549,13 +563,6 @@ a:hover { text-decoration: underline; }
   letter-spacing: -0.02em;
   position: relative;
   max-width: 360px;
-}
-
-/* Вторая, приглушённая иконка сервиса — зеркало верхней, в нижнем углу баннера */
-.service-icon-ghost {
-  position: absolute;
-  right: 34px;
-  bottom: 32px;
 }
 
 /* Сторона с описанием и кнопками */
@@ -577,7 +584,7 @@ a:hover { text-decoration: underline; }
   margin: 0;
   color: var(--muted);
   font-size: 15px;
-  border-left: 3px solid var(--tint, var(--blue));
+  border-left: 3px solid var(--tint, var(--purple));
   padding: 4px 0 4px 18px;
   opacity: 0;
   transition: opacity 0.45s var(--ease-out);
@@ -585,7 +592,7 @@ a:hover { text-decoration: underline; }
 .service-row.expanded .service-full { opacity: 1; }
 .service-full h4 {
   margin: 18px 0 7px;
-  color: var(--navy);
+  color: var(--plum);
   font-size: 15.5px;
   font-weight: 700;
   letter-spacing: -0.01em;
@@ -619,7 +626,7 @@ a:hover { text-decoration: underline; }
   position: relative;
   display: flex;
   flex-direction: column;
-  background: #fff;
+  background: var(--card-bg);
   border: 1px solid var(--line);
   border-radius: var(--radius);
   padding: 22px 24px 24px;
@@ -646,23 +653,7 @@ a:hover { text-decoration: underline; }
 }
 .ind-tile:hover::before { transform: scaleX(1); }
 
-.ind-ic {
-  width: 44px;
-  height: 44px;
-  border-radius: 12px;
-  flex: none;
-  display: grid;
-  place-items: center;
-  color: var(--c);
-  background: color-mix(in srgb, var(--c) 12%, #fff);
-  transition: transform 0.35s var(--ease-out);
-}
-.ind-ic svg { width: 22px; height: 22px; }
-.ind-tile:hover .ind-ic { transform: rotate(-4deg) scale(1.06); }
 .ind-tile-head {
-  display: flex;
-  align-items: center;
-  gap: 14px;
   margin-bottom: 10px;
 }
 .ind-tile h3 {
@@ -670,13 +661,13 @@ a:hover { text-decoration: underline; }
   font-size: 17px;
   font-weight: 700;
   letter-spacing: -0.01em;
-  color: var(--navy);
+  color: var(--plum);
 }
 .ind-tile p { margin: 0; color: var(--muted); font-size: 14.5px; line-height: 1.6; }
 
 /* ---------- Careers ---------- */
 .careers-box {
-  background: linear-gradient(135deg, var(--navy-dark), var(--navy) 70%, #16407e);
+  background: linear-gradient(135deg, var(--plum-black), var(--plum) 72%, var(--plum-mid));
   color: #fff;
   border-radius: 20px;
   padding: 56px 48px;
@@ -696,7 +687,7 @@ a:hover { text-decoration: underline; }
   width: 280px;
   height: 280px;
   border-radius: 50%;
-  background: rgba(29, 78, 216, 0.35);
+  background: rgba(109, 40, 217, 0.35);
   filter: blur(10px);
   animation: floatY 11s ease-in-out infinite;
   pointer-events: none;
@@ -709,13 +700,13 @@ a:hover { text-decoration: underline; }
   width: 200px;
   height: 200px;
   border-radius: 50%;
-  background: rgba(141, 180, 255, 0.16);
+  background: rgba(196, 181, 253, 0.16);
   animation: floatY 14s ease-in-out infinite reverse;
   pointer-events: none;
 }
 .careers-content { max-width: 640px; position: relative; z-index: 1; }
 .careers-content h2 { font-size: clamp(26px, 3.4vw, 36px); margin: 0 0 8px; letter-spacing: -0.02em; }
-.careers-content .careers-sub { color: #9db8e8; font-weight: 600; margin: 0 0 14px; }
+.careers-content .careers-sub { color: #c9b3ee; font-weight: 600; margin: 0 0 14px; }
 .careers-content p { color: rgba(255, 255, 255, 0.85); margin: 0; }
 .careers-box .btn { position: relative; z-index: 1; }
 
@@ -724,7 +715,7 @@ a:hover { text-decoration: underline; }
 .about-text p { color: var(--ink); font-size: 16px; margin: 0 0 16px; }
 .about-stats { display: grid; gap: 18px; }
 .stat-card {
-  background: var(--ice);
+  background: linear-gradient(135deg, #f3ecfd 0%, var(--lilac) 65%, var(--lilac-2) 100%);
   border-radius: var(--radius);
   padding: 24px 28px;
   display: flex;
@@ -733,11 +724,14 @@ a:hover { text-decoration: underline; }
   transition: transform 0.3s var(--ease-out);
 }
 .stat-card:hover { transform: translateX(6px); }
-.stat-card .stat-num { font-size: 38px; font-weight: 800; color: var(--blue); letter-spacing: -0.03em; min-width: 74px; }
+.stat-card .stat-num { font-size: 38px; font-weight: 800; color: var(--purple); letter-spacing: -0.03em; min-width: 74px; }
 .stat-card .stat-label { color: var(--muted); font-size: 15px; }
 
 /* ---------- Футер ---------- */
-.site-footer { background: var(--navy-dark); color: rgba(255, 255, 255, 0.78); }
+.site-footer {
+  background: linear-gradient(180deg, #2b1052 0%, #180630 58%, var(--plum-black) 100%);
+  color: rgba(255, 255, 255, 0.78);
+}
 .footer-main {
   display: grid;
   grid-template-columns: 1.4fr 1fr 1fr;
@@ -771,7 +765,7 @@ a:hover { text-decoration: underline; }
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(10, 22, 48, 0.62);
+  background: rgba(29, 12, 56, 0.62);
   backdrop-filter: blur(3px);
   display: none;
   align-items: flex-start;
@@ -782,7 +776,7 @@ a:hover { text-decoration: underline; }
 }
 .modal-overlay.open { display: flex; }
 .modal {
-  background: #fff;
+  background: var(--card-bg);
   border-radius: 18px;
   max-width: 520px;
   width: 100%;
@@ -795,32 +789,32 @@ a:hover { text-decoration: underline; }
   from { opacity: 0; transform: translateY(26px) scale(0.98); }
   to { opacity: 1; transform: none; }
 }
-.modal h3 { margin: 0 0 6px; color: var(--navy); font-size: 24px; letter-spacing: -0.01em; }
+.modal h3 { margin: 0 0 6px; color: var(--plum); font-size: 24px; letter-spacing: -0.01em; }
 .modal .modal-sub { margin: 0 0 22px; color: var(--muted); font-size: 14.5px; }
 .modal-close {
   position: absolute;
   top: 16px;
   right: 16px;
   border: none;
-  background: var(--ice);
+  background: var(--lilac);
   width: 36px;
   height: 36px;
   border-radius: 50%;
   font-size: 17px;
   cursor: pointer;
-  color: var(--navy);
+  color: var(--plum);
   display: grid;
   place-items: center;
   transition: background 0.2s, transform 0.2s;
 }
-.modal-close:hover { background: var(--ice-2); transform: rotate(90deg); }
+.modal-close:hover { background: var(--lilac-2); transform: rotate(90deg); }
 
 .form-field { margin-bottom: 16px; }
 .form-field label {
   display: block;
   font-size: 13.5px;
   font-weight: 600;
-  color: var(--navy);
+  color: var(--plum);
   margin-bottom: 6px;
 }
 .label-req { color: #dc2626; margin-left: 3px; }
@@ -841,11 +835,11 @@ a:hover { text-decoration: underline; }
   cursor: pointer;
   transition: border-color 0.2s, background 0.2s;
 }
-.file-drop:hover { border-color: var(--blue); background: var(--ice); }
+.file-drop:hover { border-color: var(--purple); background: var(--lilac); }
 .file-btn {
   flex: none;
-  background: var(--ice);
-  color: var(--navy);
+  background: linear-gradient(160deg, #f3ecfd, var(--lilac));
+  color: var(--plum);
   font-size: 13.5px;
   font-weight: 600;
   border-radius: 8px;
@@ -878,7 +872,7 @@ a:hover { text-decoration: underline; }
   animation: checkPop 0.5s var(--ease-out);
 }
 .form-success .success-check svg { width: 30px; height: 30px; }
-.form-success h3 { margin: 0 0 6px; color: var(--navy); font-size: 22px; }
+.form-success h3 { margin: 0 0 6px; color: var(--plum); font-size: 22px; }
 .form-success p { margin: 0; color: var(--muted); font-size: 14.5px; }
 @keyframes checkPop {
   0% { transform: scale(0); opacity: 0; }
@@ -898,7 +892,7 @@ a:hover { text-decoration: underline; }
   transition: border-color 0.2s, box-shadow 0.2s;
 }
 .form-field input:focus,
-.form-field textarea:focus { outline: none; border-color: var(--blue); box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.12); }
+.form-field textarea:focus { outline: none; border-color: var(--purple); box-shadow: 0 0 0 3px rgba(109, 40, 217, 0.12); }
 .form-field textarea { resize: vertical; min-height: 96px; }
 .form-field .field-error {
   display: none;
@@ -931,18 +925,18 @@ a:hover { text-decoration: underline; }
 
 /* ---------- Страница новостей ---------- */
 .page-hero {
-  background: linear-gradient(135deg, var(--navy-dark), var(--navy) 70%, #16407e);
+  background: linear-gradient(135deg, var(--plum-black), var(--plum) 72%, var(--plum-mid));
   color: #fff;
   padding: 72px 0 64px;
 }
 .page-hero h1 { margin: 0 0 8px; font-size: clamp(30px, 4.5vw, 44px); letter-spacing: -0.02em; }
 .page-hero p { margin: 0; color: rgba(255, 255, 255, 0.8); font-size: 17px; }
-.back-link { display: inline-block; margin-bottom: 22px; color: #9db8e8; font-weight: 600; }
+.back-link { display: inline-block; margin-bottom: 22px; color: #c9b3ee; font-weight: 600; }
 .back-link:hover { color: #fff; }
 
 .news-list { display: grid; gap: 28px; max-width: 840px; margin: 0 auto; }
 .news-article {
-  background: #fff;
+  background: var(--card-bg);
   border: 1px solid var(--line);
   border-radius: var(--radius);
   padding: 34px 38px;
@@ -955,16 +949,21 @@ a:hover { text-decoration: underline; }
 .news-article .news-date {
   font-size: 13px;
   font-weight: 700;
-  color: var(--blue);
+  color: var(--purple);
   text-transform: uppercase;
   letter-spacing: 0.06em;
 }
-.news-article h2 { margin: 8px 0 14px; color: var(--navy); font-size: 26px; line-height: 1.25; letter-spacing: -0.01em; }
+.news-article h2 { margin: 8px 0 14px; color: var(--plum); font-size: 26px; line-height: 1.25; letter-spacing: -0.01em; }
 .news-article .news-img { border-radius: 10px; margin-bottom: 18px; max-height: 380px; object-fit: cover; width: 100%; }
 .news-article .news-body { color: var(--ink); font-size: 15.5px; white-space: pre-line; }
 
 /* ---------- Адаптив ---------- */
 @media (max-width: 980px) {
+  /* Полоса 761-980px — единственная, где рядом стоят и полное меню, и логотип:
+     здесь словесный знак ужимаем, иначе переключатель языка упирается в край.
+     Ниже 760px меню сворачивается в бургер, и в блоке @media (max-width: 760px)
+     логотипу возвращается полный размер. */
+  .logo { font-size: 21px; letter-spacing: 0.04em; }
   .service-row { grid-template-columns: 1fr; }
   .service-row.flip .service-banner { order: 0; }
   .service-banner { min-height: 220px; }
@@ -977,6 +976,7 @@ a:hover { text-decoration: underline; }
 }
 
 @media (max-width: 760px) {
+  .logo { font-size: 25px; letter-spacing: 0.05em; }
   .section { padding: 64px 0; }
   .main-nav {
     display: none;
@@ -984,7 +984,7 @@ a:hover { text-decoration: underline; }
     top: 70px;
     left: 0;
     right: 0;
-    background: #fff;
+    background: linear-gradient(180deg, #ffffff 0%, #f8f4fe 100%);
     flex-direction: column;
     gap: 0;
     border-bottom: 1px solid var(--line);
@@ -1037,7 +1037,7 @@ a:hover { text-decoration: underline; }
   left: 0;
   right: 0;
   height: 3px;
-  background: linear-gradient(90deg, var(--blue), #8db4ff);
+  background: linear-gradient(90deg, var(--purple), var(--purple-light));
   transform: scaleX(0);
   transform-origin: left;
   z-index: 60; /* поверх липкой шапки */
@@ -1053,12 +1053,12 @@ a:hover { text-decoration: underline; }
   height: 48px;
   border-radius: 50%;
   border: none;
-  background: var(--navy);
+  background: linear-gradient(150deg, var(--plum) 0%, var(--plum-dark) 100%);
   color: #fff;
   cursor: pointer;
   display: grid;
   place-items: center;
-  box-shadow: 0 10px 26px rgba(15, 42, 95, 0.35);
+  box-shadow: 0 10px 26px rgba(59, 22, 104, 0.35);
   opacity: 0;
   transform: translateY(16px);
   pointer-events: none;
@@ -1066,7 +1066,7 @@ a:hover { text-decoration: underline; }
   z-index: 55;
 }
 .to-top.show { opacity: 1; transform: none; pointer-events: auto; }
-.to-top:hover { background: var(--blue); }
+.to-top:hover { background: linear-gradient(150deg, #7c3aed, var(--purple-hover)); }
 .to-top svg { width: 20px; height: 20px; }
 
 @media (max-width: 760px) {
@@ -1074,8 +1074,8 @@ a:hover { text-decoration: underline; }
 }
 
 /* ---------- Кнопка светлая (на тёмном фоне) ---------- */
-.btn-light { background: #fff; color: var(--navy); }
-.btn-light:hover { background: var(--ice); color: var(--navy); box-shadow: 0 10px 24px rgba(0, 0, 0, 0.18); }
+.btn-light { background: #fff; color: var(--plum); }
+.btn-light:hover { background: var(--lilac); color: var(--plum); box-shadow: 0 10px 24px rgba(0, 0, 0, 0.18); }
 
 /* ---------- Hero: список преимуществ ---------- */
 .hero-points {
@@ -1101,7 +1101,7 @@ a:hover { text-decoration: underline; }
   width: 18px;
   height: 18px;
   flex-shrink: 0;
-  color: #8db4ff;
+  color: var(--purple-light);
 }
 
 /* ---------- Сервисы: списки в раскрытом описании ---------- */
@@ -1127,7 +1127,7 @@ a:hover { text-decoration: underline; }
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: var(--tint, var(--blue));
+  background: var(--tint, var(--purple));
 }
 
 /* ---------- Our Approach (профессиональный таймлайн с центральной осью) ---------- */
@@ -1150,8 +1150,8 @@ a:hover { text-decoration: underline; }
   background: linear-gradient(
     180deg,
     transparent 0,
-    var(--ice-2) 7%,
-    var(--ice-2) 93%,
+    var(--lilac-2) 7%,
+    var(--lilac-2) 93%,
     transparent 100%
   );
   z-index: 0;
@@ -1176,7 +1176,7 @@ a:hover { text-decoration: underline; }
   width: 62px;
   height: 62px;
   border-radius: 50%;
-  background: linear-gradient(150deg, var(--c), color-mix(in srgb, var(--c) 58%, var(--navy)));
+  background: linear-gradient(150deg, var(--c), color-mix(in srgb, var(--c) 58%, var(--plum)));
   color: #fff;
   font-size: 18px;
   font-weight: 800;
@@ -1194,7 +1194,7 @@ a:hover { text-decoration: underline; }
   top: 50%;
   width: 34px;
   height: 2px;
-  background: color-mix(in srgb, var(--c) 55%, var(--ice-2));
+  background: color-mix(in srgb, var(--c) 55%, var(--lilac-2));
   transform: translateY(-50%);
 }
 .approach-node::after { left: 100%; }
@@ -1207,7 +1207,7 @@ a:hover { text-decoration: underline; }
   z-index: 1;
   width: 100%;
   max-width: 620px;
-  background: #fff;
+  background: var(--card-bg);
   border: 1px solid var(--line);
   border-radius: 16px;
   padding: 18px 22px 19px;
@@ -1236,33 +1236,13 @@ a:hover { text-decoration: underline; }
     0 14px 30px color-mix(in srgb, var(--c) 45%, transparent);
 }
 .approach-card-head {
-  display: flex;
-  align-items: center;
-  gap: 14px;
   margin-bottom: 9px;
-}
-.approach-icon {
-  flex: none;
-  width: 46px;
-  height: 46px;
-  border-radius: 12px;
-  background: color-mix(in srgb, var(--c) 12%, #fff);
-  color: var(--c);
-  display: grid;
-  place-items: center;
-  transition: background 0.35s, color 0.35s, transform 0.35s var(--ease-out);
-}
-.approach-icon svg { width: 23px; height: 23px; }
-.approach-card:hover .approach-icon {
-  background: var(--c);
-  color: #fff;
-  transform: scale(1.06) rotate(-3deg);
 }
 .approach-card h3 {
   margin: 0;
   font-size: 18px;
   font-weight: 700;
-  color: var(--navy);
+  color: var(--plum);
   letter-spacing: -0.01em;
   line-height: 1.25;
 }
@@ -1301,23 +1281,15 @@ a:hover { text-decoration: underline; }
   background: linear-gradient(330deg,
     color-mix(in srgb, var(--c) 92%, #fff) 0%,
     var(--c) 52%,
-    color-mix(in srgb, var(--c) 72%, var(--navy)) 100%);
+    color-mix(in srgb, var(--c) 72%, var(--plum)) 100%);
   border-color: transparent;
   box-shadow: 0 18px 44px color-mix(in srgb, var(--c) 36%, transparent);
 }
 .approach-step:last-child .approach-card::before { display: none; }
 .approach-step:last-child .approach-card h3 { color: #fff; }
 .approach-step:last-child .approach-card p { color: rgba(255, 255, 255, 0.88); }
-.approach-step:last-child .approach-icon {
-  background: rgba(255, 255, 255, 0.18);
-  color: #fff;
-}
-.approach-step:last-child .approach-card:hover .approach-icon {
-  background: rgba(255, 255, 255, 0.28);
-  color: #fff;
-}
 .approach-step:last-child .approach-node::after {
-  background: color-mix(in srgb, var(--c) 70%, var(--ice-2));
+  background: color-mix(in srgb, var(--c) 70%, var(--lilac-2));
 }
 
 /* ---------- Раскладка: таймлайн слева + дашборд-макет справа ---------- */
@@ -1334,7 +1306,7 @@ a:hover { text-decoration: underline; }
 
 /* мини-дашборд (декоративный макет) */
 .dash {
-  background: #fff;
+  background: var(--card-bg);
   border: 1px solid var(--line);
   border-radius: 18px;
   box-shadow: var(--shadow-lg);
@@ -1350,11 +1322,11 @@ a:hover { text-decoration: underline; }
   margin-bottom: 14px;
 }
 .dash-dots { display: flex; gap: 5px; }
-.dash-dots i { width: 9px; height: 9px; border-radius: 50%; background: var(--ice-2); }
+.dash-dots i { width: 9px; height: 9px; border-radius: 50%; background: var(--lilac-2); }
 .dash-dots i:nth-child(1) { background: #ff5f57; }
 .dash-dots i:nth-child(2) { background: #febc2e; }
-.dash-dots i:nth-child(3) { background: #28c840; }
-.dash-name { font-size: 13px; font-weight: 700; color: var(--navy); }
+.dash-dots i:nth-child(3) { background: #f9a8d4; }
+.dash-name { font-size: 13px; font-weight: 700; color: var(--plum); }
 .dash-live {
   margin-left: auto;
   display: inline-flex;
@@ -1362,12 +1334,12 @@ a:hover { text-decoration: underline; }
   gap: 6px;
   font-size: 11px;
   font-weight: 700;
-  color: #059669;
+  color: #ec4899;
 }
 .dash-live i {
   width: 7px; height: 7px; border-radius: 50%;
-  background: #059669;
-  box-shadow: 0 0 0 3px color-mix(in srgb, #059669 20%, transparent);
+  background: #ec4899;
+  box-shadow: 0 0 0 3px color-mix(in srgb, #ec4899 20%, transparent);
 }
 .dash-kpis {
   display: grid;
@@ -1375,18 +1347,20 @@ a:hover { text-decoration: underline; }
   gap: 10px;
   margin-bottom: 13px;
 }
-.dash-kpi { background: var(--ice); border-radius: 11px; padding: 10px 12px; }
+.dash-kpi { background: linear-gradient(160deg, #f3ecfd, var(--lilac)); border-radius: 11px; padding: 10px 12px; }
 .dash-kpi-l { display: block; font-size: 11px; color: var(--muted); }
 .dash-kpi-v {
   display: block;
   font-size: 18px;
   font-weight: 800;
-  color: var(--navy);
+  color: var(--plum);
   letter-spacing: -0.02em;
   margin: 3px 0 2px;
 }
 .dash-kpi-d { font-size: 11px; font-weight: 700; }
-.dash-kpi-d.up { color: #059669; }
+/* «Положительный» цвет в декоративном дашборде — светло-розовый, а не зелёный:
+   он держится в фиолетово-розовой гамме бренда (см. Design & color rules). */
+.dash-kpi-d.up { color: #ec4899; }
 .dash-kpi-d.down { color: #dc2626; }
 .dash-row {
   display: grid;
@@ -1395,7 +1369,7 @@ a:hover { text-decoration: underline; }
   margin-bottom: 12px;
 }
 .dash-panel {
-  background: #fff;
+  background: linear-gradient(170deg, #ffffff 0%, #fbf7ff 100%);
   border: 1px solid var(--line);
   border-radius: 13px;
   padding: 12px 13px;
@@ -1418,10 +1392,10 @@ a:hover { text-decoration: underline; }
   height: var(--h, 50%);
   min-height: 6px;
   border-radius: 4px 4px 0 0;
-  background: linear-gradient(180deg, var(--blue), color-mix(in srgb, var(--blue) 45%, var(--accent)));
+  background: linear-gradient(180deg, var(--purple), color-mix(in srgb, var(--purple) 45%, var(--accent)));
 }
 .dash-bars-grid i:last-child {
-  background: linear-gradient(180deg, #059669, #34d399);
+  background: linear-gradient(180deg, #f472b6, #f9a8d4);
 }
 .dash-donut { display: flex; flex-direction: column; }
 .donut {
@@ -1429,7 +1403,7 @@ a:hover { text-decoration: underline; }
   height: 88px;
   margin: 0 auto 10px;
   border-radius: 50%;
-  background: conic-gradient(var(--blue) 0 46%, var(--accent) 46% 74%, #0d9488 74% 100%);
+  background: conic-gradient(var(--purple) 0 46%, var(--accent) 46% 74%, #a855f7 74% 100%);
   position: relative;
 }
 .donut::after {
@@ -1462,7 +1436,7 @@ a:hover { text-decoration: underline; }
   left: 50%;
   width: 210px;
   height: 2px;
-  background: linear-gradient(90deg, color-mix(in srgb, var(--blue) 30%, transparent), transparent 92%);
+  background: linear-gradient(90deg, color-mix(in srgb, var(--purple) 30%, transparent), transparent 92%);
   transform-origin: 0 50%;
   transform: rotate(var(--angle));
 }
@@ -1481,14 +1455,19 @@ a:hover { text-decoration: underline; }
   align-items: center;
   justify-content: center;
   gap: 8px;
-  background: linear-gradient(150deg, var(--blue), var(--navy));
+  background: linear-gradient(150deg, var(--purple), var(--plum));
   color: #fff;
-  box-shadow: 0 0 0 8px color-mix(in srgb, var(--blue) 10%, transparent), 0 18px 40px rgba(15, 42, 95, 0.28);
+  box-shadow: 0 0 0 8px color-mix(in srgb, var(--purple) 10%, transparent), 0 18px 40px rgba(59, 22, 104, 0.28);
   z-index: 2;
 }
-.why-hub-mark { width: 36px; height: 36px; display: grid; place-items: center; }
-.why-hub-mark svg { width: 22px; height: 22px; }
-.why-hub-title { font-size: 15px; font-weight: 800; letter-spacing: -0.01em; text-align: center; max-width: 110px; }
+.why-hub-title {
+  font-size: 20px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  text-align: center;
+  max-width: 130px;
+}
 
 /* карточка на эллипсе: центр элемента совпадает с центром сцены, затем
    смещается на (rx*cos, ry*sin) от угла — ry меньше rx, поэтому раскладка
@@ -1500,7 +1479,7 @@ a:hover { text-decoration: underline; }
   width: 290px;
   display: flex;
   flex-direction: column;
-  background: #fff;
+  background: var(--card-bg);
   border: 1px solid var(--line);
   border-radius: var(--radius);
   padding: 18px 20px 20px;
@@ -1528,30 +1507,14 @@ a:hover { text-decoration: underline; }
 .why-tile:hover::before { transform: scaleX(1); }
 
 .why-tile-head {
-  display: flex;
-  align-items: center;
-  gap: 14px;
   margin-bottom: 10px;
 }
-.why-ic {
-  width: 44px;
-  height: 44px;
-  border-radius: 12px;
-  flex: none;
-  display: grid;
-  place-items: center;
-  color: var(--c);
-  background: color-mix(in srgb, var(--c) 12%, #fff);
-  transition: transform 0.35s var(--ease-out);
-}
-.why-ic svg { width: 22px; height: 22px; }
-.why-tile:hover .why-ic { transform: rotate(-4deg) scale(1.06); }
 .why-tile h3 {
   margin: 0;
   font-size: 16px;
   font-weight: 700;
   letter-spacing: -0.01em;
-  color: var(--navy);
+  color: var(--plum);
 }
 .why-tile p {
   margin: 0;
@@ -1562,7 +1525,7 @@ a:hover { text-decoration: underline; }
 
 /* ---------- Call to Action ---------- */
 .cta-box {
-  background: linear-gradient(135deg, var(--navy-dark), var(--navy) 70%, #16407e);
+  background: linear-gradient(135deg, var(--plum-black), var(--plum) 72%, var(--plum-mid));
   color: #fff;
   border-radius: 20px;
   padding: 56px 48px;
@@ -1578,7 +1541,7 @@ a:hover { text-decoration: underline; }
   width: 300px;
   height: 300px;
   border-radius: 50%;
-  background: rgba(29, 78, 216, 0.35);
+  background: rgba(109, 40, 217, 0.35);
   filter: blur(10px);
   animation: floatY 12s ease-in-out infinite;
   pointer-events: none;
@@ -1591,9 +1554,9 @@ a:hover { text-decoration: underline; }
 .about-mission {
   margin-top: 22px !important;
   padding-left: 18px;
-  border-left: 3px solid var(--blue);
+  border-left: 3px solid var(--purple);
   font-weight: 600;
-  color: var(--navy) !important;
+  color: var(--plum) !important;
 }
 
 /* ---------- Адаптив новых секций ---------- */
@@ -1648,15 +1611,10 @@ a:hover { text-decoration: underline; }
   .cta-box { padding: 40px 26px; }
 }
 
-/* ---------- Мобильная версия: прячем декоративные SVG-иконки у заголовков
-   (сервисы / подход / отрасли / почему нас) и стрелки-навигацию ленты новостей.
+/* ---------- Мобильная версия: прячем стрелки-навигацию ленты новостей.
    Ленту всё так же можно листать свайпом (.news-track: overflow-x: auto). ---------- */
 @media (max-width: 760px) {
   .carousel-controls { display: none; }
-  .service-icon { display: none; }
-  .approach-icon { display: none; }
-  .ind-ic { display: none; }
-  .why-ic { display: none; }
 }
 
 /* ---------- Тач-устройства: hover-микроанимации карточек проигрываются
@@ -1665,12 +1623,9 @@ a:hover { text-decoration: underline; }
    который js/main.js вешает, пока блок проходит вертикальный центр экрана,
    и снимает, когда блок из центра уходит — получается «подсветка по скроллу».
    Значения продублированы с :hover-правил выше (CSS custom properties внутри
-   color-mix()/rgba() наследуются от самих карточек). Иконки сервисов/подхода/
-   отраслей на узких экранах скрыты (блок выше) — их трансформации здесь
-   ни на что не влияют, но оставлены для широких тач-экранов (планшетов). ---------- */
+   color-mix()/rgba() наследуются от самих карточек). ---------- */
 @media (hover: none) {
   .service-row.in-view { box-shadow: var(--shadow-lg); }
-  .service-row.in-view .service-icon { transform: scale(1.1) rotate(-4deg); background: rgba(255, 255, 255, 0.26); }
 
   .ind-tile.in-view {
     transform: translateY(-5px);
@@ -1678,7 +1633,6 @@ a:hover { text-decoration: underline; }
     border-color: color-mix(in srgb, var(--c) 45%, var(--line));
   }
   .ind-tile.in-view::before { transform: scaleX(1); }
-  .ind-tile.in-view .ind-ic { transform: rotate(-4deg) scale(1.06); }
 
   .stat-card.in-view { transform: translateX(6px); }
 
@@ -1693,20 +1647,12 @@ a:hover { text-decoration: underline; }
       0 0 0 1px color-mix(in srgb, var(--c) 32%, transparent),
       0 14px 30px color-mix(in srgb, var(--c) 45%, transparent);
   }
-  .approach-step.in-view .approach-icon {
-    background: var(--c);
-    color: #fff;
-    transform: scale(1.06) rotate(-3deg);
-  }
-  /* финальный (акцентный) шаг: иконка светлая, как и на :hover */
-  .approach-step:last-child.in-view .approach-icon { background: rgba(255, 255, 255, 0.28); color: #fff; }
 
   .why-tile.in-view {
     box-shadow: var(--shadow-lg);
     border-color: color-mix(in srgb, var(--c) 45%, var(--line));
   }
   .why-tile.in-view::before { transform: scaleX(1); }
-  .why-tile.in-view .why-ic { transform: rotate(-4deg) scale(1.06); }
 }
 
 /* ---------- Уважение к prefers-reduced-motion ---------- */

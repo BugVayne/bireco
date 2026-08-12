@@ -166,7 +166,6 @@ def service_row_html(s, i, lang):
         + (f' style="--photo:url(\'{esc(s["img"])}\')"' if s.get("img") else "")
         + ">"
         f'<h3>{esc(s["title"][lang])}</h3>'
-        f'<span class="service-icon service-icon-ghost" aria-hidden="true">{s["icon"]}</span>'
         f"</div>"
         f'<div class="service-info">'
         f'<p class="service-short">{esc(s["short"][lang])}</p>'
