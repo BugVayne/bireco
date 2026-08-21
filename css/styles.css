@@ -355,7 +355,24 @@ a:hover { text-decoration: underline; }
   text-transform: uppercase;
   font-weight: 800;
 }
-.hero h1 .accent { color: var(--purple-light); }
+/* Акцентная строка заголовка — самая светлая на тёмном фоне героя.
+   Был плоский --purple-light (контраст ~9.7:1) — стал градиент 13–15:1,
+   то есть заметно ярче, но всё ещё с фиолетово-розовым оттенком,
+   чтобы отличаться от белых соседних строк.
+   drop-shadow, а не text-shadow: свечение должно идти от уже отрисованного
+   градиента, а не из-под прозрачных глифов. */
+.hero h1 .accent {
+  color: #f0e9ff;
+  filter: drop-shadow(0 0 26px rgba(192, 38, 211, 0.4));
+}
+@supports ((-webkit-background-clip: text) or (background-clip: text)) {
+  .hero h1 .accent {
+    background: linear-gradient(92deg, #f7f5ff 0%, #ece0ff 45%, #f5d0fe 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+}
 .hero h1 .line {
   display: block;
   opacity: 0;
@@ -904,6 +921,38 @@ a:hover { text-decoration: underline; }
 .form-field.invalid textarea { border-color: #dc2626; }
 .form-field.invalid .field-error { display: block; }
 
+/* Согласие на обработку персональных данных.
+   Чекбокс переопределяет общее правило .form-field input (width:100% + padding). */
+.consent-field { margin-bottom: 14px; }
+.consent-field .consent-label {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 0;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.45;
+  color: var(--muted);
+  cursor: pointer;
+}
+.consent-field input[type="checkbox"] {
+  width: 17px;
+  height: 17px;
+  flex: none;
+  margin: 1px 0 0;
+  padding: 0;
+  border-radius: 5px;
+  accent-color: var(--purple);
+  cursor: pointer;
+}
+.consent-field input[type="checkbox"]:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(109, 40, 217, 0.22);
+}
+.consent-field.invalid .consent-label { color: #dc2626; }
+.consent-field.invalid input[type="checkbox"] { outline: 1.5px solid #dc2626; outline-offset: 1px; }
+.consent-field .field-error { margin-top: 6px; }
+
 /* Поле-ловушка для ботов: скрыто от людей */
 .hp-field {
   position: absolute !important;
@@ -1014,6 +1063,7 @@ a:hover { text-decoration: underline; }
   .hero-form-card .hero-form-sub { margin-bottom: 12px; font-size: 12.5px; }
   .hero-form-card .form-field { margin-bottom: 9px; }
   .hero-form-card .form-field label { margin-bottom: 4px; }
+  .hero-form-card .consent-field .consent-label { margin-bottom: 0; }
   .hero-form-card .form-field input,
   .hero-form-card .form-field textarea { padding: 9px 12px; font-size: 14px; border-radius: 9px; }
   .hero-form-card textarea { min-height: 52px; }

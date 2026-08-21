@@ -16,7 +16,10 @@ window.SITE_CONFIG = {
   // Оставьте пустым — кнопка будет просто прокручивать к сервисам.
   OVERVIEW_VIDEO_URL: "",
 
-  // Email и контакты в футере
-  CONTACT_EMAIL: "info@example.com",
-  LINKEDIN_URL: "#",
+  // Контакты в футере. Пустая строка — пункт скрывается.
+  CONTACT_EMAIL: "bireca.admin@gmail.com",
+  CONTACT_PHONE: "+375 29 777 81 49",
+  INSTAGRAM_URL: "https://www.instagram.com/bireca_com/",
+  FACEBOOK_URL: "https://www.facebook.com/birecacom",
+  LINKEDIN_URL: "",
 };

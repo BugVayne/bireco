@@ -40,13 +40,28 @@
   /* ---------- Футер ---------- */
   var yearEl = document.getElementById("footerYear");
   if (yearEl) yearEl.textContent = new Date().getFullYear();
-  var emailEl = document.getElementById("footerEmail");
-  if (emailEl && cfg.CONTACT_EMAIL) {
-    emailEl.textContent = cfg.CONTACT_EMAIL;
-    emailEl.href = "mailto:" + cfg.CONTACT_EMAIL;
+  // Контакты берём из config.js. Значения в разметке — те же самые
+  // (чтобы предрендер build.py был корректен без JS);
+  // пустое значение в конфиге прячет пункт списка.
+  function setFooterLink(id, value, href, text) {
+    var el = document.getElementById(id);
+    if (!el) return;
+    var li = el.closest("li");
+    if (!value) {
+      if (li) li.hidden = true;
+      return;
+    }
+    if (li) li.hidden = false;
+    el.href = href;
+    if (text) el.textContent = text;
   }
-  var liEl = document.getElementById("footerLinkedin");
-  if (liEl && cfg.LINKEDIN_URL) liEl.href = cfg.LINKEDIN_URL;
+
+  setFooterLink("footerEmail", cfg.CONTACT_EMAIL, "mailto:" + cfg.CONTACT_EMAIL, cfg.CONTACT_EMAIL);
+  setFooterLink("footerPhone", cfg.CONTACT_PHONE,
+    "tel:" + String(cfg.CONTACT_PHONE || "").replace(/[^0-9+]/g, ""), cfg.CONTACT_PHONE);
+  setFooterLink("footerInstagram", cfg.INSTAGRAM_URL, cfg.INSTAGRAM_URL, "");
+  setFooterLink("footerFacebook", cfg.FACEBOOK_URL, cfg.FACEBOOK_URL, "");
+  setFooterLink("footerLinkedin", cfg.LINKEDIN_URL, cfg.LINKEDIN_URL, "");
 
   /* ---------- Scroll reveal (плавное появление при прокрутке) ---------- */
   var revealObserver = null;
@@ -381,8 +396,9 @@
   // Телефон обязателен: мягко 7–15 цифр в любом формате
   // (не отсекаем валидные международные номера).
   function fieldIsBad(input) {
-    var v = input.value.trim();
     var nm = input.getAttribute("name");
+    if (input.type === "checkbox") return !input.checked; // согласие на обработку данных
+    var v = input.value.trim();
     if (nm === "email") return !EMAIL_RE.test(v);
     if (nm === "phone") {
       var digits = v.replace(/\D/g, "");
@@ -437,10 +453,13 @@
   }
 
   var VALIDATED_FIELDS = ["name", "email", "phone"];
+  // Согласие проверяется тоже, но отдельно: у чекбокса свой сценарий
+  // подсветки ошибки (по change, а не по blur).
+  var SUBMIT_FIELDS = VALIDATED_FIELDS.concat(["consent"]);
 
   function validateForm(formEl) {
     var ok = true;
-    VALIDATED_FIELDS.forEach(function (nm) {
+    SUBMIT_FIELDS.forEach(function (nm) {
       var inp = formEl.querySelector('[name="' + nm + '"]');
       if (inp && !validateField(inp)) ok = false;
     });
@@ -478,6 +497,12 @@
         if (inp.closest(".form-field").classList.contains("invalid")) validateField(inp);
       });
     });
+
+    // Согласие на обработку данных: ошибка гаснет сразу после отметки
+    var consentInput = opts.form.querySelector('[name="consent"]');
+    if (consentInput) {
+      consentInput.addEventListener("change", function () { validateField(consentInput); });
+    }
 
     // Счётчик символов в сообщении
     var msg = opts.form.querySelector('[name="message"]');
