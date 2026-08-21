@@ -355,19 +355,20 @@ a:hover { text-decoration: underline; }
   text-transform: uppercase;
   font-weight: 800;
 }
-/* Акцентная строка заголовка — самая светлая на тёмном фоне героя.
-   Был плоский --purple-light (контраст ~9.7:1) — стал градиент 13–15:1,
-   то есть заметно ярче, но всё ещё с фиолетово-розовым оттенком,
-   чтобы отличаться от белых соседних строк.
-   drop-shadow, а не text-shadow: свечение должно идти от уже отрисованного
-   градиента, а не из-под прозрачных глифов. */
+/* Акцентная строка заголовка — сочный пурпурный на тёмном фоне героя.
+   Выделяется не светлотой (соседние строки белые, 17.9:1), а цветом:
+   градиент идёт фиолетовый → фуксия в родстве с --accent (#c026d3).
+   Контраст держится ровным ~10.2:1 по всей строке — выше исходного
+   --purple-light (9.7:1), поэтому строка не проваливается на фоне.
+   Свечение через drop-shadow, а не text-shadow: оно должно идти от уже
+   отрисованного градиента, а не из-под прозрачных глифов. */
 .hero h1 .accent {
-  color: #f0e9ff;
-  filter: drop-shadow(0 0 26px rgba(192, 38, 211, 0.4));
+  color: #e2b6fd;
+  filter: drop-shadow(0 0 30px rgba(192, 38, 211, 0.55));
 }
 @supports ((-webkit-background-clip: text) or (background-clip: text)) {
   .hero h1 .accent {
-    background: linear-gradient(92deg, #f7f5ff 0%, #ece0ff 45%, #f5d0fe 100%);
+    background: linear-gradient(92deg, #d8b4fe 0%, #e4aefd 48%, #f0abfc 100%);
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
